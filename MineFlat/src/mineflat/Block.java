@@ -2,11 +2,11 @@ package mineflat;
 
 import java.util.HashMap;
 
+import mineflat.util.BlockUtil;
+
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 
 import static org.lwjgl.opengl.GL11.*;
-
 
 public class Block {
 
@@ -16,7 +16,7 @@ public class Block {
 
 	protected Material type;
 
-	protected static final int length = 64;
+	public static final int length = 64;
 
 	public Block(Material type, Location location){
 		this.type = type;
@@ -100,9 +100,7 @@ public class Block {
 	public static void draw(){
 		for (Block b : blocks.keySet()){
 			try {
-				Texture t = TextureLoader.getTexture("PNG",
-						Block.class.getClassLoader().getResourceAsStream(
-								"textures/" + b.getType().toString().toLowerCase() + ".png"));
+				Texture t = BlockUtil.textures.get(b.getType());
 				glBindTexture(GL_TEXTURE_2D, t.getTextureID());
 				glCallList(blocks.get(b));
 			}

@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import mineflat.util.BlockUtil;
 import mineflat.util.BufferUtil;
 import mineflat.util.ImageUtil;
 
@@ -68,7 +69,10 @@ public class MineFlat {
 		glMatrixMode(GL_MODELVIEW);
 
 		glEnable(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
+		BlockUtil.addTexture(Material.DIRT);
 
 		new Block(Material.DIRT, 1, 0);
 
