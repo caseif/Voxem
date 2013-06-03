@@ -60,9 +60,14 @@ public class MineFlat {
 			ex.printStackTrace();
 		}
 		
+		new Block(Material.DIRT, 15, 15);
+		new Block(Material.DIRT, -15, -15);
+		new Block(Material.DIRT, 150, 150);
+		new Block(Material.DIRT, -150, -150);
+		
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 			
-			//TODO Render world
+			Block.draw();
 			
 			Display.sync(60);
 
