@@ -16,7 +16,7 @@ public class Block {
 
 	protected Material type;
 
-	protected final int length = 10;
+	protected static final int length = 64;
 
 	public Block(Material type, Location location){
 		this.type = type;
@@ -26,19 +26,19 @@ public class Block {
 			glNewList(handle, GL_COMPILE);
 			{
 				try {
-				Texture t = TextureLoader.getTexture("PNG",
-						Block.class.getClassLoader().getResourceAsStream(
-						"textures/" + type.toString().toLowerCase() + ".png"));
-				glBindTexture(GL_TEXTURE_2D, t.getTextureID());
-				glTexCoord2f(0, 0);
-				glVertex2f(location.x, location.y); // top left
-				glTexCoord2f(1, 0);
-				glVertex2f(location.x + length, location.y); // top right
-				glTexCoord2f(1, 1);
-				glVertex2f(location.x + length, location.y + length); // bottom right
-				glTexCoord2f(0, 1);
-				glVertex2f(location.x, location.y + length); // bottom left
-				glBindTexture(GL_TEXTURE_2D, 0);
+					int actualX = location.getX() * length;
+					int actualY = location.getY() * length;
+					glBegin(GL_QUADS);
+					glTexCoord2f(0, 0);
+					glVertex2f(actualX, actualY); // top left
+					glTexCoord2f(1, 0);
+					glVertex2f(actualX + length, actualY); // top right
+					glTexCoord2f(1, 1);
+					glVertex2f(actualX + length, actualY + length); // bottom right
+					glTexCoord2f(0, 1);
+					glVertex2f(actualX, actualY + length); // bottom left
+					glBindTexture(GL_TEXTURE_2D, 0);
+					glEnd();
 				}
 				catch (Exception ex){
 					System.err.println("Exception occurred while rendering block at (" +
@@ -46,12 +46,12 @@ public class Block {
 					ex.printStackTrace();
 				}
 			}
-			glEnd();
+			glEndList();
 
 			blocks.put(this, handle);
 		}
 	}
-	
+
 	public Block(Material m, int x, int y){
 		new Block(m, new Location(x, y));
 	}
@@ -99,7 +99,16 @@ public class Block {
 
 	public static void draw(){
 		for (Block b : blocks.keySet()){
-			glCallList(blocks.get(b));
+			try {
+				Texture t = TextureLoader.getTexture("PNG",
+						Block.class.getClassLoader().getResourceAsStream(
+								"textures/" + b.getType().toString().toLowerCase() + ".png"));
+				glBindTexture(GL_TEXTURE_2D, t.getTextureID());
+				glCallList(blocks.get(b));
+			}
+			catch (Exception ex){
+				ex.printStackTrace();
+			}
 		}
 	}
 

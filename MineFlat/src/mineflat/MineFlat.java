@@ -1,5 +1,7 @@
 package mineflat;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
@@ -14,7 +16,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 
 public class MineFlat {
-	
+
 	/**
 	 * Copyright (c) 2013 Maxim Roncacé
 	 * 
@@ -29,9 +31,9 @@ public class MineFlat {
 	 * 
 	 * The full text of this license can be found in the root directory of this JAR file under the file "LICENSE"
 	 */
-	
+
 	public static void main(String[] args){
-		
+
 		try {
 			Display.setDisplayMode(new DisplayMode(Display.getDesktopDisplayMode().getWidth() - 20, Display.getDesktopDisplayMode().getHeight() - 100));
 			Display.setTitle("MineFlat");
@@ -59,21 +61,26 @@ public class MineFlat {
 		catch (Exception ex){
 			ex.printStackTrace();
 		}
-		
-		new Block(Material.DIRT, 15, 15);
-		new Block(Material.DIRT, -15, -15);
-		new Block(Material.DIRT, 150, 150);
-		new Block(Material.DIRT, -150, -150);
-		
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
+		glMatrixMode(GL_MODELVIEW);
+
+		glEnable(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		new Block(Material.DIRT, 1, 0);
+
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
-			
+
 			Block.draw();
-			
+
 			Display.sync(60);
 
 			Display.update();
 		}
-		
+
 	}
-	
+
 }
