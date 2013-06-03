@@ -1,5 +1,6 @@
 package mineflat;
 
+
 public class MineFlat {
 	
 	/**
@@ -18,6 +19,8 @@ public class MineFlat {
 	 */
 	
 	public static void main(String[] args){
+		
+		
 		
 	}
 	

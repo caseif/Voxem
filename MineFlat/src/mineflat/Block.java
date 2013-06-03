@@ -1,10 +1,18 @@
 package mineflat;
 
-public abstract class Block implements BlockInterface {
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Block {
+	
+	public static List<Block> blocks = new ArrayList<Block>();
 	
 	protected int x;
 	
 	protected int y;
+	
+	protected Material type;
 	
 	public int getX(){
 		return x;
@@ -12,6 +20,10 @@ public abstract class Block implements BlockInterface {
 	
 	public int getY(){
 		return y;
+	}
+	
+	public Material getType(){
+		return type;
 	}
 	
 	public void setX(int x){
@@ -27,8 +39,18 @@ public abstract class Block implements BlockInterface {
 		this.y = y;
 	}
 	
-	public abstract void create();
+	public void setType(Material type){
+		this.type = type;
+	}
 	
-	public abstract void destroy();
+	public void destroy(){
+		blocks.remove(this);
+	}
+	
+	public static void draw(){
+		for (Block b : blocks){
+			//TODO Draw blocks
+		}
+	}
 	
 }
