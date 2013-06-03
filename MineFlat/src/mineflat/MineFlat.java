@@ -17,7 +17,7 @@ public class MineFlat {
 	 * The full text of this license can be found in the root directory of this JAR file under the file "LICENSE"
 	 */
 	
-	public void main(String[] args){
+	public static void main(String[] args){
 		
 	}
 	
