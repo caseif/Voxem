@@ -1,5 +1,17 @@
 package mineflat;
 
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+
+import javax.imageio.ImageIO;
+
+import mineflat.util.BufferUtil;
+import mineflat.util.ImageUtil;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+
 
 public class MineFlat {
 	
@@ -20,7 +32,42 @@ public class MineFlat {
 	
 	public static void main(String[] args){
 		
+		try {
+			Display.setDisplayMode(new DisplayMode(Display.getDesktopDisplayMode().getWidth() - 20, Display.getDesktopDisplayMode().getHeight() - 100));
+			Display.setTitle("MineFlat");
+			ByteBuffer[] icons = null;
+			if (System.getProperty("os.name").startsWith("Windows")){
+				icons = new ByteBuffer[2];
+				BufferedImage icon1 = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 16, 16);
+				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 32, 32);;
+				icons[0] = BufferUtil.asByteBuffer(icon1);
+				icons[1] = BufferUtil.asByteBuffer(icon2);
+			}
+			else if (System.getProperty("os.name").startsWith("Mac")){
+				icons = new ByteBuffer[1];
+				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 128, 128);
+				icons[0] = BufferUtil.asByteBuffer(icon);
+			}
+			else {
+				icons = new ByteBuffer[1];
+				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 32, 32);
+				icons[0] = BufferUtil.asByteBuffer(icon);
+			}
+			Display.setIcon(icons);
+			Display.create();
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+		}
 		
+		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+			
+			//TODO Render world
+			
+			Display.sync(60);
+
+			Display.update();
+		}
 		
 	}
 	
