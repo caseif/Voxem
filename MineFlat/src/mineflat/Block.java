@@ -1,6 +1,7 @@
 package mineflat;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import mineflat.util.BlockUtil;
 
@@ -10,58 +11,32 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Block {
 
-	public static HashMap<Block, Integer> blocks = new HashMap<Block, Integer>();
+	public static int blockHandle;
 
 	protected Location location;
 
 	protected Material type;
 
-	public static final int length = 64;
+	public static final int length = 16;
 
-	public Block(Material type, Location location){
-		this.type = type;
+	public static List<Block> blocks = new ArrayList<Block>();
+
+	public Block(Material m, Location location){
+		this.type = m;
 		this.location = location;
-		if (type != Material.AIR){
-			int handle = glGenLists(1);
-			glNewList(handle, GL_COMPILE);
-			{
-				try {
-					int actualX = location.getX() * length;
-					int actualY = location.getY() * length;
-					glBegin(GL_QUADS);
-					glTexCoord2f(0, 0);
-					glVertex2f(actualX, actualY); // top left
-					glTexCoord2f(1, 0);
-					glVertex2f(actualX + length, actualY); // top right
-					glTexCoord2f(1, 1);
-					glVertex2f(actualX + length, actualY + length); // bottom right
-					glTexCoord2f(0, 1);
-					glVertex2f(actualX, actualY + length); // bottom left
-					glBindTexture(GL_TEXTURE_2D, 0);
-					glEnd();
-				}
-				catch (Exception ex){
-					System.err.println("Exception occurred while rendering block at (" +
-							location.x + ", " + location.y + ")");
-					ex.printStackTrace();
-				}
-			}
-			glEndList();
-
-			blocks.put(this, handle);
-		}
+		blocks.add(this);
 	}
-
+	
 	public Block(Material m, int x, int y){
 		new Block(m, new Location(x, y));
 	}
 
 	public int getX(){
-		return location.getX();
+		return (int)location.getX();
 	}
 
 	public int getY(){
-		return location.getY();
+		return (int)location.getY();
 	}
 
 	public Location getLocation(){
@@ -93,21 +68,46 @@ public class Block {
 		this.type = type;
 	}
 
-	public void destroy(){
-		blocks.remove(this);
+	public static void draw(){
+		for (Block b : Block.blocks){
+			if (b.getType() != Material.AIR){
+				try {
+					Texture t = BlockUtil.textures.get(b.getType());
+					glBindTexture(GL_TEXTURE_2D, t.getTextureID());
+					glTranslatef(b.getX() * length, b.getY() * length, 0);
+					System.out.println(b.getX() * length);
+					glCallList(blockHandle);
+					glBindTexture(GL_TEXTURE_2D, 0);
+				}
+				catch (Exception ex){
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 
-	public static void draw(){
-		for (Block b : blocks.keySet()){
+	public static void initialize(){
+		blockHandle = glGenLists(1);
+		glNewList(blockHandle, GL_COMPILE);
+		{
 			try {
-				Texture t = BlockUtil.textures.get(b.getType());
-				glBindTexture(GL_TEXTURE_2D, t.getTextureID());
-				glCallList(blocks.get(b));
+				glBegin(GL_QUADS);
+				glTexCoord2f(0, 0);
+				glVertex2f(0, 0); // top left
+				glTexCoord2f(1, 0);
+				glVertex2f(length, 0); // top right
+				glTexCoord2f(1, 1);
+				glVertex2f(length, length); // bottom right
+				glTexCoord2f(0, 1);
+				glVertex2f(0, length); // bottom left
+				glEnd();
 			}
 			catch (Exception ex){
+				System.err.println("Exception occurred while rendering block");
 				ex.printStackTrace();
 			}
 		}
+		glEndList();
 	}
 
 }

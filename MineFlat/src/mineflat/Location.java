@@ -2,33 +2,33 @@ package mineflat;
 
 public class Location {
 
-	protected int x;
+	protected float x;
 	
-	protected int y;
+	protected float y;
 	
-	public Location(int x, int y){
+	public Location(float x, float y){
 		this.x = x;
 		this.y = y;
 	}
 	
-	public int getX(){
+	public float getX(){
 		return x;
 	}
 	
-	public int getY(){
+	public float getY(){
 		return y;
 	}
 	
-	public void setX(int x){
+	public void setX(float x){
 		this.x = x;
 	}
 	
-	public void setY(int y){
+	public void setY(float y){
 		this.y = y;
 	}
 	
 	public Block getBlock(){
-		for (Block b : Block.blocks.keySet()){
+		for (Block b : Block.blocks){
 			if (b.getLocation().equals(this))
 				return b;
 		}
@@ -37,14 +37,24 @@ public class Location {
 	
 	public boolean equals(Object o){
 		if (o instanceof Location){
-			Block b = (Block)o;
-			return b.getX() == this.x && b.getY() == this.y;
+			Location l = (Location)o;
+			return l.getX() == this.x && l.getY() == this.y;
 		}
 		return false;
 	}
 	
 	public int hashCode(){
-		return 41 * (x * 37 + y * 43 + 41);
+		return 41 * (int)(x * 37 + y * 43 + 41);
+	}
+	
+	public int getChunk(){
+		if (x >= 0)
+			return (int)x / 16 + 1;
+		return (int)x / 16 - 1;
+	}
+	
+	public float getPosInChunk(){
+		return x - this.getChunk() * 16; 
 	}
 	
 }

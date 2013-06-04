@@ -9,6 +9,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import mineflat.Block;
+import mineflat.Location;
 import mineflat.Material;
 
 public class BlockUtil {
@@ -29,5 +30,13 @@ public class BlockUtil {
 			ex.printStackTrace();
 		}
 	}
-
+	
+	public static int getTop(int x){
+		int top = 0;
+		for (int yy = 0; yy < 128; yy++){
+			if (new Location(x, yy).getBlock().getType() != Material.AIR)
+				top = yy;
+		}
+		return top;
+	}
 }

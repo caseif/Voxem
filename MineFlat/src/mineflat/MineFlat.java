@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -15,23 +16,24 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+/**
+ * Copyright (c) 2013 Maxim Roncacé
+ * 
+ * THE WORK IS PROVIDED UNDER THE TERMS OF THIS CREATIVE COMMONS PUBLIC LICENSE
+ * ("CCPL" OR "LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER APPLICABLE LAW. ANY USE
+ * OF THE WORK OTHER THAN AS AUTHORIZED UNDER THIS LICENSE OR COPYRIGHT LAW IS PROHIBITED.
+ * 
+ * BY EXERCISING ANY RIGHTS TO THE WORK PROVIDED HERE, YOU ACCEPT AND AGREE TO BE BOUND BY THE TERMS
+ * OF THIS LICENSE. TO THE EXTENT THIS LICENSE MAY BE CONSIDERED TO BE A CONTRACT, THE LICENSOR
+ * GRANTS YOU THE RIGHTS CONTAINED HERE IN CONSIDERATION OF YOUR ACCEPTANCE OF SUCH TERMS AND
+ * CONDITIONS.
+ * 
+ * The full text of this license can be found in the root directory of this JAR file under the file "LICENSE"
+ */
 
 public class MineFlat {
 
-	/**
-	 * Copyright (c) 2013 Maxim Roncacé
-	 * 
-	 * THE WORK IS PROVIDED UNDER THE TERMS OF THIS CREATIVE COMMONS PUBLIC LICENSE
-	 * ("CCPL" OR "LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER APPLICABLE LAW. ANY USE
-	 * OF THE WORK OTHER THAN AS AUTHORIZED UNDER THIS LICENSE OR COPYRIGHT LAW IS PROHIBITED.
-	 * 
-	 * BY EXERCISING ANY RIGHTS TO THE WORK PROVIDED HERE, YOU ACCEPT AND AGREE TO BE BOUND BY THE TERMS
-	 * OF THIS LICENSE. TO THE EXTENT THIS LICENSE MAY BE CONSIDERED TO BE A CONTRACT, THE LICENSOR
-	 * GRANTS YOU THE RIGHTS CONTAINED HERE IN CONSIDERATION OF YOUR ACCEPTANCE OF SUCH TERMS AND
-	 * CONDITIONS.
-	 * 
-	 * The full text of this license can be found in the root directory of this JAR file under the file "LICENSE"
-	 */
+	public static Player player = new Player(new Location(0, 0));
 
 	public static void main(String[] args){
 
@@ -72,9 +74,9 @@ public class MineFlat {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		
-		BlockUtil.addTexture(Material.DIRT);
+		Block.initialize();
 
-		new Block(Material.DIRT, 1, 0);
+		BlockUtil.addTexture(Material.DIRT);
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
@@ -83,6 +85,45 @@ public class MineFlat {
 			Display.sync(60);
 
 			Display.update();
+			
+			for (int i = player.getLocation().getChunk() - 8; i <= player.getLocation().getChunk() + 8; i++){
+				if (!Chunk.isGenerated(i)){
+					int h0 = 0;
+					int h1 = 0;
+					Random r = new Random();
+					if (Chunk.isGenerated(i - 1)){
+						int diff = r.nextInt(1);
+						if (diff == 0 && BlockUtil.getTop(Chunk.getActualX(i - 1, 0)) > 0)
+							diff = -1;
+						h0 = BlockUtil.getTop(Chunk.getActualX(i - 1, 15)) + diff;
+					}
+					if (Chunk.isGenerated(i + 1)){
+						int diff = r.nextInt(1);
+						if (diff == 0 && BlockUtil.getTop(Chunk.getActualX(i + 1, 0)) > 0)
+							diff = -1;
+						h1 = BlockUtil.getTop(Chunk.getActualX(i + 1, 0)) + diff;
+					}
+					if (h0 == 0)
+						h0 = r.nextInt(16);
+					if (h1 == 0)
+						h1 = r.nextInt(16);
+					Chunk c = new Chunk(i);
+					c.setBlock(Material.DIRT, 0, h0);
+					c.setBlock(Material.DIRT, 15, h1);
+					int x0 = 0;
+					int x1 = 15;
+					for (int x = 1; x < 15; x++){
+						int t = (x - x0) / (x1 - x0);
+						t = t * t * (3 - 2 * t);
+						int h = h0 + t * h1;
+						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x) * r.nextDouble());
+						h /= 100;
+						c.setBlock(Material.DIRT, x, h);
+						new Block(Material.DIRT, new Location(x, h));
+					}
+				}
+			}
+
 		}
 
 	}
