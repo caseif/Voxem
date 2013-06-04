@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import mineflat.util.BlockUtil;
 import mineflat.util.BufferUtil;
 import mineflat.util.ImageUtil;
+import mineflat.util.NoiseUtil;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -73,7 +74,7 @@ public class MineFlat {
 		glEnable(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		
+
 		Block.initialize();
 
 		BlockUtil.addTexture(Material.DIRT);
@@ -85,7 +86,7 @@ public class MineFlat {
 			Display.sync(60);
 
 			Display.update();
-			
+
 			for (int i = player.getLocation().getChunk() - 8; i <= player.getLocation().getChunk() + 8; i++){
 				if (!Chunk.isGenerated(i)){
 					Chunk c = new Chunk(i);
@@ -117,25 +118,14 @@ public class MineFlat {
 						new Block(Material.DIRT, c.getNum() * 16 + 15, y);
 					}
 
-					int x0 = 0;
-					int x1 = 15;
 					for (int x = 1; x < 15; x++){
-						int t = (x - x0) / (x1 - x0);
-						t = t * t * (int)Math.log10(t) * (3 - 2 * t);
-						int h = h0 + t * h1;
-						h = (int)(0.5 * Math.abs(h) * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
-						h /= 100;
-						for (int y = h; y < 128; y++){
-							c.setBlock(Material.DIRT, x, y);
-							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), x), y));
-						}
-						if (x == 14){
-							if (h1 - h > 1 || h1 - h < -1){
-								int diff = r.nextInt(4) - 2;
-								h1 = h + diff;
-							}
+						int h = NoiseUtil.perlin(x);
+						for (int yy = h; yy < 128; yy++){
+							c.setBlock(Material.DIRT, x, yy);
+							new Block(Material.DIRT, c.getNum() * 16 + x, yy);
 						}
 					}
+
 				}
 			}
 
