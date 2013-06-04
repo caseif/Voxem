@@ -88,6 +88,7 @@ public class MineFlat {
 			
 			for (int i = player.getLocation().getChunk() - 8; i <= player.getLocation().getChunk() + 8; i++){
 				if (!Chunk.isGenerated(i)){
+					Chunk c = new Chunk(i);
 					int h0 = 0;
 					int h1 = 0;
 					Random r = new Random();
@@ -95,31 +96,39 @@ public class MineFlat {
 						int diff = r.nextInt(1);
 						if (diff == 0 && BlockUtil.getTop(Chunk.getActualX(i - 1, 0)) > 0)
 							diff = -1;
-						h0 = BlockUtil.getTop(Chunk.getActualX(i - 1, 15)) + diff;
+						h0 = BlockUtil.getTop((i - 1) * 16 + 15);
 					}
 					if (Chunk.isGenerated(i + 1)){
 						int diff = r.nextInt(1);
 						if (diff == 0 && BlockUtil.getTop(Chunk.getActualX(i + 1, 0)) > 0)
 							diff = -1;
-						h1 = BlockUtil.getTop(Chunk.getActualX(i + 1, 0)) + diff;
+						h1 = BlockUtil.getTop(Chunk.getActualX(i + 1, 0));
 					}
 					if (h0 == 0)
 						h0 = r.nextInt(16);
 					if (h1 == 0)
-						h1 = r.nextInt(16);
-					Chunk c = new Chunk(i);
-					c.setBlock(Material.DIRT, 0, h0);
-					c.setBlock(Material.DIRT, 15, h1);
+						h1 = h0;
+					for (int y = h0; y < 128; y++){
+						c.setBlock(Material.DIRT, 0, y);
+						new Block(Material.DIRT, c.getNum() * 16, y);
+					}
+					for (int y = h1; y < 128; y++){
+						c.setBlock(Material.DIRT, 15, y);
+						new Block(Material.DIRT, c.getNum() * 16 + 15, y);
+					}
+
 					int x0 = 0;
 					int x1 = 15;
 					for (int x = 1; x < 15; x++){
 						int t = (x - x0) / (x1 - x0);
 						t = t * t * (3 - 2 * t);
 						int h = h0 + t * h1;
-						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x) * r.nextDouble());
+						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
 						h /= 100;
-						c.setBlock(Material.DIRT, x, h);
-						new Block(Material.DIRT, new Location(x, h));
+						for (int y = h; y < 128; y++){
+							c.setBlock(Material.DIRT, x, y);
+							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), x), y));
+						}
 					}
 				}
 			}

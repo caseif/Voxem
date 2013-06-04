@@ -32,11 +32,11 @@ public class BlockUtil {
 	}
 	
 	public static int getTop(int x){
-		int top = 0;
-		for (int yy = 0; yy < 128; yy++){
-			if (new Location(x, yy).getBlock().getType() != Material.AIR)
-				top = yy;
+		for (int yy = 0; yy <= 128; yy++){
+			if (new Location(x, yy).getBlock().getType() != Material.AIR){
+				return yy;
+			}
 		}
-		return top;
+		return 0;
 	}
 }

@@ -72,12 +72,13 @@ public class Block {
 		for (Block b : Block.blocks){
 			if (b.getType() != Material.AIR){
 				try {
+					glPushMatrix();
 					Texture t = BlockUtil.textures.get(b.getType());
 					glBindTexture(GL_TEXTURE_2D, t.getTextureID());
-					glTranslatef(b.getX() * length, b.getY() * length, 0);
-					System.out.println(b.getX() * length);
+					glTranslatef(b.getX() * length, b.getY() * length + 50, 0);
 					glCallList(blockHandle);
 					glBindTexture(GL_TEXTURE_2D, 0);
+					glPopMatrix();
 				}
 				catch (Exception ex){
 					ex.printStackTrace();
