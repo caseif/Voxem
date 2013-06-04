@@ -75,7 +75,7 @@ public class Block {
 					glPushMatrix();
 					Texture t = BlockUtil.textures.get(b.getType());
 					glBindTexture(GL_TEXTURE_2D, t.getTextureID());
-					glTranslatef(b.getX() * length, b.getY() * length + 50, 0);
+					glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
 					glCallList(blockHandle);
 					glBindTexture(GL_TEXTURE_2D, 0);
 					glPopMatrix();

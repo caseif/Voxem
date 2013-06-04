@@ -107,7 +107,7 @@ public class MineFlat {
 					if (h0 == 0)
 						h0 = r.nextInt(16);
 					if (h1 == 0)
-						h1 = h0;
+						h1 = r.nextInt(16);
 					for (int y = h0; y < 128; y++){
 						c.setBlock(Material.DIRT, 0, y);
 						new Block(Material.DIRT, c.getNum() * 16, y);
@@ -121,13 +121,19 @@ public class MineFlat {
 					int x1 = 15;
 					for (int x = 1; x < 15; x++){
 						int t = (x - x0) / (x1 - x0);
-						t = t * t * (3 - 2 * t);
+						t = t * t * (int)Math.log10(t) * (3 - 2 * t);
 						int h = h0 + t * h1;
-						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
+						h = (int)(0.5 * Math.abs(h) * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
 						h /= 100;
 						for (int y = h; y < 128; y++){
 							c.setBlock(Material.DIRT, x, y);
 							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), x), y));
+						}
+						if (x == 14){
+							if (h1 - h > 1 || h1 - h < -1){
+								int diff = r.nextInt(4) - 2;
+								h1 = h + diff;
+							}
 						}
 					}
 				}
