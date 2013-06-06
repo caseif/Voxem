@@ -129,13 +129,11 @@ public class MineFlat {
 					for (int x = 1; x < 15; x++){
 						int t = (x - x0) / (x1 - x0);
 						t = t * t * (3 - 2 * t);
-						System.out.println(t);
 						int h = h0 + t * h1;
 						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
 						h /= 5;
 						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
 						h /= 100;
-						System.out.println(h);
 						c.setBlock(Material.DIRT, x, h);
 						new Block(Material.DIRT, new Location(x, h));
 						for (int y = h; y < 128; y++){
