@@ -50,7 +50,7 @@ public class Chunk {
 	}
 	
 	public static int getActualX(int chunk, int block){
-		return chunk * 16 + block;
+		return (chunk - 1) * 16 + block;
 	}
 	
 }

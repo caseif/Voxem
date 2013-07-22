@@ -4,10 +4,10 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import mineflat.noise.SimplexNoiseGenerator;
 import mineflat.util.BlockUtil;
 import mineflat.util.BufferUtil;
 import mineflat.util.ImageUtil;
@@ -34,6 +34,13 @@ import org.lwjgl.opengl.DisplayMode;
 public class MineFlat {
 
 	public static Player player = new Player(new Location(0, 0));
+	
+	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(System.currentTimeMillis());
+	
+	/**
+	 * The level of variation the terrain should have
+	 */
+	public static final int terrainVariation = 5;
 
 	public static void main(String[] args){
 
@@ -73,7 +80,8 @@ public class MineFlat {
 		glEnable(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+		glClearColor(0.3f, 0.3f, 0.8f, 1f);
+		
 		Block.initialize();
 
 		BlockUtil.addTexture(Material.DIRT);
@@ -89,6 +97,20 @@ public class MineFlat {
 			for (int i = player.getLocation().getChunk() - 8; i <= player.getLocation().getChunk() + 8; i++){
 				if (!Chunk.isGenerated(i)){
 					Chunk c = new Chunk(i);
+					System.out.println("Generating chunk " + i);
+					for (int b = 0; b < 16; b++){
+						System.out.println("Generating block " + (b + 1) + " in chunk");
+						System.out.println(noise.noise(Chunk.getActualX(i, b)));
+						System.out.println(noise.noise(Chunk.getActualX(i, b)) / 2);
+						System.out.println((noise.noise(Chunk.getActualX(i, b)) / 2 + 0.5));
+						int h = (int)((noise.noise(Chunk.getActualX(i, b)) / 2 + 0.5) * terrainVariation);
+						System.out.println("Height is " + h);
+						for (int y = h; y < 128; y++){
+							c.setBlock(Material.DIRT, b, y);
+							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), b), y));
+						}
+					}
+					/*Chunk c = new Chunk(i);
 					int h0 = 0;
 					int h1 = 0;
 					Random r = new Random();
@@ -140,7 +162,7 @@ public class MineFlat {
 							c.setBlock(Material.DIRT, x, y);
 							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), x), y));
 						}
-					}
+					}*/
 				}
 			}
 

@@ -18,7 +18,7 @@ public class BlockUtil {
 
 	public static void addTexture(Material m){
 		try {
-			InputStream is = Block.class.getClassLoader().getResourceAsStream(
+			InputStream is = BlockUtil.class.getClassLoader().getResourceAsStream(
 					"textures/" + m.toString().toLowerCase() + ".png");
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
 					ImageIO.read(is), Block.length, Block.length));
