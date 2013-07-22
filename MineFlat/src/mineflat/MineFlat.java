@@ -41,6 +41,11 @@ public class MineFlat {
 	 * The level of variation the terrain should have
 	 */
 	public static final int terrainVariation = 5;
+	
+	/**
+	 * The resolution of the terrain
+	 */
+	public static final int terrainResolution = 32;
 
 	public static void main(String[] args){
 
@@ -97,14 +102,8 @@ public class MineFlat {
 			for (int i = player.getLocation().getChunk() - 8; i <= player.getLocation().getChunk() + 8; i++){
 				if (!Chunk.isGenerated(i)){
 					Chunk c = new Chunk(i);
-					System.out.println("Generating chunk " + i);
 					for (int b = 0; b < 16; b++){
-						System.out.println("Generating block " + (b + 1) + " in chunk");
-						System.out.println(noise.noise(Chunk.getActualX(i, b)));
-						System.out.println(noise.noise(Chunk.getActualX(i, b)) / 2);
-						System.out.println((noise.noise(Chunk.getActualX(i, b)) / 2 + 0.5));
-						int h = (int)((noise.noise(Chunk.getActualX(i, b)) / 2 + 0.5) * terrainVariation);
-						System.out.println("Height is " + h);
+						int h = (int)((noise.noise(Chunk.getActualX(i, b) / terrainResolution) / 2 + 0.5) * terrainVariation);
 						for (int y = h; y < 128; y++){
 							c.setBlock(Material.DIRT, b, y);
 							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), b), y));
