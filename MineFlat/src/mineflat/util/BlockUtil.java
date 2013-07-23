@@ -30,7 +30,7 @@ public class BlockUtil {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public static int getTop(int x){
 		for (int yy = 0; yy <= 128; yy++){
 			if (new Location(x, yy).getBlock().getType() != Material.AIR){
@@ -39,4 +39,12 @@ public class BlockUtil {
 		}
 		return 0;
 	}
+
+	public static Block getBlock(int x, int y){
+		for (Block b : Block.blocks)
+			if (b.getX() == x && b.getY() == y)
+				return b;
+		return null;
+	}
+
 }

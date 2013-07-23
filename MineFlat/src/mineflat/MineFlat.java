@@ -41,7 +41,7 @@ public class MineFlat {
 	/**
 	 * The level of variation the terrain should have
 	 */
-	public static final int terrainVariation = 5;
+	public static final int terrainVariation = 10;
 	
 	/**
 	 * The number of chunks adjacent to the player's that should be generated/loaded
