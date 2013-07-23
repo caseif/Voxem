@@ -16,10 +16,15 @@ public class ChunkUtil {
 					int h = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x)) / 2 + 0.5) * MineFlat.terrainVariation);
 					int leftHeight = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x) - 1) / 2 + 0.5) * MineFlat.terrainVariation);
 					int rightHeight = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x) + 1) / 2 + 0.5) * MineFlat.terrainVariation);
-					h = (h + leftHeight + rightHeight) / 3;
+					h = (h + leftHeight + rightHeight) / 2; //TODO: Second smoothing pass
 					for (int y = h; y < 128; y++){
-						c.setBlock(Material.DIRT, x, y);
-						new Block(Material.DIRT, new Location(getBlockXFromChunk(c.getNum(), x), y));
+						Material mat = Material.STONE;
+						if (y - h == 0)
+							mat = Material.GRASS;
+						else if (y - h <= MineFlat.dirtDepth)
+							mat = Material.DIRT;
+						c.setBlock(mat, x, y);
+						new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
 					}
 				}
 			}
