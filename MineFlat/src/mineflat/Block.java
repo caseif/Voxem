@@ -26,7 +26,7 @@ public class Block {
 		this.location = location;
 		blocks.add(this);
 	}
-	
+
 	public Block(Material m, int x, int y){
 		new Block(m, new Location(x, y));
 	}
@@ -70,18 +70,20 @@ public class Block {
 
 	public static void draw(){
 		for (Block b : Block.blocks){
-			if (b.getType() != Material.AIR){
-				try {
-					glPushMatrix();
-					Texture t = BlockUtil.textures.get(b.getType());
-					glBindTexture(GL_TEXTURE_2D, t.getTextureID());
-					glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
-					glCallList(blockHandle);
-					glBindTexture(GL_TEXTURE_2D, 0);
-					glPopMatrix();
-				}
-				catch (Exception ex){
-					ex.printStackTrace();
+			if (Math.abs(MineFlat.player.getX() - b.getX()) <= MineFlat.renderDistance * 16){ // check if player is within range
+				if (b.getType() != Material.AIR){
+					try {
+						glPushMatrix();
+						Texture t = BlockUtil.textures.get(b.getType());
+						glBindTexture(GL_TEXTURE_2D, t.getTextureID());
+						glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
+						glCallList(blockHandle);
+						glBindTexture(GL_TEXTURE_2D, 0);
+						glPopMatrix();
+					}
+					catch (Exception ex){
+						ex.printStackTrace();
+					}
 				}
 			}
 		}

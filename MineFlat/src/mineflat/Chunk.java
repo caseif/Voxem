@@ -37,20 +37,4 @@ public class Chunk {
 		blocks[x][y] = m;
 	}
 	
-	public static Chunk getChunk(int i){
-		for (Chunk c : chunks){
-			if (c.getNum() == i)
-				return c;
-		}
-		return null;
-	}
-	
-	public static boolean isGenerated(int i){
-		return getChunk(i) != null;
-	}
-	
-	public static int getActualX(int chunk, int block){
-		return (chunk - 1) * 16 + block;
-	}
-	
 }

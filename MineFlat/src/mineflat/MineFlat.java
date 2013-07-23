@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import mineflat.noise.SimplexNoiseGenerator;
 import mineflat.util.BlockUtil;
 import mineflat.util.BufferUtil;
+import mineflat.util.ChunkUtil;
 import mineflat.util.ImageUtil;
 
 import org.lwjgl.input.Keyboard;
@@ -34,14 +35,19 @@ import org.lwjgl.opengl.DisplayMode;
 public class MineFlat {
 
 	public static Player player = new Player(new Location(0, 0));
-	
+
 	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(System.currentTimeMillis());
-	
+
 	/**
 	 * The level of variation the terrain should have
 	 */
 	public static final int terrainVariation = 5;
-
+	
+	/**
+	 * The number of chunks adjacent to the player's that should be generated/loaded
+	 */
+	public static final int renderDistance = 6;
+	
 	public static void main(String[] args){
 
 		try {
@@ -81,85 +87,21 @@ public class MineFlat {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glClearColor(0.3f, 0.3f, 0.8f, 1f);
-		
+
 		Block.initialize();
 
 		BlockUtil.addTexture(Material.DIRT);
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
+			ChunkUtil.generateChunks();
+			
 			Block.draw();
 
 			Display.sync(60);
 
 			Display.update();
-
-			for (int i = player.getLocation().getChunk() - 8; i <= player.getLocation().getChunk() + 8; i++){
-				if (!Chunk.isGenerated(i)){
-					Chunk c = new Chunk(i);
-					for (int b = 0; b < 16; b++){
-						int h = (int)((noise.noise(Chunk.getActualX(i, b)) / 2 + 0.5) * terrainVariation);
-						for (int y = h; y < 128; y++){
-							c.setBlock(Material.DIRT, b, y);
-							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), b), y));
-						}
-					}
-					/*Chunk c = new Chunk(i);
-					int h0 = 0;
-					int h1 = 0;
-					Random r = new Random();
-					if (Chunk.isGenerated(i - 1)){
-						int diff = r.nextInt(1);
-						if (diff == 0 && BlockUtil.getTop(Chunk.getActualX(i - 1, 0)) > 0)
-							diff = -1;
-						h0 = BlockUtil.getTop(Chunk.getActualX(i - 1, 15)) + diff;
-						h0 = BlockUtil.getTop((i - 1) * 16 + 15);
-					}
-					if (Chunk.isGenerated(i + 1)){
-						int diff = r.nextInt(1);
-						if (diff == 0 && BlockUtil.getTop(Chunk.getActualX(i + 1, 0)) > 0)
-							diff = -1;
-						h1 = BlockUtil.getTop(Chunk.getActualX(i + 1, 0)) + diff;
-						h1 = BlockUtil.getTop(Chunk.getActualX(i + 1, 0));
-					}
-					if (h0 == 0)
-						h0 = r.nextInt(6);
-					if (h1 == 0)
-						h1 = r.nextInt(6);
-					c.setBlock(Material.DIRT, 0, h0);
-					c.setBlock(Material.DIRT, 15, h1);
-					h1 = h0;
-					for (int y = h0; y < 128; y++){
-						c.setBlock(Material.DIRT, 0, y);
-						new Block(Material.DIRT, c.getNum() * 16, y);
-					}
-					for (int y = h1; y < 128; y++){
-						c.setBlock(Material.DIRT, 15, y);
-						new Block(Material.DIRT, c.getNum() * 16 + 15, y);
-					}
-
-					//int x0 = c.getNum() * 16 + c.getNum() % (r.nextInt(3) + 1);
-					//int x1 = c.getNum() * 16 + 15 + c.getNum() % (r.nextInt(3) + 1);
-					int x0 = 0;
-					int x1 = 15;
-					for (int x = 1; x < 15; x++){
-						int t = (x - x0) / (x1 - x0);
-						t = t * t * (3 - 2 * t);
-						int h = h0 + t * h1;
-						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
-						h /= 5;
-						h = (int)(0.5 * h * (2 * x) + 0.25 * h * (4 * x) + 0.125 * h * (8 * x));
-						h /= 100;
-						c.setBlock(Material.DIRT, x, h);
-						new Block(Material.DIRT, new Location(x, h));
-						for (int y = h; y < 128; y++){
-							c.setBlock(Material.DIRT, x, y);
-							new Block(Material.DIRT, new Location(Chunk.getActualX(c.getNum(), x), y));
-						}
-					}*/
-				}
-			}
-
+			
 		}
 
 	}
