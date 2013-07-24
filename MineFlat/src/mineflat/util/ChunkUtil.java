@@ -7,15 +7,17 @@ import mineflat.Material;
 import mineflat.MineFlat;
 
 public class ChunkUtil {
-	
+
 	/**
 	 * The number of chunks to be included in a world
 	 */
-	public static int totalChunks = 100;
+	public static int totalChunks = 16;
 
 	public static void generateChunks(){
 		System.out.println("Generating chunks...");
-		for (int i = totalChunks * 16 * -1; i <= totalChunks * 16 * -1; i++){
+		//TODO: Save chunks to disk after generating so as not to keep them in memory
+		for (int i = totalChunks * -1 / 2; i <= totalChunks / 2; i++){
+			System.out.println("Generating chunk " + i);
 			if (!isChunkGenerated(i)){
 				Chunk c = new Chunk(i);
 				for (int x = 0; x < 16; x++){
@@ -34,8 +36,9 @@ public class ChunkUtil {
 				}
 			}
 		}
+		//TODO: Fix this damn thing
 		// second smoothing pass
-		System.out.println("Smoothing terrain...");
+		/*System.out.println("Smoothing terrain...");
 		for (int i = MineFlat.player.getLocation().getChunk() - MineFlat.renderDistance; i <= MineFlat.player.getLocation().getChunk() + MineFlat.renderDistance; i++){
 			Chunk c = new Chunk(i);
 			for (int x = 0; x < 16; x++){
@@ -56,7 +59,7 @@ public class ChunkUtil {
 					new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
 				}
 			}
-		}
+		}*/
 		System.out.println("Lighting terrain...");
 		for (Block b : Block.blocks)
 			b.updateLight();

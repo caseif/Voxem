@@ -32,7 +32,7 @@ public class Location {
 			if (b.getLocation().equals(this))
 				return b;
 		}
-		return new Block(Material.AIR, this);
+		return null;
 	}
 	
 	public boolean equals(Object o){

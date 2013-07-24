@@ -33,7 +33,7 @@ public class BlockUtil {
 
 	public static int getTop(int x){
 		for (int yy = 0; yy < 128; yy++){
-			if (new Location(x, yy).getBlock().getType() != Material.AIR){
+			if (new Location(x, yy).getBlock() != null){
 				return yy;
 			}
 		}

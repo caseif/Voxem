@@ -105,7 +105,8 @@ public class Block {
 
 	public static void draw(){
 		for (Block b : Block.blocks){
-			if (Math.abs(MineFlat.player.getX() - b.getX()) <= MineFlat.renderDistance * 16){ // check if player is within range
+			// check if player is within range
+			if (Math.abs(MineFlat.player.getX() - b.getX()) <= MineFlat.renderDistance * 16){
 				if (b.getType() != Material.AIR){
 					try {
 						glPushMatrix();
@@ -152,25 +153,18 @@ public class Block {
 
 	public void updateLight(){
 		if (this.getType() != Material.AIR){
-			double minDist = 6;
-			for (int x = -7; x <= 7; x++){
-				for (int y = -7; y <= 7; y++){
-					int acX = this.getX() + x;
-					int acY = this.getY() + y;
-					if (acX >= 0 && acX < 128 && acY >= 0 && acY < 128){
-						Block bl = BlockUtil.getBlock(acX, acY);
-						if (bl != null){
-							if (bl.getType() == Material.AIR){
-								double dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-								if (dist < minDist)
-									minDist = dist;
-							}
-						}
+			for (int y = this.getY() - 1; y >= 0; y--){
+				Block bl = BlockUtil.getBlock((int)this.getX(), y);
+				if (bl != null){
+					if (bl.getType() != Material.AIR){
+						light = bl.getLightLevel() - 1;
+						if (light < 0)
+							light = 0;
+						break;
 					}
 				}
 			}
-			this.setLightLevel((int)(15 - (minDist - 1) * 3));
 		}
-	}
 
+	}
 }
