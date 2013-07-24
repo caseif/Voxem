@@ -42,17 +42,17 @@ public class MineFlat {
 	 * The level of variation the terrain should have
 	 */
 	public static int terrainVariation = 12;
-	
+
 	/**
 	 * The number of chunks adjacent to the player's that should be generated/loaded
 	 */
 	public static int renderDistance = 6;
-	
+
 	/**
 	 * The number of blocks below the surface which should be dirt
 	 */
 	public static int dirtDepth = 5;
-	
+
 	public static void main(String[] args){
 
 		try {
@@ -102,13 +102,13 @@ public class MineFlat {
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			ChunkUtil.generateChunks();
-			
+
 			Block.draw();
 
 			Display.sync(60);
 
 			Display.update();
-			
+
 		}
 
 	}
