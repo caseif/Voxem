@@ -112,7 +112,6 @@ public class Block {
 						Texture t = BlockUtil.textures.get(b.getType());
 						glBindTexture(GL_TEXTURE_2D, t.getTextureID());
 						float fracLight = (float)(b.getLightLevel()) / 15;
-						System.out.println(fracLight);
 						glColor3f(fracLight, fracLight, fracLight);
 						glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
 						glCallList(blockHandle);
