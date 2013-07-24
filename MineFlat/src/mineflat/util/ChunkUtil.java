@@ -23,7 +23,6 @@ public class ChunkUtil {
 							mat = Material.GRASS;
 						else if (y - h <= MineFlat.dirtDepth)
 							mat = Material.DIRT;
-						c.setBlock(mat, x, y);
 						new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
 					}
 				}
@@ -47,4 +46,11 @@ public class ChunkUtil {
 		return (chunk - 1) * 16 + block;
 	}
 
+	public static int getChunkNum(int x){
+		int add = 1;
+		if (x < 0)
+			add = -1;
+		return x / 16 + add;
+	}
+	
 }

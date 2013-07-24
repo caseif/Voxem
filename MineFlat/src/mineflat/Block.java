@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mineflat.util.BlockUtil;
+import mineflat.util.ChunkUtil;
 
 import org.newdawn.slick.opengl.Texture;
 
@@ -16,15 +17,41 @@ public class Block {
 	protected Location location;
 
 	protected Material type;
+	
+	protected int light = 15;
+	
+	protected int chunk;
 
+	/**
+	 * The diameter of a block
+	 */
 	public static final int length = 16;
+	
+	/**
+	 * The factor by which the light level of a block should decrease for each block over it
+	 */
+	public static final int lightDistance = 1;
 
 	public static List<Block> blocks = new ArrayList<Block>();
 
 	public Block(Material m, Location location){
 		this.type = m;
 		this.location = location;
+		for (int i = (int)location.getY() - 1; i >= 0; i--){
+			Block b = BlockUtil.getBlock((int)location.getX(), i);
+			if (b != null){
+				if (b.getType() != Material.AIR){
+					light = b.getLightLevel() - lightDistance;
+					break;
+				}
+			}
+		}
 		blocks.add(this);
+		chunk = ChunkUtil.getChunkNum((int)location.getX());
+		Chunk c = ChunkUtil.getChunk(ChunkUtil.getChunkNum(chunk));
+		if (c == null)
+			c = new Chunk(ChunkUtil.getChunkNum((int)location.getX()));
+		c.blocks[Math.abs((int)location.getX() % 16)][(int)location.getY()] = m;
 	}
 
 	public Block(Material m, int x, int y){
@@ -45,6 +72,10 @@ public class Block {
 
 	public Material getType(){
 		return type;
+	}
+	
+	public int getLightLevel(){
+		return light;
 	}
 
 	public void setX(int x){
@@ -67,6 +98,10 @@ public class Block {
 	public void setType(Material type){
 		this.type = type;
 	}
+	
+	public void setLightLevel(int light){
+		this.light = light; 
+	}
 
 	public static void draw(){
 		for (Block b : Block.blocks){
@@ -76,6 +111,9 @@ public class Block {
 						glPushMatrix();
 						Texture t = BlockUtil.textures.get(b.getType());
 						glBindTexture(GL_TEXTURE_2D, t.getTextureID());
+						float fracLight = (float)(b.getLightLevel()) / 15;
+						System.out.println(fracLight);
+						glColor3f(fracLight, fracLight, fracLight);
 						glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
 						glCallList(blockHandle);
 						glBindTexture(GL_TEXTURE_2D, 0);
