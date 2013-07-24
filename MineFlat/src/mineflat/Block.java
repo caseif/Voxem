@@ -17,16 +17,16 @@ public class Block {
 	protected Location location;
 
 	protected Material type;
-	
+
 	protected int light = 15;
-	
+
 	protected int chunk;
 
 	/**
 	 * The diameter of a block
 	 */
 	public static final int length = 16;
-	
+
 	/**
 	 * The factor by which the light level of a block should decrease for each block over it
 	 */
@@ -73,7 +73,7 @@ public class Block {
 	public Material getType(){
 		return type;
 	}
-	
+
 	public int getLightLevel(){
 		return light;
 	}
@@ -98,7 +98,7 @@ public class Block {
 	public void setType(Material type){
 		this.type = type;
 	}
-	
+
 	public void setLightLevel(int light){
 		this.light = light; 
 	}
@@ -148,6 +148,29 @@ public class Block {
 			}
 		}
 		glEndList();
+	}
+
+	public void updateLight(){
+		if (this.getType() != Material.AIR){
+			double minDist = 6;
+			for (int x = -7; x <= 7; x++){
+				for (int y = -7; y <= 7; y++){
+					int acX = this.getX() + x;
+					int acY = this.getY() + y;
+					if (acX >= 0 && acX < 128 && acY >= 0 && acY < 128){
+						Block bl = BlockUtil.getBlock(acX, acY);
+						if (bl != null){
+							if (bl.getType() == Material.AIR){
+								double dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+								if (dist < minDist)
+									minDist = dist;
+							}
+						}
+					}
+				}
+			}
+			this.setLightLevel((int)(15 - (minDist - 1) * 3));
+		}
 	}
 
 }

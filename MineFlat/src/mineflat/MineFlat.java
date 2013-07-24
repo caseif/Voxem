@@ -99,9 +99,9 @@ public class MineFlat {
 		BlockUtil.addTexture(Material.GRASS);
 		BlockUtil.addTexture(Material.STONE);
 
-		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+		ChunkUtil.generateChunks();
 
-			ChunkUtil.generateChunks();
+		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			Block.draw();
 
