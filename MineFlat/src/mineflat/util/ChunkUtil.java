@@ -38,28 +38,31 @@ public class ChunkUtil {
 		}
 		//TODO: Fix this damn thing
 		// second smoothing pass
-		/*System.out.println("Smoothing terrain...");
+		System.out.println("Smoothing terrain...");
 		for (int i = MineFlat.player.getLocation().getChunk() - MineFlat.renderDistance; i <= MineFlat.player.getLocation().getChunk() + MineFlat.renderDistance; i++){
+			System.out.println("Smoothing chunk " + i);
 			Chunk c = new Chunk(i);
 			for (int x = 0; x < 16; x++){
 				int h = BlockUtil.getTop(x);
 				int leftHeight = BlockUtil.getTop(x);
-				if (leftHeight == -1)
-					leftHeight = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x) - 1) / 2 + 0.5) * MineFlat.terrainVariation);
-				int rightHeight = BlockUtil.getTop(x);
-				if (rightHeight == -1)
-					rightHeight = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x) + 1) / 2 + 0.5) * MineFlat.terrainVariation);
-				h = (h + leftHeight + rightHeight) / 2;
-				for (int y = h; y < 128; y++){
-					Material mat = Material.STONE;
-					if (y - h == 0)
-						mat = Material.GRASS;
-					else if (y - h <= MineFlat.dirtDepth)
-						mat = Material.DIRT;
-					new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
+				if (leftHeight != -1){
+					h = (h + leftHeight) / 2;
+					for (int y = h; y < 128; y++){
+						Material mat = Material.STONE;
+						if (y - h == 0)
+							mat = Material.GRASS;
+						else if (y - h <= MineFlat.dirtDepth)
+							mat = Material.DIRT;
+						if (c.getBlocks()[x][y] == null)
+							new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
+						else
+							c.getBlocks()[x][y].setType(mat);
+					}
+					for (int y = h - 1; y >= 0; y--)
+						c.setBlock(x, y, null);
 				}
 			}
-		}*/
+		}
 		System.out.println("Lighting terrain...");
 		for (Chunk c : Chunk.chunks){
 			System.out.println("Lighting chunk " + c.getNum());

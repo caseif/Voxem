@@ -32,4 +32,8 @@ public class Chunk {
 	public void setNum(int num){
 		this.num = num;
 	}
+	
+	public void setBlock(int x, int y, Block b){
+		blocks[x][y] = b;
+	}
 }
