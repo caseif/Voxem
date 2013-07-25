@@ -37,6 +37,7 @@ public class MineFlat {
 	public static Player player = new Player(new Location(0, 0));
 
 	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(System.currentTimeMillis());
+	//public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(100);
 
 	/**
 	 * The level of variation the terrain should have

@@ -15,7 +15,7 @@ public class Block {
 
 	protected Material type;
 
-	protected int light = 15;
+	protected int light = 0;
 
 	protected int chunk;
 
@@ -156,18 +156,21 @@ public class Block {
 
 	public void updateLight(){
 		if (this.getType() != Material.AIR){
-			for (int y = this.getY() - 1; y >= 0; y--){
-				Block bl = BlockUtil.getBlock((int)this.getX(), y);
-				if (bl != null){
-					if (bl.getType() != Material.AIR){
-						light = bl.getLightLevel() - 1;
-						if (light < 0)
-							light = 0;
-						break;
-					}
-				}
+			if (BlockUtil.getTop(this.getX()) == this.getY())
+				this.setLightLevel(15);
+			Block up = null, down = null, left = null, right = null;
+			if (this.getY() > 0)
+				up = BlockUtil.getBlock((int)this.getX(), this.getY() - 1);
+			if (this.getY() < 127)
+			down = BlockUtil.getBlock((int)this.getX(), this.getY() + 1);
+			left = BlockUtil.getBlock((int)this.getX() - 1, this.getY());
+			right = BlockUtil.getBlock((int)this.getX() + 1, this.getY());
+			Block[] adjacent = new Block[]{up, down, left, right};
+			for (Block b : adjacent){
+				if (b != null)
+					if (b.getLightLevel() < this.getLightLevel() - 1)
+						b.setLightLevel(this.getLightLevel() - 1);
 			}
 		}
-
 	}
 }

@@ -1,5 +1,7 @@
 package mineflat.util;
 
+import java.util.Random;
+
 import mineflat.Block;
 import mineflat.Chunk;
 import mineflat.Location;
@@ -27,39 +29,44 @@ public class ChunkUtil {
 					h = (h + leftHeight + rightHeight) / 2;
 					for (int y = h; y < 128; y++){
 						Material mat = Material.STONE;
-						if (y - h == 0)
-							mat = Material.GRASS;
-						else if (y - h <= MineFlat.dirtDepth)
-							mat = Material.DIRT;
 						new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
 					}
 				}
 			}
 		}
-		//TODO: Fix this damn thing
 		// second smoothing pass
 		System.out.println("Smoothing terrain...");
-		for (int i = MineFlat.player.getLocation().getChunk() - MineFlat.renderDistance; i <= MineFlat.player.getLocation().getChunk() + MineFlat.renderDistance; i++){
-			System.out.println("Smoothing chunk " + i);
-			Chunk c = new Chunk(i);
+		for (Chunk c : Chunk.chunks){
 			for (int x = 0; x < 16; x++){
-				int h = BlockUtil.getTop(x);
-				int leftHeight = BlockUtil.getTop(x);
+				int h = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x));
+				int leftHeight = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x) - 1);
 				if (leftHeight != -1){
 					h = (h + leftHeight) / 2;
-					for (int y = h; y < 128; y++){
-						Material mat = Material.STONE;
-						if (y - h == 0)
-							mat = Material.GRASS;
-						else if (y - h <= MineFlat.dirtDepth)
-							mat = Material.DIRT;
-						if (c.getBlocks()[x][y] == null)
+					if (leftHeight - h >= 3)
+						h = leftHeight - 2;
+					else if (leftHeight - h <= -3)
+						h = leftHeight + 2;
+					Material mat = Material.AIR;
+					for (int y = 0; y < 128; y++){
+						if (y >= h){
+							if (mat != Material.STONE){
+								if (y == h)
+									mat = Material.GRASS;
+								else if (y < 13)
+									mat = Material.DIRT;
+								else if (y >= 13 && y < 15 && mat != Material.STONE){
+									Random r = new Random();
+									if (r.nextInt(2) == 0)
+										mat = Material.STONE;
+								}
+								else if (y == 15)
+									mat = Material.STONE;
+							}
 							new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
+						}
 						else
-							c.getBlocks()[x][y].setType(mat);
+							c.setBlock(x, y, null);
 					}
-					for (int y = h - 1; y >= 0; y--)
-						c.setBlock(x, y, null);
 				}
 			}
 		}

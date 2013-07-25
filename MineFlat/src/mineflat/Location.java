@@ -32,7 +32,7 @@ public class Location {
 	public Block getBlock(){
 		Chunk c = ChunkUtil.getChunk(getChunk());
 		if (c != null)
-			return c.getBlocks()[(int)x][(int)y];
+			return c.getBlock(Math.abs((int)x % 16), (int)y);
 		return null;
 	}
 
