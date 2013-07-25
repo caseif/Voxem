@@ -1,40 +1,41 @@
 package mineflat;
 
+import mineflat.util.ChunkUtil;
+
 public class Location {
 
 	protected float x;
-	
+
 	protected float y;
-	
+
 	public Location(float x, float y){
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public float getX(){
 		return x;
 	}
-	
+
 	public float getY(){
 		return y;
 	}
-	
+
 	public void setX(float x){
 		this.x = x;
 	}
-	
+
 	public void setY(float y){
 		this.y = y;
 	}
-	
+
 	public Block getBlock(){
-		for (Block b : Block.blocks){
-			if (b.getLocation().equals(this))
-				return b;
-		}
+		Chunk c = ChunkUtil.getChunk(getChunk());
+		if (c != null)
+			return c.getBlocks()[(int)x][(int)y];
 		return null;
 	}
-	
+
 	public boolean equals(Object o){
 		if (o instanceof Location){
 			Location l = (Location)o;
@@ -42,19 +43,19 @@ public class Location {
 		}
 		return false;
 	}
-	
+
 	public int hashCode(){
 		return 41 * (int)(x * 37 + y * 43 + 41);
 	}
-	
+
 	public int getChunk(){
 		if (x >= 0)
 			return (int)x / 16 + 1;
 		return (int)x / 16 - 1;
 	}
-	
+
 	public float getPosInChunk(){
 		return x - this.getChunk() * 16; 
 	}
-	
+
 }

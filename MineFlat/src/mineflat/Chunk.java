@@ -9,11 +9,11 @@ public class Chunk {
 	
 	protected int num;
 	
-	protected Material[][] blocks;
+	protected Block[][] blocks;
 	
 	public Chunk(int num){
 		this.num = num;
-		blocks = new Material[16][128];
+		blocks = new Block[16][128];
 		chunks.add(this);
 	}
 	
@@ -21,11 +21,11 @@ public class Chunk {
 		return num;
 	}
 	
-	public Material getBlock(int x, int y){
+	public Block getBlock(int x, int y){
 		return blocks[x][y];
 	}
 	
-	public Material[][] getBlocks(){
+	public Block[][] getBlocks(){
 		return blocks;
 	}
 	

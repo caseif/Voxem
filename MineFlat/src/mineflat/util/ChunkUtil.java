@@ -11,7 +11,7 @@ public class ChunkUtil {
 	/**
 	 * The number of chunks to be included in a world
 	 */
-	public static int totalChunks = 16;
+	public static int totalChunks = 128;
 
 	public static void generateChunks(){
 		System.out.println("Generating chunks...");
@@ -61,8 +61,13 @@ public class ChunkUtil {
 			}
 		}*/
 		System.out.println("Lighting terrain...");
-		for (Block b : Block.blocks)
-			b.updateLight();
+		for (Chunk c : Chunk.chunks){
+			System.out.println("Lighting chunk " + c.getNum());
+			for (int x = 0; x < 16; x++)
+				for (int y = 0; y < 128; y++)
+					if (c.getBlock(x, y) != null)
+						c.getBlock(x, y).updateLight();
+		}
 	}
 
 	public static Chunk getChunk(int i){

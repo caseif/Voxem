@@ -1,8 +1,5 @@
 package mineflat;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mineflat.util.BlockUtil;
 import mineflat.util.ChunkUtil;
 
@@ -32,7 +29,7 @@ public class Block {
 	 */
 	public static final int lightDistance = 1;
 
-	public static List<Block> blocks = new ArrayList<Block>();
+	//public static List<Block> blocks = new ArrayList<Block>();
 
 	public Block(Material m, Location location){
 		this.type = m;
@@ -46,12 +43,11 @@ public class Block {
 				}
 			}
 		}
-		blocks.add(this);
-		chunk = ChunkUtil.getChunkNum((int)location.getX());
-		Chunk c = ChunkUtil.getChunk(ChunkUtil.getChunkNum(chunk));
+		chunk = location.getChunk();
+		Chunk c = ChunkUtil.getChunk(location.getChunk());
 		if (c == null)
-			c = new Chunk(ChunkUtil.getChunkNum((int)location.getX()));
-		c.blocks[Math.abs((int)location.getX() % 16)][(int)location.getY()] = m;
+			c = new Chunk(location.getChunk());
+		c.blocks[Math.abs((int)location.getX() % 16)][(int)location.getY()] = this;
 	}
 
 	public Block(Material m, int x, int y){
@@ -104,23 +100,30 @@ public class Block {
 	}
 
 	public static void draw(){
-		for (Block b : Block.blocks){
+		for (Chunk c : Chunk.chunks){
 			// check if player is within range
-			if (Math.abs(MineFlat.player.getX() - b.getX()) <= MineFlat.renderDistance * 16){
-				if (b.getType() != Material.AIR){
-					try {
-						glPushMatrix();
-						Texture t = BlockUtil.textures.get(b.getType());
-						glBindTexture(GL_TEXTURE_2D, t.getTextureID());
-						float fracLight = (float)(b.getLightLevel()) / 15;
-						glColor3f(fracLight, fracLight, fracLight);
-						glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
-						glCallList(blockHandle);
-						glBindTexture(GL_TEXTURE_2D, 0);
-						glPopMatrix();
-					}
-					catch (Exception ex){
-						ex.printStackTrace();
+			if (Math.abs(MineFlat.player.getX() - c.getNum()) <= MineFlat.renderDistance){
+				for (int x = 0; x < 16; x++){
+					for (int y = 0; y < 128; y++){
+						Block b = c.getBlock(x, y);
+						if (b != null){
+							if (b.getType() != Material.AIR){
+								try {
+									glPushMatrix();
+									Texture t = BlockUtil.textures.get(b.getType());
+									glBindTexture(GL_TEXTURE_2D, t.getTextureID());
+									float fracLight = (float)(b.getLightLevel()) / 15;
+									glColor3f(fracLight, fracLight, fracLight);
+									glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
+									glCallList(blockHandle);
+									glBindTexture(GL_TEXTURE_2D, 0);
+									glPopMatrix();
+								}
+								catch (Exception ex){
+									ex.printStackTrace();
+								}
+							}
+						}
 					}
 				}
 			}

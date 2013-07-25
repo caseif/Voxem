@@ -9,6 +9,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import mineflat.Block;
+import mineflat.Chunk;
 import mineflat.Location;
 import mineflat.Material;
 
@@ -41,9 +42,9 @@ public class BlockUtil {
 	}
 
 	public static Block getBlock(int x, int y){
-		for (Block b : Block.blocks)
-			if (b.getX() == x && b.getY() == y)
-				return b;
+		Chunk c = ChunkUtil.getChunk(new Location(x, y).getChunk());
+		if (c != null)
+			return c.getBlock(Math.abs(x % 16), y);
 		return null;
 	}
 
