@@ -1,7 +1,5 @@
 package mineflat.util;
 
-import java.util.Random;
-
 import mineflat.Block;
 import mineflat.Chunk;
 import mineflat.Location;
@@ -52,14 +50,14 @@ public class ChunkUtil {
 							if (mat != Material.STONE){
 								if (y == h)
 									mat = Material.GRASS;
-								else if (y < 13)
+								else if (y < 15)
 									mat = Material.DIRT;
-								else if (y >= 13 && y < 15 && mat != Material.STONE){
-									Random r = new Random();
-									if (r.nextInt(2) == 0)
+								else if (y >= 15 && y < 17 && mat != Material.STONE){
+									if ((int)(MineFlat.noise.noise(
+											ChunkUtil.getBlockXFromChunk(c.getNum(), x), y) * 3) == 0)
 										mat = Material.STONE;
 								}
-								else if (y == 15)
+								else if (y == 17)
 									mat = Material.STONE;
 							}
 							new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));

@@ -3,8 +3,6 @@ package mineflat;
 import mineflat.util.BlockUtil;
 import mineflat.util.ChunkUtil;
 
-import org.newdawn.slick.opengl.Texture;
-
 import static org.lwjgl.opengl.GL11.*;
 
 public class Block {
@@ -102,26 +100,22 @@ public class Block {
 	public static void draw(){
 		for (Chunk c : Chunk.chunks){
 			// check if player is within range
-			if (Math.abs(MineFlat.player.getX() - c.getNum()) <= MineFlat.renderDistance){
+			if (Math.abs(MineFlat.player.getLocation().getChunk() - c.getNum()) <= MineFlat.renderDistance){
 				for (int x = 0; x < 16; x++){
 					for (int y = 0; y < 128; y++){
 						Block b = c.getBlock(x, y);
 						if (b != null){
 							if (b.getType() != Material.AIR){
-								try {
-									glPushMatrix();
-									Texture t = BlockUtil.textures.get(b.getType());
-									glBindTexture(GL_TEXTURE_2D, t.getTextureID());
-									float fracLight = (float)(b.getLightLevel()) / 15;
-									glColor3f(fracLight, fracLight, fracLight);
-									glTranslatef(b.getX() * length, b.getY() * length + 150, 0);
-									glCallList(blockHandle);
-									glBindTexture(GL_TEXTURE_2D, 0);
-									glPopMatrix();
-								}
-								catch (Exception ex){
-									ex.printStackTrace();
-								}
+								glPushMatrix();
+								glBindTexture(GL_TEXTURE_2D,
+										BlockUtil.textures.get(b.getType()).getTextureID());
+								float fracLight = (float)(b.getLightLevel()) / 15;
+								glColor3f(fracLight, fracLight, fracLight);
+								glTranslatef(b.getX() * length + MineFlat.xOffset,
+										b.getY() * length + MineFlat.yOffset, 0);
+								glCallList(blockHandle);
+								glBindTexture(GL_TEXTURE_2D, 0);
+								glPopMatrix();
 							}
 						}
 					}
@@ -134,22 +128,16 @@ public class Block {
 		blockHandle = glGenLists(1);
 		glNewList(blockHandle, GL_COMPILE);
 		{
-			try {
-				glBegin(GL_QUADS);
-				glTexCoord2f(0, 0);
-				glVertex2f(0, 0); // top left
-				glTexCoord2f(1, 0);
-				glVertex2f(length, 0); // top right
-				glTexCoord2f(1, 1);
-				glVertex2f(length, length); // bottom right
-				glTexCoord2f(0, 1);
-				glVertex2f(0, length); // bottom left
-				glEnd();
-			}
-			catch (Exception ex){
-				System.err.println("Exception occurred while rendering block");
-				ex.printStackTrace();
-			}
+			glBegin(GL_QUADS);
+			glTexCoord2f(0, 0);
+			glVertex2f(0, 0); // top left
+			glTexCoord2f(1, 0);
+			glVertex2f(length, 0); // top right
+			glTexCoord2f(1, 1);
+			glVertex2f(length, length); // bottom right
+			glTexCoord2f(0, 1);
+			glVertex2f(0, length); // bottom left
+			glEnd();
 		}
 		glEndList();
 	}
@@ -162,7 +150,7 @@ public class Block {
 			if (this.getY() > 0)
 				up = BlockUtil.getBlock((int)this.getX(), this.getY() - 1);
 			if (this.getY() < 127)
-			down = BlockUtil.getBlock((int)this.getX(), this.getY() + 1);
+				down = BlockUtil.getBlock((int)this.getX(), this.getY() + 1);
 			left = BlockUtil.getBlock((int)this.getX() - 1, this.getY());
 			right = BlockUtil.getBlock((int)this.getX() + 1, this.getY());
 			Block[] adjacent = new Block[]{up, down, left, right};
