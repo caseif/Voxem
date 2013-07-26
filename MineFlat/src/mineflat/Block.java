@@ -106,6 +106,7 @@ public class Block {
 						Block b = c.getBlock(x, y);
 						if (b != null){
 							if (b.getType() != Material.AIR){
+								glLoadIdentity();
 								glPushMatrix();
 								glBindTexture(GL_TEXTURE_2D,
 										BlockUtil.textures.get(b.getType()).getTextureID());

@@ -50,6 +50,7 @@ public class Player {
 	}
 	
 	public void draw(){
+		glLoadIdentity();
 		glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
 		glTranslatef(getX() * Block.length + MineFlat.xOffset, getY() * Block.length + MineFlat.yOffset, 0);
