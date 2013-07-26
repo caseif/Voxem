@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import mineflat.event.PlayerMoveEvent;
 import mineflat.noise.SimplexNoiseGenerator;
 import mineflat.util.BlockUtil;
 import mineflat.util.BufferUtil;
@@ -130,6 +131,8 @@ public class MineFlat {
 		Player.initialize();
 
 		ChunkUtil.generateChunks();
+		
+		PlayerMoveEvent.fireEvent(new PlayerMoveEvent(player, player.getLocation(), player.getLocation()));
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
