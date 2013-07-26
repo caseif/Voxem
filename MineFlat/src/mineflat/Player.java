@@ -13,6 +13,26 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 public class Player {
+
+	/**
+	 * The speed at which the player will move
+	 */
+	public static int playerSpeed = 5;
+	
+	/**
+	 * The speed at which the player will fall
+	 */
+	public static int gravity = 2;
+	
+	/**
+	 * The speed at which the player will jump
+	 */
+	public static int jumpSpeed = 2;
+	
+	/**
+	 * The height to which the player will jump
+	 */
+	public static int jumpHeight = 2;
 	
 	protected Location location;
 	
@@ -81,25 +101,6 @@ public class Player {
 			System.err.println("Exception occurred while preparing texture for player sprite");
 			ex.printStackTrace();
 		}
-		
-		/*playerHandle = glGenLists(1);
-		
-		glNewList(GL_COMPILE, playerHandle);
-		{
-			glBegin(GL_QUADS);
-			int hWidth = Block.length;
-			int hHeight = Block.length * 2;
-			glTexCoord2f(0f, 0f);
-			glVertex2f(0, 0);
-			glTexCoord2f(1f, 0f);
-			glVertex2f(hWidth, 0);
-			glTexCoord2f(1f, 1f);
-			glVertex2f(hWidth, hHeight);
-			glTexCoord2f(0f, 1f);
-			glVertex2f(0, hHeight);
-			glEnd();
-		}
-		glEndList();*/
 	}
 	
 }

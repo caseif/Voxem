@@ -14,6 +14,7 @@ import mineflat.util.BlockUtil;
 import mineflat.util.BufferUtil;
 import mineflat.util.ChunkUtil;
 import mineflat.util.ImageUtil;
+import mineflat.util.MiscUtil;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -39,16 +40,31 @@ import org.lwjgl.opengl.DisplayMode;
  */
 
 public class MineFlat {
-
+	
+	/**
+	 * The variable used to determine the duration of each iteration so as to move ingame objects at a constant speed
+	 */
+	public static float delta = 0;
+	
+	/**
+	 * Used in the calculation of delta
+	 */
+	public static float time = MiscUtil.getTime();
+	
+	/**
+	 * Used in the calculation of delta
+	 */
+	public static float lastTime = MiscUtil.getTime();
+	
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
 	public static Player player = new Player(new Location(16, 0));
-
+	
 	/**
 	 * The seed to be used for terrain generation
 	 */
-	public static long seed = System.currentTimeMillis();
+	public static long seed = System.currentTimeMillis() % 1337;
 
 	/**
 	 * The game's noise generator for use in terrain generation
@@ -70,7 +86,7 @@ public class MineFlat {
 	/**
 	 * The level of variation the terrain should have
 	 */
-	public static int terrainVariation = 12;
+	public static int terrainVariation = 13;
 
 	/**
 	 * The number of chunks adjacent to the player's that should be generated/loaded
@@ -82,7 +98,7 @@ public class MineFlat {
 		try {
 			Display.setDisplayMode(new DisplayMode(Display.getDesktopDisplayMode().getWidth() - 20, Display.getDesktopDisplayMode().getHeight() - 100));
 			Display.setTitle("MineFlat");
-			Display.setVSyncEnabled(true);
+			//Display.setVSyncEnabled(true);
 			ByteBuffer[] icons = null;
 			if (System.getProperty("os.name").startsWith("Windows")){
 				icons = new ByteBuffer[2];
@@ -121,9 +137,7 @@ public class MineFlat {
 
 		glDepthMask(false);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-		Block.initialize();
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		BlockUtil.addTexture(Material.DIRT);
 		BlockUtil.addTexture(Material.GRASS);
@@ -139,18 +153,29 @@ public class MineFlat {
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
+			time = MiscUtil.getTime();
+			delta = time - lastTime;
+			lastTime = time;
+			
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+			
+			InputManager.manage();
+			
 			Block.draw();
-
+			
+			centerPlayer();
+			
 			player.draw();
-
-			glLoadIdentity();
 
 			Display.update();
 
 		}
 
+	}
+	
+	public static void centerPlayer(){
+		xOffset = Display.getWidth() / 2 - player.getLocation().getPixelX();
+		yOffset = Display.getHeight() / 2 - player.getLocation().getPixelY();	
 	}
 
 }

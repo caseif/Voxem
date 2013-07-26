@@ -11,7 +11,7 @@ public class ChunkUtil {
 	/**
 	 * The number of chunks to be included in a world
 	 */
-	public static int totalChunks = 128;
+	public static int totalChunks = 16;
 
 	public static void generateChunks(){
 		System.out.println("Generating chunks...");
@@ -21,9 +21,15 @@ public class ChunkUtil {
 			if (!isChunkGenerated(i)){
 				Chunk c = new Chunk(i);
 				for (int x = 0; x < 16; x++){
-					int h = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x)) / 2 + 0.5) * MineFlat.terrainVariation);
-					int leftHeight = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x) - 1) / 2 + 0.5) * MineFlat.terrainVariation);
-					int rightHeight = (int)((MineFlat.noise.noise(getBlockXFromChunk(i, x) + 1) / 2 + 0.5) * MineFlat.terrainVariation);
+					int h = (int)Math.floor((
+							MineFlat.noise.noise(getBlockXFromChunk(i, x)) / 2 + 0.5) *
+							MineFlat.terrainVariation);
+					int leftHeight = (int)Math.floor((
+							MineFlat.noise.noise(getBlockXFromChunk(i, x) - 1) / 2 + 0.5) *
+							MineFlat.terrainVariation);
+					int rightHeight = (int)Math.floor((
+							MineFlat.noise.noise(getBlockXFromChunk(i, x) + 1) / 2 + 0.5) *
+							MineFlat.terrainVariation);
 					h = (h + leftHeight + rightHeight) / 2;
 					for (int y = h; y < 128; y++){
 						Material mat = Material.STONE;
@@ -55,7 +61,7 @@ public class ChunkUtil {
 									mat = Material.DIRT;
 								else if (y >= 15 && y < 17 && mat != Material.STONE){
 									if ((int)(MineFlat.noise.noise(
-											ChunkUtil.getBlockXFromChunk(c.getNum(), x), y) * 3) == 0)
+											ChunkUtil.getBlockXFromChunk(c.getNum(), x), y) + 1) == 0)
 										mat = Material.STONE;
 								}
 								else if (y == 17)
@@ -64,7 +70,7 @@ public class ChunkUtil {
 							new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
 						}
 						else
-							c.setBlock(x, y, null);
+							c.blocks[x][y] = null;
 					}
 				}
 				if (ChunkUtil.getBlockXFromChunk(c.getNum(), x) == MineFlat.player.getX())

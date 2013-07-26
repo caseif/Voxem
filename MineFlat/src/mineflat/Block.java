@@ -109,9 +109,18 @@ public class Block {
 										BlockUtil.textures.get(b.getType()).getTextureID());
 								float fracLight = (float)(b.getLightLevel()) / 15;
 								glColor3f(fracLight, fracLight, fracLight);
-								glTranslatef(b.getX() * length + MineFlat.xOffset,
-										b.getY() * length + MineFlat.yOffset, 0);
-								glCallList(blockHandle);
+								int drawX = b.getX() * length + MineFlat.xOffset;
+								int drawY = b.getY() * length + MineFlat.yOffset;
+								glBegin(GL_QUADS);
+								glTexCoord2f(0, 0);
+								glVertex2f(drawX, drawY); // top left
+								glTexCoord2f(1, 0);
+								glVertex2f(drawX + length, drawY); // top right
+								glTexCoord2f(1, 1);
+								glVertex2f(drawX + length, drawY + length); // bottom right
+								glTexCoord2f(0, 1);
+								glVertex2f(drawX, drawY + length); // bottom left
+								glEnd();
 								glBindTexture(GL_TEXTURE_2D, 0);
 								glPopMatrix();
 							}
@@ -120,24 +129,6 @@ public class Block {
 				}
 			}
 		}
-	}
-
-	public static void initialize(){
-		blockHandle = glGenLists(1);
-		glNewList(blockHandle, GL_COMPILE);
-		{
-			glBegin(GL_QUADS);
-			glTexCoord2f(0, 0);
-			glVertex2f(0, 0); // top left
-			glTexCoord2f(1, 0);
-			glVertex2f(length, 0); // top right
-			glTexCoord2f(1, 1);
-			glVertex2f(length, length); // bottom right
-			glTexCoord2f(0, 1);
-			glVertex2f(0, length); // bottom left
-			glEnd();
-		}
-		glEndList();
 	}
 
 	public void updateLight(){
