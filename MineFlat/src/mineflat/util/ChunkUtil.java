@@ -35,6 +35,7 @@ public class ChunkUtil {
 		// second smoothing pass
 		System.out.println("Smoothing terrain...");
 		for (Chunk c : Chunk.chunks){
+			System.out.println("Smoothing chunk " + c.getNum());
 			for (int x = 0; x < 16; x++){
 				int h = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x));
 				int leftHeight = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x) - 1);
@@ -66,6 +67,8 @@ public class ChunkUtil {
 							c.setBlock(x, y, null);
 					}
 				}
+				if (ChunkUtil.getBlockXFromChunk(c.getNum(), x) == MineFlat.player.getX())
+					MineFlat.player.setY(h - 2);
 			}
 		}
 		System.out.println("Lighting terrain...");

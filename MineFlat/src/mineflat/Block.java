@@ -27,8 +27,6 @@ public class Block {
 	 */
 	public static final int lightDistance = 1;
 
-	//public static List<Block> blocks = new ArrayList<Block>();
-
 	public Block(Material m, Location location){
 		this.type = m;
 		this.location = location;
@@ -106,7 +104,6 @@ public class Block {
 						Block b = c.getBlock(x, y);
 						if (b != null){
 							if (b.getType() != Material.AIR){
-								glLoadIdentity();
 								glPushMatrix();
 								glBindTexture(GL_TEXTURE_2D,
 										BlockUtil.textures.get(b.getType()).getTextureID());

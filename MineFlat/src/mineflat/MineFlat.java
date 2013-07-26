@@ -47,24 +47,24 @@ public class MineFlat {
 	 * The seed to be used for terrain generation
 	 */
 	public static long seed = System.currentTimeMillis();
-	
+
 	/**
 	 * The game's noise generator for use in terrain generation
 	 */
 	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(seed);
-	
-	
+
+
 
 	/**
 	 * The number of horizontal pixels visual elements will be shifted before being rendered (- is left; + is right)
 	 */
 	public static int xOffset = 0;
-	
+
 	/**
 	 * The number of vertical pixels visual elements will be shifted before being rendered (- is up; + is down)
 	 */
 	public static int yOffset = 150;
-	
+
 	/**
 	 * The level of variation the terrain should have
 	 */
@@ -74,11 +74,6 @@ public class MineFlat {
 	 * The number of chunks adjacent to the player's that should be generated/loaded
 	 */
 	public static int renderDistance = 6;
-
-	/**
-	 * The number of blocks below the surface which should be dirt
-	 */
-	public static int dirtDepth = 5;
 
 	public static void main(String[] args){
 
@@ -115,12 +110,17 @@ public class MineFlat {
 		glLoadIdentity();
 		glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 
 		glEnable(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glClearColor(0.3f, 0.3f, 0.8f, 1f);
-		
+
+		glDepthMask(false);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
 		Block.initialize();
 
 		BlockUtil.addTexture(Material.DIRT);
@@ -133,9 +133,13 @@ public class MineFlat {
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 			Block.draw();
-			
-			//player.draw();
+
+			player.draw();
+
+			glLoadIdentity();
 
 			Display.update();
 

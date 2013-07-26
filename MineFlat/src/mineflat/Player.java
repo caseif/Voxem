@@ -1,7 +1,6 @@
 package mineflat;
 
 import java.io.InputStream;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -50,21 +49,24 @@ public class Player {
 	}
 	
 	public void draw(){
-		glLoadIdentity();
 		glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
+		glColor3f(1f, 1f, 1f);
 		glTranslatef(getX() * Block.length + MineFlat.xOffset, getY() * Block.length + MineFlat.yOffset, 0);
-		//glCallList(playerHandle);
+		glBegin(GL_QUADS);
+		int hWidth = Block.length / 2;
+		int hHeight = Block.length * 2;
+		glTexCoord2f(0f, 0f);
+		glVertex2f(0.25f, 0);
+		glTexCoord2f(1f, 0f);
+		glVertex2f(hWidth, 0);
+		glTexCoord2f(1f, 1f);
+		glVertex2f(hWidth, hHeight);
+		glTexCoord2f(0f, 1f);
+		glVertex2f(0.25f, hHeight);
+		glEnd();
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
-		glBegin(GL_QUADS);
-		Random r = new Random();
-		glColor3f(r.nextFloat(), r.nextFloat(), r.nextFloat());
-		glVertex2f(15, 15);
-		glVertex2f(50, 15);
-		glVertex2f(50, 50);
-		glVertex2f(15, 50);
-		glEnd();
 	}
 	
 	public static void initialize(){
@@ -72,7 +74,7 @@ public class Player {
 			InputStream is = BlockUtil.class.getClassLoader().getResourceAsStream(
 					"textures/char_prim.png");
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
-					ImageIO.read(is), Block.length, Block.length));
+					ImageIO.read(is), 64, 64));
 			sprite = TextureLoader.getTexture("PNG", newIs);
 		}
 		catch (Exception ex){
@@ -80,7 +82,7 @@ public class Player {
 			ex.printStackTrace();
 		}
 		
-		playerHandle = glGenLists(1);
+		/*playerHandle = glGenLists(1);
 		
 		glNewList(GL_COMPILE, playerHandle);
 		{
@@ -97,7 +99,7 @@ public class Player {
 			glVertex2f(0, hHeight);
 			glEnd();
 		}
-		glEndList();
+		glEndList();*/
 	}
 	
 }
