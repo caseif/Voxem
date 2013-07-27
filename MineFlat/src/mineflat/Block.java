@@ -105,8 +105,8 @@ public class Block {
 						if (b != null){
 							if (b.getType() != Material.AIR){
 								glPushMatrix();
-								glBindTexture(GL_TEXTURE_2D,
-										BlockUtil.textures.get(b.getType()).getTextureID());
+								//glBindTexture(GL_TEXTURE_2D,
+								//		BlockUtil.textures.get(b.getType()).getTextureID());
 								float fracLight = (float)(b.getLightLevel()) / 15;
 								glColor3f(fracLight, fracLight, fracLight);
 								int drawX = b.getX() * length + MineFlat.xOffset;
@@ -146,7 +146,10 @@ public class Block {
 			for (Block b : adjacent){
 				if (b != null)
 					if (b.getLightLevel() < this.getLightLevel() - 1)
-						b.setLightLevel(this.getLightLevel() - 1);
+						if (getLightLevel() <= 1)
+							b.setLightLevel(0);
+						else
+							b.setLightLevel(this.getLightLevel() - 1);
 			}
 		}
 	}

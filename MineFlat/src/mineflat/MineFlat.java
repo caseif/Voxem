@@ -1,6 +1,7 @@
 package mineflat;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -8,13 +9,13 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 import mineflat.event.EventManager;
-import mineflat.event.PlayerMoveEvent;
 import mineflat.noise.SimplexNoiseGenerator;
 import mineflat.util.BlockUtil;
 import mineflat.util.BufferUtil;
 import mineflat.util.ChunkUtil;
 import mineflat.util.ImageUtil;
 import mineflat.util.MiscUtil;
+import mineflat.util.VboUtil;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -70,8 +71,6 @@ public class MineFlat {
 	 * The game's noise generator for use in terrain generation
 	 */
 	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(seed);
-
-
 
 	/**
 	 * The number of horizontal pixels visual elements will be shifted before being rendered (- is left; + is right)
@@ -131,12 +130,11 @@ public class MineFlat {
 		glLoadIdentity();
 
 		glEnable(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glClearColor(0.3f, 0.3f, 0.8f, 1f);
 
-		glDepthMask(false);
-		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		BlockUtil.addTexture(Material.DIRT);
@@ -149,7 +147,7 @@ public class MineFlat {
 		
 		EventManager.registerEventListener(new EventListener());
 		
-		PlayerMoveEvent.fireEvent(new PlayerMoveEvent(player, player.getLocation(), player.getLocation()));
+		VboUtil.initialize();
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
@@ -160,8 +158,8 @@ public class MineFlat {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			InputManager.manage();
-			
-			Block.draw();
+
+			VboUtil.render();
 			
 			centerPlayer();
 			

@@ -9,6 +9,12 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import mineflat.Block;
+import mineflat.Location;
+import mineflat.Material;
+
+import org.newdawn.slick.util.BufferedImageUtil;
+
 public class ImageUtil {
 
 	public static BufferedImage scaleImage(BufferedImage img, int width, int height){
@@ -25,6 +31,26 @@ public class ImageUtil {
 		ImageIO.write(bi, "png", baos);
 		InputStream is = new ByteArrayInputStream(baos.toByteArray());
 		return is;
+	}
+	
+	public static void createAtlas(){
+		int finalSize = (int)Math.sqrt(MiscUtil.nextPowerOfTwo((BlockUtil.textures.size() * 16 * 16)));
+		BufferedImage atlas = new BufferedImage(finalSize, finalSize, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = atlas.createGraphics();
+		int y = 0;
+		for (int i = 0; i < BlockUtil.textures.size(); i++){
+			int x = i * 16;
+			if (x + 16 > finalSize){
+				x = 0;
+				y += 16;
+			}
+			g.drawImage(BlockUtil.textures.get(BlockUtil.textures.keySet().toArray()[i]), x, y, null);
+			BlockUtil.texCoords.put((Material)(BlockUtil.textures.keySet().toArray()[i]),
+					new Location((float)x / finalSize, (float)y / finalSize));
+		}
+		atlas = scaleImage(atlas, finalSize * (Block.length / 16), finalSize * (Block.length / 16));
+		try {BlockUtil.atlas = BufferedImageUtil.getTexture("", atlas);}
+		catch (Exception ex){ex.printStackTrace();}
 	}
 
 }

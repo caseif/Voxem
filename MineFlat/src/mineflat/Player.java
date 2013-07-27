@@ -70,6 +70,7 @@ public class Player {
 	
 	public void draw(){
 		glPushMatrix();
+		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
 		glColor3f(1f, 1f, 1f);
 		glTranslatef(getX() * Block.length + MineFlat.xOffset, getY() * Block.length + MineFlat.yOffset, 0);
@@ -85,6 +86,7 @@ public class Player {
 		glTexCoord2f(0f, 1f);
 		glVertex2f(0.25f, hHeight);
 		glEnd();
+		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
 	}
