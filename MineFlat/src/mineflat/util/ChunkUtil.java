@@ -17,7 +17,7 @@ public class ChunkUtil {
 		System.out.println("Generating chunks...");
 		//TODO: Save chunks to disk after generating so as not to keep them in memory
 		for (int i = totalChunks * -1 / 2; i <= totalChunks / 2; i++){
-			System.out.println("Generating chunk " + i);
+			//System.out.println("Generating chunk " + i);
 			if (!isChunkGenerated(i)){
 				Chunk c = new Chunk(i);
 				for (int x = 0; x < 16; x++){
@@ -41,7 +41,7 @@ public class ChunkUtil {
 		// second smoothing pass
 		System.out.println("Smoothing terrain...");
 		for (Chunk c : Chunk.chunks){
-			System.out.println("Smoothing chunk " + c.getNum());
+			//System.out.println("Smoothing chunk " + c.getNum());
 			for (int x = 0; x < 16; x++){
 				int h = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x));
 				int leftHeight = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x) - 1);
@@ -79,7 +79,7 @@ public class ChunkUtil {
 		}
 		System.out.println("Lighting terrain...");
 		for (Chunk c : Chunk.chunks){
-			System.out.println("Lighting chunk " + c.getNum());
+			//System.out.println("Lighting chunk " + c.getNum());
 			for (int x = 0; x < 16; x++)
 				for (int y = 0; y < 128; y++)
 					if (c.getBlock(x, y) != null)

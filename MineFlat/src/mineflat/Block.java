@@ -143,14 +143,21 @@ public class Block {
 			left = BlockUtil.getBlock((int)this.getX() - 1, this.getY());
 			right = BlockUtil.getBlock((int)this.getX() + 1, this.getY());
 			Block[] adjacent = new Block[]{up, down, left, right};
+			boolean adj = false;
 			for (Block b : adjacent){
-				if (b != null)
+				if (b != null){
 					if (b.getLightLevel() < this.getLightLevel() - 1)
 						if (getLightLevel() <= 1)
 							b.setLightLevel(0);
 						else
 							b.setLightLevel(this.getLightLevel() - 1);
+					adj = true;
+				}
 			}
+			if (!adj)
+				for (int y = getY(); y >= 0; y--)
+					if (BlockUtil.getBlock(getX(), y) != null)
+						light -= 1;
 		}
 	}
 }

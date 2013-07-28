@@ -34,21 +34,22 @@ public class ImageUtil {
 	}
 	
 	public static void createAtlas(){
-		int finalSize = (int)Math.sqrt(MiscUtil.nextPowerOfTwo((BlockUtil.textures.size() * 16 * 16)));
+		int finalSize = (int)Math.sqrt(MiscUtil.nextPowerOfTwo((BlockUtil.textures.size()
+				* Block.length * Block.length)));
 		BufferedImage atlas = new BufferedImage(finalSize, finalSize, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = atlas.createGraphics();
 		int y = 0;
 		for (int i = 0; i < BlockUtil.textures.size(); i++){
-			int x = i * 16;
-			if (x + 16 > finalSize){
+			int x = i * Block.length;
+			if (x + Block.length > finalSize){
 				x = 0;
-				y += 16;
+				y += Block.length;
 			}
 			g.drawImage(BlockUtil.textures.get(BlockUtil.textures.keySet().toArray()[i]), x, y, null);
 			BlockUtil.texCoords.put((Material)(BlockUtil.textures.keySet().toArray()[i]),
 					new Location((float)x / finalSize, (float)y / finalSize));
 		}
-		atlas = scaleImage(atlas, finalSize * (Block.length / 16), finalSize * (Block.length / 16));
+		atlas = scaleImage(atlas, finalSize, finalSize);
 		try {BlockUtil.atlas = BufferedImageUtil.getTexture("", atlas);}
 		catch (Exception ex){ex.printStackTrace();}
 	}

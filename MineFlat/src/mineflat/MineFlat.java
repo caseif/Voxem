@@ -1,7 +1,7 @@
 package mineflat;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -41,27 +41,37 @@ import org.lwjgl.opengl.DisplayMode;
  */
 
 public class MineFlat {
-	
+
+	/**
+	 * The minimum OpenGL version required to run the game
+	 */
+	public static double MINIMUM_GL_VERSION = 1.5;
+
+	/**
+	 * The system's OpenGL version
+	 */
+	public static double glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
+
 	/**
 	 * The variable used to determine the duration of each iteration so as to move ingame objects at a constant speed
 	 */
 	public static float delta = 0;
-	
+
 	/**
 	 * Used in the calculation of delta
 	 */
 	public static float time = MiscUtil.getTime();
-	
+
 	/**
 	 * Used in the calculation of delta
 	 */
 	public static float lastTime = MiscUtil.getTime();
-	
+
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
 	public static Player player = new Player(new Location(16, 0));
-	
+
 	/**
 	 * The seed to be used for terrain generation
 	 */
@@ -97,7 +107,6 @@ public class MineFlat {
 		try {
 			Display.setDisplayMode(new DisplayMode(Display.getDesktopDisplayMode().getWidth() - 20, Display.getDesktopDisplayMode().getHeight() - 100));
 			Display.setTitle("MineFlat");
-			//Display.setVSyncEnabled(true);
 			ByteBuffer[] icons = null;
 			if (System.getProperty("os.name").startsWith("Windows")){
 				icons = new ByteBuffer[2];
@@ -118,6 +127,12 @@ public class MineFlat {
 			}
 			Display.setIcon(icons);
 			Display.create();
+			if (glVersion < MINIMUM_GL_VERSION){
+				System.err.println("Minimum required OpenGL version is " + MINIMUM_GL_VERSION + "; " + 
+						"current version is " + glVersion);
+				Display.destroy();
+				System.exit(0);
+			}
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
@@ -130,9 +145,11 @@ public class MineFlat {
 		glLoadIdentity();
 
 		glEnable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 		glClearColor(0.3f, 0.3f, 0.8f, 1f);
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -144,9 +161,9 @@ public class MineFlat {
 		Player.initialize();
 
 		ChunkUtil.generateChunks();
-		
+
 		EventManager.registerEventListener(new EventListener());
-		
+
 		VboUtil.initialize();
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
@@ -154,23 +171,25 @@ public class MineFlat {
 			time = MiscUtil.getTime();
 			delta = time - lastTime;
 			lastTime = time;
-			
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
+
 			InputManager.manage();
 
 			VboUtil.render();
-			
+
 			centerPlayer();
-			
+
 			player.draw();
+
+			Display.sync(60);
 
 			Display.update();
 
 		}
 
 	}
-	
+
 	public static void centerPlayer(){
 		xOffset = Display.getWidth() / 2 - player.getLocation().getPixelX();
 		yOffset = Display.getHeight() / 2 - player.getLocation().getPixelY();	
