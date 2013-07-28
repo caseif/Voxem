@@ -1,11 +1,15 @@
 package mineflat.util;
 
-import org.lwjgl.Sys;
-
 public class MiscUtil {
 
-	public static long getTime() {
-		return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+	public static long getTime(){
+		//return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+		return System.nanoTime() / 1000000;
+	}
+	
+	public static long getTimeResolution(){
+		//return Sys.getTimerResolution();
+		return 1000;
 	}
 	
 	public static int nextPowerOfTwo(int i){

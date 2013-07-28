@@ -20,10 +20,10 @@ public class Block {
 	/**
 	 * The diameter of a block
 	 */
-	public static final int length = 16;
+	public static final int length = 32;
 
 	/**
-	 * The factor by which the light level of a block should decrease for each block over it
+	 * The factor by which the light level of a block should decrease from its brightest adjacent block
 	 */
 	public static final int lightDistance = 1;
 
@@ -146,11 +146,14 @@ public class Block {
 			boolean adj = false;
 			for (Block b : adjacent){
 				if (b != null){
-					if (b.getLightLevel() < this.getLightLevel() - 1)
+					if (b.getLightLevel() < this.getLightLevel() - 1){
 						if (getLightLevel() <= 1)
 							b.setLightLevel(0);
 						else
 							b.setLightLevel(this.getLightLevel() - 1);
+						if (b == left || b == up)
+							b.updateLight();
+					}
 					adj = true;
 				}
 			}

@@ -6,6 +6,5 @@
 	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/LWJGL/newest/jar/jinput.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/LWJGL/newest/jar/lwjgl.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/LWJGL/newest/jar/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/Reflections.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

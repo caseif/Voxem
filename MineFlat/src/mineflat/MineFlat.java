@@ -60,12 +60,12 @@ public class MineFlat {
 	/**
 	 * Used in the calculation of delta
 	 */
-	public static float time = MiscUtil.getTime();
+	public static long time = MiscUtil.getTime();
 
 	/**
 	 * Used in the calculation of delta
 	 */
-	public static float lastTime = MiscUtil.getTime();
+	public static long lastTime = MiscUtil.getTime();
 
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
@@ -173,17 +173,14 @@ public class MineFlat {
 			lastTime = time;
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			InputManager.manage();
-
+			
 			VboUtil.render();
-
+			InputManager.manage();
 			centerPlayer();
-
+			Player.handleVerticalMovement();
 			player.draw();
 
 			Display.sync(60);
-
 			Display.update();
 
 		}

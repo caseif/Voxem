@@ -2,10 +2,7 @@ package mineflat;
 
 import static org.lwjgl.input.Keyboard.*;
 
-import org.lwjgl.Sys;
-
-import mineflat.event.Event;
-import mineflat.event.PlayerMoveEvent;
+import mineflat.util.MiscUtil;
 
 public class InputManager {
 
@@ -16,20 +13,14 @@ public class InputManager {
 	private static int jump1 = KEY_W;
 	private static int jump2 = KEY_UP;
 	private static int jump3 = KEY_SPACE;
-	private static int down1 = KEY_S;
-	private static int down2 = KEY_DOWN;
 
 	public static void manage(){
-
-		Location old = MineFlat.player.getLocation();
-
-		boolean moved = false;
 
 		float xShift = 0.305f;
 
 		if (isKeyDown(left1) || isKeyDown(left2)){
 			float newX = MineFlat.player.getX() -
-					(Player.playerSpeed * (MineFlat.delta / Sys.getTimerResolution()));
+					(Player.playerSpeed * (MineFlat.delta / MiscUtil.getTimeResolution()));
 			float y = MineFlat.player.getY();
 			if ((int)y == y)
 				y -= 1;
@@ -53,11 +44,10 @@ public class InputManager {
 				if (b3.getType() != Material.AIR)
 					return;
 			MineFlat.player.setX(newX);
-			moved = true;
 		}
 		if (isKeyDown(right1) || isKeyDown(right2)){
 			float newX = MineFlat.player.getX() +
-					(Player.playerSpeed * (MineFlat.delta / Sys.getTimerResolution()));
+					(Player.playerSpeed * (MineFlat.delta / MiscUtil.getTimeResolution()));
 			float y = MineFlat.player.getY();
 			if ((int)y == y)
 				y -= 1;
@@ -81,23 +71,11 @@ public class InputManager {
 				if (b3.getType() != Material.AIR)
 					return;
 			MineFlat.player.setX(newX);
-			moved = true;
 		}
 		if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3)){
-			float newY = MineFlat.player.getY() -
-					(Player.playerSpeed * (MineFlat.delta / Sys.getTimerResolution()));
-			MineFlat.player.setY(newY);
-			moved = true;
-		}
-		if (isKeyDown(down1) || isKeyDown(down2)){
-			float newY = MineFlat.player.getY() +
-					(Player.playerSpeed * (MineFlat.delta / Sys.getTimerResolution()));
-			MineFlat.player.setY(newY);
-			moved = true;
-		}
-
-		if (moved){
-			Event.fireEvent(new PlayerMoveEvent(MineFlat.player, MineFlat.player.getLocation(), old));
+			if (Player.jumpFrame == 0 && !Player.falling){
+				Player.jumpFrame += MineFlat.delta / MiscUtil.getTimeResolution();
+			}
 		}
 
 	}

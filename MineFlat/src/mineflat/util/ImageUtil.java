@@ -13,6 +13,7 @@ import mineflat.Block;
 import mineflat.Location;
 import mineflat.Material;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.util.BufferedImageUtil;
 
 public class ImageUtil {
@@ -50,7 +51,7 @@ public class ImageUtil {
 					new Location((float)x / finalSize, (float)y / finalSize));
 		}
 		atlas = scaleImage(atlas, finalSize, finalSize);
-		try {BlockUtil.atlas = BufferedImageUtil.getTexture("", atlas);}
+		try {BlockUtil.atlas = BufferedImageUtil.getTexture("", atlas, GL11.GL_NEAREST);}
 		catch (Exception ex){ex.printStackTrace();}
 	}
 
