@@ -9,7 +9,6 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import mineflat.Block;
 import mineflat.Location;
 import mineflat.Material;
 
@@ -35,17 +34,17 @@ public class ImageUtil {
 	}
 	
 	public static void createAtlas(){
-		int finalSize = (int)Math.sqrt(MiscUtil.nextPowerOfTwo((BlockUtil.textures.size()
-				* Block.length * Block.length)));
+		int finalSize = MiscUtil.nextPowerOfTwo((int)Math.sqrt(((BlockUtil.textures.size() * 16  * 16))));
 		BufferedImage atlas = new BufferedImage(finalSize, finalSize, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = atlas.createGraphics();
 		int y = 0;
 		for (int i = 0; i < BlockUtil.textures.size(); i++){
-			int x = i * Block.length;
-			if (x + Block.length > finalSize){
+			int x = i * 16;
+			if (x + 16 > finalSize){
 				x = 0;
-				y += Block.length;
+				y += 16;
 			}
+			System.out.println(new Location((float)x / finalSize, (float)y / finalSize));
 			g.drawImage(BlockUtil.textures.get(BlockUtil.textures.keySet().toArray()[i]), x, y, null);
 			BlockUtil.texCoords.put((Material)(BlockUtil.textures.keySet().toArray()[i]),
 					new Location((float)x / finalSize, (float)y / finalSize));

@@ -45,6 +45,7 @@ public class VboUtil {
 				for (int y = 0; y < 128; y++){
 					Block b = c.getBlock(x, y);
 					if (b != null){
+						System.out.println(b.getType());
 						float tX = Float.valueOf(BlockUtil.texCoords.get(b.getType()).getX());
 						float tY = Float.valueOf(BlockUtil.texCoords.get(b.getType()).getY());
 

@@ -93,18 +93,18 @@ public class Player {
 		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
 		glColor3f(1f, 1f, 1f);
-		glTranslatef(getX() * Block.length + MineFlat.xOffset, getY() * Block.length + MineFlat.yOffset, 0);
+		glTranslatef(getX() * Block.length + MineFlat.xOffset - (4f / 16) * Block.length, getY() * Block.length + MineFlat.yOffset, 0);
 		glBegin(GL_QUADS);
 		int hWidth = Block.length / 2;
 		int hHeight = Block.length * 2;
 		glTexCoord2f(0f, 0f);
-		glVertex2f(0.25f, 0);
+		glVertex2f(0, 0);
 		glTexCoord2f(1f, 0f);
 		glVertex2f(hWidth, 0);
 		glTexCoord2f(1f, 1f);
 		glVertex2f(hWidth, hHeight);
 		glTexCoord2f(0f, 1f);
-		glVertex2f(0.25f, hHeight);
+		glVertex2f(0, hHeight);
 		glEnd();
 		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -126,7 +126,7 @@ public class Player {
 	}
 
 	public static void handleVerticalMovement(){
-		
+
 		float oldY = MineFlat.player.getY();
 
 		if (isFalling()){
@@ -138,14 +138,11 @@ public class Player {
 		else if (jumpFrame > 0){
 			float newY = MineFlat.player.getY() -
 					jumpSpeed * 10 * (MineFlat.delta / MiscUtil.getTimeResolution());
-			boolean block = false;
+			Block b = null;
 			if (newY >= 1){
-				Block b = new Location(MineFlat.player.getX(), (float)Math.floor(newY - 1)).getBlock();
-				if (b != null)
-					if (b.getType() != Material.AIR)
-						block = true;
+				b = new Location(MineFlat.player.getX(), (float)Math.floor(newY - 1)).getBlock();
 			}
-			if (jumpFrame < jumpHeight && !block){
+			if (jumpFrame < jumpHeight && b == null){
 				jumpFrame += jumpSpeed * 10 * (MineFlat.delta / MiscUtil.getTimeResolution());
 				MineFlat.player.setY(newY);
 			}
@@ -154,36 +151,33 @@ public class Player {
 				setFalling(true);
 			}
 		}
-		
+
 
 		// check if the player should be fallling
-		if (Math.floor(MineFlat.player.getY() + 2.5) < 128){
-			Block below1 = new Location((float)Math.floor(MineFlat.player.getX()),
-					(float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
-			Block below2 = new Location((float)Math.nextUp(MineFlat.player.getX()),
-					(float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
-			boolean fall = false;
-			if (below1 == null)
-				fall = true;
-			else if (below1.getType() == Material.AIR)
-				fall = true;
-			if (below2 == null)
-				fall = true;
-			else if (below2.getType() == Material.AIR)
-				fall = true;
-
-			if (!fall && isFalling()){
+		if (Math.floor(MineFlat.player.getY() + 2) < 128){
+			//System.out.println(MineFlat.player.getX());
+			//System.out.println(Math.floor(MineFlat.player.getX()));
+			float x = MineFlat.player.getX() - 4f / 16;
+			if (MineFlat.player.getX() % 1 <= 0.5)
+				x = MineFlat.player.getX() + 4f / 16;
+			Block below = null;
+			if (MineFlat.player.getY() >= -2)
+				below = new Location((float)x,
+						(float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
+			//System.out.println(below);
+			
+			if (below != null && isFalling()){
 				setFalling(false);
 				MineFlat.player.setY(oldY);
 				fallFrame = 0;
 			}
-			else if (fall && !isFalling() && jumpFrame == 0){
+			else if (below == null && !isFalling() && jumpFrame == 0){
 				setFalling(true);
 			}
 		}
 		else
-			Player.setFalling(false);
-		
+			setFalling(false);
+
 	}
 
 }

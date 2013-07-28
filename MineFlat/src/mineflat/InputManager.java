@@ -16,7 +16,7 @@ public class InputManager {
 
 	public static void manage(){
 
-		float xShift = 0.305f;
+		float xShift = 0;
 
 		if (isKeyDown(left1) || isKeyDown(left2)){
 			float newX = MineFlat.player.getX() -
@@ -25,24 +25,23 @@ public class InputManager {
 			if ((int)y == y)
 				y -= 1;
 			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0)
+			if (y >= 0 && y < 128)
 				b1 = new Location((float)Math.floor(newX + xShift),
 						(float)Math.floor(y)).getBlock();
-			if (y >= -1)
+			if (y >= -1 && y < 127)
 				b2 = new Location((float)Math.floor(newX + xShift),
 						(float)Math.floor(y) + 1).getBlock();
-			if (y >= -2)
+			if (y >= -2 && y < 126)
 				b3 = new Location((float)Math.floor(newX + xShift),
 						(float)Math.floor(y) + 2).getBlock();
+			boolean blocked = false;
 			if (b1 != null)
-				if (b1.getType() != Material.AIR)
-					return;
-			if (b2 != null)
-				if (b2.getType() != Material.AIR)
-					return;
-			if (b3 != null)
-				if (b3.getType() != Material.AIR)
-					return;
+					blocked = true;
+			else if (b2 != null)
+					blocked = true;
+			else if (b3 != null)
+					blocked = true;
+			if (!blocked)
 			MineFlat.player.setX(newX);
 		}
 		if (isKeyDown(right1) || isKeyDown(right2)){
@@ -52,25 +51,24 @@ public class InputManager {
 			if ((int)y == y)
 				y -= 1;
 			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0)
+			if (y >= 0 && y < 128)
 				b1 = new Location((float)Math.floor(newX + xShift),
 						(float)Math.floor(y)).getBlock();
-			if (y >= -1)
+			if (y >= -1 && y < 127)
 				b2 = new Location((float)Math.floor(newX + xShift),
 						(float)Math.floor(y) + 1).getBlock();
-			if (y >= -2)
+			if (y >= -2 && y < 126)
 				b3 = new Location((float)Math.floor(newX + xShift),
 						(float)Math.floor(y) + 2).getBlock();
+			boolean blocked = false;
 			if (b1 != null)
-				if (b1.getType() != Material.AIR)
-					return;
-			if (b2 != null)
-				if (b2.getType() != Material.AIR)
-					return;
-			if (b3 != null)
-				if (b3.getType() != Material.AIR)
-					return;
-			MineFlat.player.setX(newX);
+				blocked = true;
+			else if (b2 != null)
+				blocked = true;
+			else if (b3 != null)
+				blocked = true;
+			if (!blocked)
+				MineFlat.player.setX(newX);
 		}
 		if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3)){
 			if (Player.jumpFrame == 0 && !Player.falling){

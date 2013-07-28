@@ -31,8 +31,10 @@ public class Location {
 
 	public Block getBlock(){
 		Chunk c = ChunkUtil.getChunk(getChunk());
+		int index = x % 16 > 0 ? (int)x % 16 : (int)x % 16 + 15;
+		//System.out.println(index);
 		if (c != null)
-			return c.getBlock(Math.abs((int)x % 16), (int)y);
+			return c.getBlock(index, (int)y);
 		return null;
 	}
 

@@ -33,10 +33,8 @@ public class Block {
 		for (int i = (int)location.getY() - 1; i >= 0; i--){
 			Block b = BlockUtil.getBlock((int)location.getX(), i);
 			if (b != null){
-				if (b.getType() != Material.AIR){
-					light = b.getLightLevel() - lightDistance;
-					break;
-				}
+				light = b.getLightLevel() - lightDistance;
+				break;
 			}
 		}
 		chunk = location.getChunk();
@@ -103,27 +101,25 @@ public class Block {
 					for (int y = 0; y < 128; y++){
 						Block b = c.getBlock(x, y);
 						if (b != null){
-							if (b.getType() != Material.AIR){
-								glPushMatrix();
-								//glBindTexture(GL_TEXTURE_2D,
-								//		BlockUtil.textures.get(b.getType()).getTextureID());
-								float fracLight = (float)(b.getLightLevel()) / 15;
-								glColor3f(fracLight, fracLight, fracLight);
-								int drawX = b.getX() * length + MineFlat.xOffset;
-								int drawY = b.getY() * length + MineFlat.yOffset;
-								glBegin(GL_QUADS);
-								glTexCoord2f(0, 0);
-								glVertex2f(drawX, drawY); // top left
-								glTexCoord2f(1, 0);
-								glVertex2f(drawX + length, drawY); // top right
-								glTexCoord2f(1, 1);
-								glVertex2f(drawX + length, drawY + length); // bottom right
-								glTexCoord2f(0, 1);
-								glVertex2f(drawX, drawY + length); // bottom left
-								glEnd();
-								glBindTexture(GL_TEXTURE_2D, 0);
-								glPopMatrix();
-							}
+							glPushMatrix();
+							//glBindTexture(GL_TEXTURE_2D,
+							//		BlockUtil.textures.get(b.getType()).getTextureID());
+							float fracLight = (float)(b.getLightLevel()) / 15;
+							glColor3f(fracLight, fracLight, fracLight);
+							int drawX = b.getX() * length + MineFlat.xOffset;
+							int drawY = b.getY() * length + MineFlat.yOffset;
+							glBegin(GL_QUADS);
+							glTexCoord2f(0, 0);
+							glVertex2f(drawX, drawY); // top left
+							glTexCoord2f(1, 0);
+							glVertex2f(drawX + length, drawY); // top right
+							glTexCoord2f(1, 1);
+							glVertex2f(drawX + length, drawY + length); // bottom right
+							glTexCoord2f(0, 1);
+							glVertex2f(drawX, drawY + length); // bottom left
+							glEnd();
+							glBindTexture(GL_TEXTURE_2D, 0);
+							glPopMatrix();
 						}
 					}
 				}
@@ -132,35 +128,33 @@ public class Block {
 	}
 
 	public void updateLight(){
-		if (this.getType() != Material.AIR){
-			if (BlockUtil.getTop(this.getX()) == this.getY())
-				this.setLightLevel(15);
-			Block up = null, down = null, left = null, right = null;
-			if (this.getY() > 0)
-				up = BlockUtil.getBlock((int)this.getX(), this.getY() - 1);
-			if (this.getY() < 127)
-				down = BlockUtil.getBlock((int)this.getX(), this.getY() + 1);
-			left = BlockUtil.getBlock((int)this.getX() - 1, this.getY());
-			right = BlockUtil.getBlock((int)this.getX() + 1, this.getY());
-			Block[] adjacent = new Block[]{up, down, left, right};
-			boolean adj = false;
-			for (Block b : adjacent){
-				if (b != null){
-					if (b.getLightLevel() < this.getLightLevel() - 1){
-						if (getLightLevel() <= 1)
-							b.setLightLevel(0);
-						else
-							b.setLightLevel(this.getLightLevel() - 1);
-						if (b == left || b == up)
-							b.updateLight();
-					}
-					adj = true;
+		if (BlockUtil.getTop(this.getX()) == this.getY())
+			this.setLightLevel(15);
+		Block up = null, down = null, left = null, right = null;
+		if (this.getY() > 0)
+			up = BlockUtil.getBlock((int)this.getX(), this.getY() - 1);
+		if (this.getY() < 127)
+			down = BlockUtil.getBlock((int)this.getX(), this.getY() + 1);
+		left = BlockUtil.getBlock((int)this.getX() - 1, this.getY());
+		right = BlockUtil.getBlock((int)this.getX() + 1, this.getY());
+		Block[] adjacent = new Block[]{up, down, left, right};
+		boolean adj = false;
+		for (Block b : adjacent){
+			if (b != null){
+				if (b.getLightLevel() < this.getLightLevel() - 1){
+					if (getLightLevel() <= 1)
+						b.setLightLevel(0);
+					else
+						b.setLightLevel(this.getLightLevel() - 1);
+					if (b == left || b == up)
+						b.updateLight();
 				}
+				adj = true;
 			}
-			if (!adj)
-				for (int y = getY(); y >= 0; y--)
-					if (BlockUtil.getBlock(getX(), y) != null)
-						light -= 1;
 		}
+		if (!adj)
+			for (int y = getY(); y >= 0; y--)
+				if (BlockUtil.getBlock(getX(), y) != null)
+					light -= 1;
 	}
 }

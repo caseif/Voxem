@@ -51,10 +51,14 @@ public class ChunkUtil {
 						h = leftHeight - 2;
 					else if (leftHeight - h <= -3)
 						h = leftHeight + 2;
-					Material mat = Material.AIR;
+					Material mat = null;
 					for (int y = 0; y < 128; y++){
-						if (y >= h){
-							if (mat != Material.STONE){
+						if (y < h && x == 1 && c.getNum() == 1)
+							new Block(Material.LOG, new Location(getBlockXFromChunk(c.getNum(), x), y));
+						else if (y >= h){
+							if (y <= 4)
+								c.setBlock(x, y, null);
+							else if (mat != Material.STONE){
 								if (y == h)
 									mat = Material.GRASS;
 								else if (y < 15)
@@ -67,7 +71,8 @@ public class ChunkUtil {
 								else if (y == 17)
 									mat = Material.STONE;
 							}
-							new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
+							if (mat != null)
+								new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
 						}
 						else
 							c.blocks[x][y] = null;
@@ -100,7 +105,9 @@ public class ChunkUtil {
 	}
 
 	public static int getBlockXFromChunk(int chunk, int block){
-		return (chunk - 1) * 16 + block;
+		if (chunk > 0)
+			return (chunk - 1) * 16 + block;
+		return chunk * 16 + block;
 	}
 
 	public static int getChunkNum(int x){
