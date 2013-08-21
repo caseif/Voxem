@@ -75,7 +75,7 @@ public class MineFlat {
 	/**
 	 * The seed to be used for terrain generation
 	 */
-	public static long seed = System.currentTimeMillis() % 1337;
+	public static long seed = 1000;
 
 	/**
 	 * The game's noise generator for use in terrain generation

@@ -36,13 +36,13 @@ public class InputManager {
 						(float)Math.floor(y) + 2).getBlock();
 			boolean blocked = false;
 			if (b1 != null)
-					blocked = true;
+				blocked = true;
 			else if (b2 != null)
-					blocked = true;
+				blocked = true;
 			else if (b3 != null)
-					blocked = true;
+				blocked = true;
 			if (!blocked)
-			MineFlat.player.setX(newX);
+				MineFlat.player.setX(newX);
 		}
 		if (isKeyDown(right1) || isKeyDown(right2)){
 			float newX = MineFlat.player.getX() +
@@ -75,7 +75,6 @@ public class InputManager {
 				Player.jumpFrame += MineFlat.delta / MiscUtil.getTimeResolution();
 			}
 		}
-
 	}
 
 }

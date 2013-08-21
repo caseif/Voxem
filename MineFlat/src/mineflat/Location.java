@@ -31,7 +31,7 @@ public class Location {
 
 	public Block getBlock(){
 		Chunk c = ChunkUtil.getChunk(getChunk());
-		int index = x % 16 > 0 ? (int)x % 16 : (int)x % 16 + 15;
+		int index = Math.abs((int)x % 16);
 		//System.out.println(index);
 		if (c != null)
 			return c.getBlock(index, (int)y);
@@ -51,9 +51,7 @@ public class Location {
 	}
 
 	public int getChunk(){
-		if (x >= 0)
-			return (int)x / 16 + 1;
-		return (int)x / 16 - 1;
+		return x >= 0 ? (int)x / 16 + 1 : (int)x / 16 - 1;
 	}
 
 	public float getPosInChunk(){

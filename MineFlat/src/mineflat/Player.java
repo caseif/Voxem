@@ -157,23 +157,25 @@ public class Player {
 		if (Math.floor(MineFlat.player.getY() + 2) < 128){
 			//System.out.println(MineFlat.player.getX());
 			//System.out.println(Math.floor(MineFlat.player.getX()));
-			float x = MineFlat.player.getX() - 4f / 16;
-			if (MineFlat.player.getX() % 1 <= 0.5)
-				x = MineFlat.player.getX() + 4f / 16;
-			Block below = null;
-			if (MineFlat.player.getY() >= -2)
-				below = new Location((float)x,
-						(float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
-			//System.out.println(below);
-			
-			if (below != null && isFalling()){
-				setFalling(false);
-				MineFlat.player.setY(oldY);
-				fallFrame = 0;
-			}
-			else if (below == null && !isFalling() && jumpFrame == 0){
-				setFalling(true);
-			}
+			float x = (Math.abs(MineFlat.player.getX()) % 1 >= 0.5 && MineFlat.player.getX() > 0) ||
+					(Math.abs(MineFlat.player.getX()) % 1 <= 0.5 && MineFlat.player.getX() < 0) ?
+							MineFlat.player.getX() - 4f / 16 : MineFlat.player.getX() + 4f / 16;
+							if (x < 0)
+								x -= 1;
+							Block below = null;
+							if (MineFlat.player.getY() >= -2)
+								below = new Location((float)x,
+										(float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
+							//System.out.println(below);
+
+							if (below != null && isFalling()){
+								setFalling(false);
+								MineFlat.player.setY(oldY);
+								fallFrame = 0;
+							}
+							else if (below == null && !isFalling() && jumpFrame == 0){
+								setFalling(true);
+							}
 		}
 		else
 			setFalling(false);

@@ -44,7 +44,6 @@ public class ImageUtil {
 				x = 0;
 				y += 16;
 			}
-			System.out.println(new Location((float)x / finalSize, (float)y / finalSize));
 			g.drawImage(BlockUtil.textures.get(BlockUtil.textures.keySet().toArray()[i]), x, y, null);
 			BlockUtil.texCoords.put((Material)(BlockUtil.textures.keySet().toArray()[i]),
 					new Location((float)x / finalSize, (float)y / finalSize));
