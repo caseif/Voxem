@@ -53,14 +53,11 @@ public class ChunkUtil {
 						h = leftHeight + 2;
 					Material mat = null;
 					for (int y = 0; y < 128; y++){
-						//if (y < h && x == 1 && c.getNum() == 1)
-							//new Block(Material.LOG, new Location(getBlockXFromChunk(c.getNum(), x), y));
 						if (y >= h){
-							if (y <= 4)
-								c.setBlock(x, y, null);
-							else if (mat != Material.STONE){
-								if (y == h)
+							if (mat != Material.STONE){
+								if (y == h){
 									mat = Material.GRASS;
+								}
 								else if (y < 15)
 									mat = Material.DIRT;
 								else if (y >= 15 && y < 17 && mat != Material.STONE){

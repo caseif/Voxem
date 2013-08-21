@@ -44,10 +44,6 @@ public class Block {
 		c.blocks[Math.abs((int)location.getX() % 16)][(int)location.getY()] = this;
 	}
 
-	public Block(Material m, int x, int y){
-		new Block(m, new Location(x, y));
-	}
-
 	public int getX(){
 		return (int)location.getX();
 	}

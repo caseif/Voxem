@@ -50,7 +50,7 @@ public class MineFlat {
 	/**
 	 * The system's OpenGL version
 	 */
-	public static double glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
+	public static double glVersion;
 
 	/**
 	 * The variable used to determine the duration of each iteration so as to move ingame objects at a constant speed
@@ -127,6 +127,7 @@ public class MineFlat {
 			}
 			Display.setIcon(icons);
 			Display.create();
+			glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
 			if (glVersion < MINIMUM_GL_VERSION){
 				System.err.println("Minimum required OpenGL version is " + MINIMUM_GL_VERSION + "; " + 
 						"current version is " + glVersion);
@@ -175,12 +176,31 @@ public class MineFlat {
 			lastTime = time;
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
+
 			VboUtil.render();
 			InputManager.manage();
 			centerPlayer();
 			Player.handleVerticalMovement();
 			player.draw();
+
+			// Later.
+			/*glBegin(GL_QUADS);
+			glColor3f(1f, 0f, 0f);
+			glVertex2f(player.getLocation().getPixelX() + xOffset, player.getLocation().getPixelY() + yOffset);
+			glVertex2f(player.getLocation().getPixelX() + 2 + xOffset, player.getLocation().getPixelY() + 2
+					+ yOffset);
+			glVertex2f(Mouse.getX(), Display.getHeight() - Mouse.getY());
+			glVertex2f(Mouse.getX() + 2, Display.getHeight() - Mouse.getY() + 2);
+			glEnd();
+
+			for (double d = 0.5; d <= 5; d += 0.5){
+				int playerX = player.getLocation().getPixelX();
+				int playerY = player.getLocation().getPixelY();
+				int mouseX = Mouse.getX();
+				int mouseY = Display.getHeight() - Mouse.getY();
+				int xDiff = Math.abs(mouseX - playerX);
+				int yDiff = Math.abs(mouseY - playerY);
+			}*/
 
 			Display.sync(60);
 			Display.update();

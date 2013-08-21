@@ -75,6 +75,8 @@ public class InputManager {
 				Player.jumpFrame += MineFlat.delta / MiscUtil.getTimeResolution();
 			}
 		}
+		if (isKeyDown(KEY_F3))
+			System.out.println("Player: " + MineFlat.player.getX() + ", " + MineFlat.player.getY());
 	}
 
 }
