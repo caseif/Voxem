@@ -18,7 +18,9 @@ public class EventManager {
 			if (m.isAnnotationPresent(EventHandler.class)){
 				for (Class<?> cl : m.getParameterTypes()){
 					if (cl.getSuperclass() != null){
-						if (cl.getSuperclass() == Event.class){
+						if (cl.getSuperclass() == Event.class ||
+								(cl.getSuperclass().getSuperclass() != null && 
+								cl.getSuperclass().getSuperclass() == Event.class)){
 							String[] params = new String[m.getParameterTypes().length];
 							for (int i = 0; i < m.getParameterTypes().length; i++)
 								params[i] = m.getParameterTypes()[i].getPackage().getName() +

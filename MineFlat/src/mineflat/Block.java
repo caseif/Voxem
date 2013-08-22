@@ -38,10 +38,13 @@ public class Block {
 			}
 		}
 		chunk = location.getChunk();
+	}
+	
+	public void addToWorld(){
 		Chunk c = ChunkUtil.getChunk(location.getChunk());
 		if (c == null)
 			c = new Chunk(location.getChunk());
-		c.blocks[Math.abs((int)location.getX() % 16)][(int)location.getY()] = this;
+		c.setBlock(Math.abs((int)location.getX() % 16), (int)location.getY(), this);
 	}
 
 	public int getX(){
@@ -92,7 +95,8 @@ public class Block {
 	public static void draw(){
 		for (Chunk c : Chunk.chunks){
 			// check if player is within range
-			if (Math.abs(MineFlat.player.getLocation().getChunk() - c.getNum()) <= MineFlat.renderDistance){
+			if (Math.abs(MineFlat.player.getLocation().getChunk() - c.getNum()) <=
+					MineFlat.renderDistance){
 				for (int x = 0; x < 16; x++){
 					for (int y = 0; y < 128; y++){
 						Block b = c.getBlock(x, y);
@@ -152,5 +156,15 @@ public class Block {
 			for (int y = getY(); y >= 0; y--)
 				if (BlockUtil.getBlock(getX(), y) != null)
 					light -= 1;
+	}
+	
+	public void destroy(){
+		ChunkUtil.getChunk(ChunkUtil.getChunkNum((int)Math.floor(getX())))
+				.setBlock((int)Math.abs(Math.floor(getX() % 16)), 
+				(int)(Math.floor(getY())), null);
+	}
+	
+	public Block clone(){
+		return new Block(type, location);
 	}
 }

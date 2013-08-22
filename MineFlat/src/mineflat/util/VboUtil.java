@@ -28,12 +28,6 @@ public class VboUtil {
 		glGenBuffers(buffer);
 		bufferHandle = buffer.get(0);
 		updateArray();
-		FloatBuffer vertexData = (FloatBuffer)BufferUtils.createFloatBuffer(vertexArray.length).flip();
-		vertexData.limit(vertexData.capacity());
-		vertexData.put(vertexArray);
-		vertexData.rewind();
-		glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
-		glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
 	}
 
 	public static void updateArray(){
@@ -45,7 +39,9 @@ public class VboUtil {
 				for (int y = 0; y < 128; y++){
 					Block b = c.getBlock(x, y);
 					if (b != null){
-						float tX = Float.valueOf(BlockUtil.texCoords.get(b.getType()).getX());
+						float tX = Float.valueOf(BlockUtil.texCoords
+								.get(b.getType())
+								.getX());
 						float tY = Float.valueOf(BlockUtil.texCoords.get(b.getType()).getY());
 
 						// top left
@@ -62,7 +58,8 @@ public class VboUtil {
 
 						// top right
 						// vertex
-						values.add(Float.valueOf((float)b.getLocation().getPixelX()) + Block.length);
+						values.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+								Block.length);
 						values.add(Float.valueOf((float)b.getLocation().getPixelY()));
 						// light
 						values.add(Float.valueOf((float)b.getLightLevel() / 15));
@@ -74,8 +71,10 @@ public class VboUtil {
 
 						// bottom right
 						// vertex
-						values.add(Float.valueOf((float)b.getLocation().getPixelX()) + Block.length);
-						values.add(Float.valueOf((float)b.getLocation().getPixelY()) + Block.length);
+						values.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+								Block.length);
+						values.add(Float.valueOf((float)b.getLocation().getPixelY()) +
+								Block.length);
 						// light
 						values.add(Float.valueOf((float)b.getLightLevel() / 15));
 						values.add(Float.valueOf((float)b.getLightLevel() / 15));
@@ -87,7 +86,8 @@ public class VboUtil {
 						// bottom left
 						// vertex
 						values.add(Float.valueOf((float)b.getLocation().getPixelX()));
-						values.add(Float.valueOf((float)b.getLocation().getPixelY()) + Block.length);
+						values.add(Float.valueOf((float)b.getLocation().getPixelY()) +
+								Block.length);
 						// light
 						values.add(Float.valueOf((float)b.getLightLevel() / 15));
 						values.add(Float.valueOf((float)b.getLightLevel() / 15));
@@ -95,6 +95,7 @@ public class VboUtil {
 						// texture
 						values.add(tX);
 						values.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
+						b.updateLight();
 					}
 				}
 			}
@@ -105,6 +106,14 @@ public class VboUtil {
 			Float f = values.get(i);
 			vertexArray[i] = (f != null ? f : Float.NaN);
 		}
+		
+		FloatBuffer vertexData = (FloatBuffer)BufferUtils
+				.createFloatBuffer(vertexArray.length).flip();
+		vertexData.limit(vertexData.capacity());
+		vertexData.put(vertexArray);
+		vertexData.rewind();
+		glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
+		glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
 
 	}
 

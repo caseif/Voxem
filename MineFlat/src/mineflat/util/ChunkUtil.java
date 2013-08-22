@@ -33,12 +33,14 @@ public class ChunkUtil {
 					h = (h + leftHeight + rightHeight) / 2;
 					for (int y = h; y < 128; y++){
 						Material mat = Material.STONE;
-						new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
+						Block b = new Block(
+								mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
+						b.addToWorld();
 					}
 				}
 			}
 		}
-		// second smoothing pass
+		// smoothing pass
 		System.out.println("Smoothing terrain...");
 		for (Chunk c : Chunk.chunks){
 			//System.out.println("Smoothing chunk " + c.getNum());
@@ -68,11 +70,14 @@ public class ChunkUtil {
 								else if (y == 17)
 									mat = Material.STONE;
 							}
-							if (mat != null)
-								new Block(mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
+							if (mat != null){
+								Block b = new Block(mat,
+										new Location(getBlockXFromChunk(c.getNum(), x), y));
+								b.addToWorld();
+							}
 						}
 						else
-							c.blocks[x][y] = null;
+							c.setBlock(x, y, null);
 					}
 				}
 				if (ChunkUtil.getBlockXFromChunk(c.getNum(), x) == MineFlat.player.getX())

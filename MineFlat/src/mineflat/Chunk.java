@@ -9,7 +9,7 @@ public class Chunk {
 	
 	protected int num;
 	
-	public Block[][] blocks;
+	private Block[][] blocks;
 	
 	public Chunk(int num){
 		this.num = num;

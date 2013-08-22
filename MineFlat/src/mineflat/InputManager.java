@@ -2,6 +2,11 @@ package mineflat;
 
 import static org.lwjgl.input.Keyboard.*;
 
+import org.lwjgl.input.Mouse;
+
+import mineflat.event.BlockBreakEvent;
+import mineflat.event.Event;
+import mineflat.util.BlockUtil;
 import mineflat.util.MiscUtil;
 
 public class InputManager {
@@ -13,6 +18,9 @@ public class InputManager {
 	private static int jump1 = KEY_W;
 	private static int jump2 = KEY_UP;
 	private static int jump3 = KEY_SPACE;
+	
+	private static long lastAction = 0;
+	private static long actionWait = 500;
 
 	public static void manage(){
 
@@ -76,7 +84,20 @@ public class InputManager {
 			}
 		}
 		if (isKeyDown(KEY_F3))
-			System.out.println("Player: " + MineFlat.player.getX() + ", " + MineFlat.player.getY());
+			System.out.println("Player: " + MineFlat.player.getX() + ", " +
+					MineFlat.player.getY());
+
+		if (Mouse.isButtonDown(0)){
+			if (System.currentTimeMillis() - lastAction >= actionWait){
+				if (MineFlat.selected != null){
+					Block b = BlockUtil.getBlock((int)Math.floor(MineFlat.selected.getX()),
+							(int)Math.floor(MineFlat.selected.getY()));
+					Event.fireEvent(new BlockBreakEvent(MineFlat.selected, b));
+				}
+				lastAction = System.currentTimeMillis();
+			}
+		}
+
 	}
 
 }

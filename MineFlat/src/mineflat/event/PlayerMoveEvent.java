@@ -4,14 +4,10 @@ import mineflat.Location;
 import mineflat.Player;
 
 /**
- * Fired when the player moves from one point in space to another.
+ * Fired when a player moves from one point in space to another.
  */
-public class PlayerMoveEvent extends Event implements Cancellable {
+public class PlayerMoveEvent extends PlayerEvent implements Cancellable {
 	
-	/**
-	 * The player involved in this event.
-	 */
-	private Player player;
 	/**
 	 * The location the player is moving to.
 	 */
@@ -33,14 +29,6 @@ public class PlayerMoveEvent extends Event implements Cancellable {
 		this.from = from;
 	}
 
-	public Player getPlayer(){
-		return player;
-	}
-
-	public void setPlayer(Player player){
-		this.player = player;
-	}
-
 	public Location getTo(){
 		return to;
 	}
@@ -57,7 +45,6 @@ public class PlayerMoveEvent extends Event implements Cancellable {
 		this.from = from;
 	}
 
-	@Override
 	public void setCancelled(boolean cancelled){
 		if (cancelled)
 			player.setLocation(from);

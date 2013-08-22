@@ -104,7 +104,7 @@ public class MineFlat {
 	 * The number of chunks adjacent to the player's that should be generated/loaded
 	 */
 	public static int renderDistance = 6;
-	
+
 	/**
 	 * The block which is currently selected.
 	 */
@@ -125,8 +125,8 @@ public class MineFlat {
 				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
 						MineFlat.class.getClassLoader()
 						.getResourceAsStream("images/icon.png")), 32, 32);;
-				icons[0] = BufferUtil.asByteBuffer(icon1);
-				icons[1] = BufferUtil.asByteBuffer(icon2);
+						icons[0] = BufferUtil.asByteBuffer(icon1);
+						icons[1] = BufferUtil.asByteBuffer(icon2);
 			}
 			else if (System.getProperty("os.name").startsWith("Mac")){
 				icons = new ByteBuffer[1];
@@ -147,7 +147,7 @@ public class MineFlat {
 			glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
 			if (glVersion < MINIMUM_GL_VERSION){
 				System.err.println("Minimum required OpenGL version is " +
-			MINIMUM_GL_VERSION + "; " + 
+						MINIMUM_GL_VERSION + "; " + 
 						"current version is " + glVersion);
 				Display.destroy();
 				System.exit(0);
@@ -207,12 +207,17 @@ public class MineFlat {
 			double mouseY = (Display.getHeight() - Mouse.getY() - yOffset) /
 					(float)Block.length;
 			double xDiff = (int)(mouseX - playerX);
-			double yDiff = mouseY != playerY ? (playerY - mouseY) :
-				(playerY - mouseY + 1);
-			double angle = Math.toDegrees(Math.atan2(xDiff, yDiff));
-			if (xDiff < 0)
-				angle += 360;
-			
+			double yDiff = mouseY != playerY ? (mouseY - playerY) :
+				(mouseY - playerY + 1);
+			double angle = Math.atan2(xDiff, yDiff);
+
+			/*glBegin(GL_LINES);
+			glColor3f(1f, 0f, 0f);
+			glVertex2f(player.getLocation().getPixelX() + xOffset,
+					player.getLocation().getPixelY() + yOffset);
+			glVertex2f(Mouse.getX(), Display.getHeight() - Mouse.getY());
+			glEnd();*/
+
 			for (double d = 0.5; d <= 5; d += 0.5){
 				double xAdd = d * Math.sin(angle);
 				double yAdd = d * Math.cos(angle);
@@ -224,6 +229,29 @@ public class MineFlat {
 						break;
 					}
 				}
+				selected = null;
+			}
+
+			if (selected != null){
+				glColor3f(0f, 0f, 0f);
+				glBegin(GL_LINES);
+				glVertex2f(selected.getPixelX() + xOffset,
+						selected.getPixelY() + yOffset);
+				glVertex2f(selected.getPixelX() + xOffset + Block.length,
+						selected.getPixelY() + yOffset);
+				glVertex2f(selected.getPixelX() + xOffset + Block.length,
+						selected.getPixelY() + yOffset);
+				glVertex2f(selected.getPixelX() + xOffset + Block.length,
+						selected.getPixelY() + yOffset + Block.length);
+				glVertex2f(selected.getPixelX() + xOffset + Block.length,
+						selected.getPixelY() + yOffset + Block.length);
+				glVertex2f(selected.getPixelX() + xOffset,
+						selected.getPixelY() + yOffset + Block.length);
+				glVertex2f(selected.getPixelX() + xOffset,
+						selected.getPixelY() + yOffset + Block.length);
+				glVertex2f(selected.getPixelX() + xOffset,
+						selected.getPixelY() + yOffset);
+				glEnd();
 			}
 
 			Display.sync(60);
