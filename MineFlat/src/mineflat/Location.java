@@ -65,5 +65,13 @@ public class Location {
 	public int getPixelY(){
 		return (int)(getY() * Block.length);
 	}
+	
+	public static int getXFromPixels(int x){
+		return x / Block.length - MineFlat.xOffset;
+	}
+	
+	public static int getYFromPixels(int y){
+		return y / Block.length - MineFlat.yOffset;
+	}
 
 }

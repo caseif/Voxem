@@ -18,6 +18,7 @@ import mineflat.util.MiscUtil;
 import mineflat.util.VboUtil;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
@@ -75,7 +76,7 @@ public class MineFlat {
 	/**
 	 * The seed to be used for terrain generation
 	 */
-	public static long seed = 1000;
+	public static long seed = System.currentTimeMillis();
 
 	/**
 	 * The game's noise generator for use in terrain generation
@@ -83,12 +84,14 @@ public class MineFlat {
 	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(seed);
 
 	/**
-	 * The number of horizontal pixels visual elements will be shifted before being rendered (- is left; + is right)
+	 * The number of horizontal pixels visual elements will be shifted before being rendered
+	 * (- is left; + is right)
 	 */
 	public static int xOffset = 0;
 
 	/**
-	 * The number of vertical pixels visual elements will be shifted before being rendered (- is up; + is down)
+	 * The number of vertical pixels visual elements will be shifted before being rendered
+	 * (- is up; + is down)
 	 */
 	public static int yOffset = 150;
 
@@ -101,35 +104,50 @@ public class MineFlat {
 	 * The number of chunks adjacent to the player's that should be generated/loaded
 	 */
 	public static int renderDistance = 6;
+	
+	/**
+	 * The block which is currently selected.
+	 */
+	public static Location selected = null;
 
 	public static void main(String[] args){
 
 		try {
-			Display.setDisplayMode(new DisplayMode(Display.getDesktopDisplayMode().getWidth() - 20, Display.getDesktopDisplayMode().getHeight() - 100));
+			Display.setDisplayMode(new DisplayMode(Display.getDesktopDisplayMode()
+					.getWidth() - 20, Display.getDesktopDisplayMode().getHeight() - 100));
 			Display.setTitle("MineFlat");
 			ByteBuffer[] icons = null;
 			if (System.getProperty("os.name").startsWith("Windows")){
 				icons = new ByteBuffer[2];
-				BufferedImage icon1 = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 16, 16);
-				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 32, 32);;
+				BufferedImage icon1 = ImageUtil.scaleImage(
+						ImageIO.read(MineFlat.class.getClassLoader()
+								.getResourceAsStream("images/icon.png")), 16, 16);
+				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
+						MineFlat.class.getClassLoader()
+						.getResourceAsStream("images/icon.png")), 32, 32);;
 				icons[0] = BufferUtil.asByteBuffer(icon1);
 				icons[1] = BufferUtil.asByteBuffer(icon2);
 			}
 			else if (System.getProperty("os.name").startsWith("Mac")){
 				icons = new ByteBuffer[1];
-				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 128, 128);
+				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
+						MineFlat.class.getClassLoader()
+						.getResourceAsStream("images/icon.png")), 128, 128);
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			else {
 				icons = new ByteBuffer[1];
-				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(MineFlat.class.getClassLoader().getResourceAsStream("images/icon.png")), 32, 32);
+				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
+						MineFlat.class.getClassLoader()
+						.getResourceAsStream("images/icon.png")), 32, 32);
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			Display.setIcon(icons);
 			Display.create();
 			glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
 			if (glVersion < MINIMUM_GL_VERSION){
-				System.err.println("Minimum required OpenGL version is " + MINIMUM_GL_VERSION + "; " + 
+				System.err.println("Minimum required OpenGL version is " +
+			MINIMUM_GL_VERSION + "; " + 
 						"current version is " + glVersion);
 				Display.destroy();
 				System.exit(0);
@@ -183,24 +201,30 @@ public class MineFlat {
 			Player.handleVerticalMovement();
 			player.draw();
 
-			// Later.
-			/*glBegin(GL_QUADS);
-			glColor3f(1f, 0f, 0f);
-			glVertex2f(player.getLocation().getPixelX() + xOffset, player.getLocation().getPixelY() + yOffset);
-			glVertex2f(player.getLocation().getPixelX() + 2 + xOffset, player.getLocation().getPixelY() + 2
-					+ yOffset);
-			glVertex2f(Mouse.getX(), Display.getHeight() - Mouse.getY());
-			glVertex2f(Mouse.getX() + 2, Display.getHeight() - Mouse.getY() + 2);
-			glEnd();
-
+			double playerX = player.getX();
+			double playerY = player.getY();
+			double mouseX = (Mouse.getX() - xOffset) / (float)Block.length;
+			double mouseY = (Display.getHeight() - Mouse.getY() - yOffset) /
+					(float)Block.length;
+			double xDiff = (int)(mouseX - playerX);
+			double yDiff = mouseY != playerY ? (playerY - mouseY) :
+				(playerY - mouseY + 1);
+			double angle = Math.toDegrees(Math.atan2(xDiff, yDiff));
+			if (xDiff < 0)
+				angle += 360;
+			
 			for (double d = 0.5; d <= 5; d += 0.5){
-				int playerX = player.getLocation().getPixelX();
-				int playerY = player.getLocation().getPixelY();
-				int mouseX = Mouse.getX();
-				int mouseY = Display.getHeight() - Mouse.getY();
-				int xDiff = Math.abs(mouseX - playerX);
-				int yDiff = Math.abs(mouseY - playerY);
-			}*/
+				double xAdd = d * Math.sin(angle);
+				double yAdd = d * Math.cos(angle);
+				int blockX = (int)Math.floor(playerX + xAdd);
+				int blockY = (int)Math.floor(playerY + yAdd);
+				if (blockY >= 0 && blockY <= 127){
+					if (BlockUtil.getBlock(blockX, blockY) != null){
+						selected = new Location(blockX, blockY);
+						break;
+					}
+				}
+			}
 
 			Display.sync(60);
 			Display.update();
