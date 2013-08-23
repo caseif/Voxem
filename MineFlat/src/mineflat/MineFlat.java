@@ -113,9 +113,18 @@ public class MineFlat {
 	public static void main(String[] args){
 
 		try {
-			Display.setDisplayMode(new DisplayMode(Display.getDesktopDisplayMode()
-					.getWidth() - 20, Display.getDesktopDisplayMode().getHeight() - 100));
+			DisplayMode[] modes = Display.getAvailableDisplayModes();
+			for (int i = 0; i < modes.length; i++){
+				if (modes[i].getWidth() == Display.getDesktopDisplayMode().getWidth() &&
+						modes[i].getHeight() == Display.getDesktopDisplayMode().getHeight() &&
+						modes[i].isFullscreenCapable()){
+					Display.setDisplayMode(modes[i]);
+					break;
+				}
+			}
+			Display.setVSyncEnabled(true);
 			Display.setTitle("MineFlat");
+			Display.setResizable(true);
 			ByteBuffer[] icons = null;
 			if (System.getProperty("os.name").startsWith("Windows")){
 				icons = new ByteBuffer[2];

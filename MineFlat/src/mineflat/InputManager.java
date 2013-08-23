@@ -85,9 +85,23 @@ public class InputManager {
 				Player.jumpFrame += MineFlat.delta / MiscUtil.getTimeResolution();
 			}
 		}
+
 		if (isKeyDown(KEY_F3))
 			System.out.println("Player: " + MineFlat.player.getX() + ", " +
 					MineFlat.player.getY());
+
+		/*if (isKeyDown(KEY_F11)){
+			if (System.currentTimeMillis() - lastAction >= actionWait){
+				try {
+					Display.setFullscreen(!Display.isFullscreen());
+				}
+				catch (Exception ex){
+					ex.printStackTrace();
+					System.err.println("Could not change fullscreen mode!");
+				}
+				lastAction = System.currentTimeMillis();
+			}
+		}*/
 
 		if (Mouse.isButtonDown(0)){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
