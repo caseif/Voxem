@@ -16,6 +16,9 @@ public class Block {
 	protected int light = 0;
 
 	protected int chunk;
+	
+	public static int maxLight = 16;
+	public static int minLight = 1;
 
 	/**
 	 * The diameter of a block
@@ -104,7 +107,7 @@ public class Block {
 							glPushMatrix();
 							//glBindTexture(GL_TEXTURE_2D,
 							//		BlockUtil.textures.get(b.getType()).getTextureID());
-							float fracLight = (float)(b.getLightLevel()) / 15;
+							float fracLight = (float)(b.getLightLevel()) / maxLight;
 							glColor3f(fracLight, fracLight, fracLight);
 							int drawX = b.getX() * length + MineFlat.xOffset;
 							int drawY = b.getY() * length + MineFlat.yOffset;
@@ -129,7 +132,7 @@ public class Block {
 
 	public void updateLight(){
 		if (BlockUtil.getTop(this.getX()) == this.getY())
-			this.setLightLevel(15);
+			this.setLightLevel(16);
 		Block up = null, down = null, left = null, right = null;
 		if (this.getY() > 0)
 			up = BlockUtil.getBlock((int)this.getX(), this.getY() - 1);
@@ -142,8 +145,8 @@ public class Block {
 		for (Block b : adjacent){
 			if (b != null){
 				if (b.getLightLevel() < this.getLightLevel() - 1){
-					if (getLightLevel() <= 1)
-						b.setLightLevel(0);
+					if (getLightLevel() <= minLight + 1)
+						b.setLightLevel(minLight);
 					else
 						b.setLightLevel(this.getLightLevel() - 1);
 					if (b == left || b == up)

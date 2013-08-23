@@ -1,4 +1,4 @@
-package mineflat.event;
+package mineflat.event.block;
 
 import mineflat.Block;
 import mineflat.Location;

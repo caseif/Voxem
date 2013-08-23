@@ -1,7 +1,8 @@
-package mineflat.event;
+package mineflat.event.player;
 
 import mineflat.Location;
 import mineflat.Player;
+import mineflat.event.Cancellable;
 
 /**
  * Fired when a player moves from one point in space to another.

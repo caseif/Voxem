@@ -33,13 +33,15 @@ public class EventManager {
 						}
 						else
 							System.err.println("The event handler method " + m.getName() +
-									" in class " + l.getClass().getSimpleName() + " could not be registered" +
+									" in class " + l.getClass().getSimpleName() +
+									" could not be registered" +
 									" as an event listener because " + cl.getSimpleName() +
 									" does not extend Event");
 					}
 					else
 						System.err.println("The event handler method " + m.getName() +
-								" in class " + l.getClass().getSimpleName() + " could not be registered" +
+								" in class " + l.getClass().getSimpleName() +
+								" could not be registered" +
 								" as an event listener because " + cl.getSimpleName() +
 								" is an invalid type (primitive/interface/void)");
 				}

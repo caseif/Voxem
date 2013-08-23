@@ -2,7 +2,7 @@ package mineflat;
 
 import mineflat.event.EventHandler;
 import mineflat.event.Listener;
-import mineflat.event.PlayerMoveEvent;
+import mineflat.event.player.PlayerMoveEvent;
 
 public class EventListener implements Listener {
 

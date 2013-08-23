@@ -5,7 +5,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import mineflat.event.Event;
-import mineflat.event.PlayerMoveEvent;
+import mineflat.event.player.PlayerMoveEvent;
 import mineflat.util.BlockUtil;
 import mineflat.util.ImageUtil;
 import mineflat.util.MiscUtil;
@@ -170,7 +170,7 @@ public class Player {
 
 							if (below != null && isFalling()){
 								setFalling(false);
-								MineFlat.player.setY(oldY);
+								MineFlat.player.setY((float)Math.round(oldY));
 								fallFrame = 0;
 							}
 							else if (below == null && !isFalling() && jumpFrame == 0){

@@ -49,9 +49,9 @@ public class VboUtil {
 						values.add(Float.valueOf((float)b.getLocation().getPixelX()));
 						values.add(Float.valueOf((float)b.getLocation().getPixelY()));
 						// light
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
 						values.add(tX);
 						values.add(tY);
@@ -62,9 +62,9 @@ public class VboUtil {
 								Block.length);
 						values.add(Float.valueOf((float)b.getLocation().getPixelY()));
 						// light
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
 						values.add(tX + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
 						values.add(tY);
@@ -76,9 +76,9 @@ public class VboUtil {
 						values.add(Float.valueOf((float)b.getLocation().getPixelY()) +
 								Block.length);
 						// light
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
 						values.add(tX + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
 						values.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
@@ -89,9 +89,9 @@ public class VboUtil {
 						values.add(Float.valueOf((float)b.getLocation().getPixelY()) +
 								Block.length);
 						// light
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
-						values.add(Float.valueOf((float)b.getLightLevel() / 15));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						values.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
 						values.add(tX);
 						values.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));

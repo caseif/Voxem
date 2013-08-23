@@ -197,40 +197,6 @@ public class MineFlat {
 
 			VboUtil.render();
 			InputManager.manage();
-			centerPlayer();
-			Player.handleVerticalMovement();
-			player.draw();
-
-			double playerX = player.getX();
-			double playerY = player.getY();
-			double mouseX = (Mouse.getX() - xOffset) / (float)Block.length;
-			double mouseY = (Display.getHeight() - Mouse.getY() - yOffset) /
-					(float)Block.length;
-			double xDiff = mouseX - playerX;
-			double yDiff = mouseY - playerY;
-			double angle = Math.atan2(xDiff, yDiff);
-
-			glBegin(GL_LINES);
-			glColor3f(1f, 0f, 0f);
-			glVertex2f(player.getLocation().getPixelX() + xOffset,
-					player.getLocation().getPixelY() + yOffset);
-			glVertex2f(Mouse.getX(), Display.getHeight() - Mouse.getY());
-			glEnd();
-
-			for (double d = 0.5; d <= 5; d += 0.5){
-				double xAdd = d * Math.sin(angle);
-				double yAdd = d * Math.cos(angle);
-				int blockX = (int)Math.floor(playerX + xAdd);
-				int blockY = (int)Math.floor(playerY + yAdd);
-				if (blockY >= 0 && blockY <= 127){
-					if (BlockUtil.getBlock(blockX, blockY) != null){
-						selected = new Location(blockX, blockY);
-						break;
-					}
-				}
-				selected = null;
-			}
-
 			if (selected != null){
 				glColor3f(0f, 0f, 0f);
 				glBegin(GL_LINES);
@@ -251,6 +217,39 @@ public class MineFlat {
 				glVertex2f(selected.getPixelX() + xOffset,
 						selected.getPixelY() + yOffset);
 				glEnd();
+			}
+			Player.handleVerticalMovement();
+			player.draw();
+			centerPlayer();
+
+			double playerX = player.getX();
+			double playerY = player.getY();
+			double mouseX = (Mouse.getX() - xOffset) / (float)Block.length;
+			double mouseY = (Display.getHeight() - Mouse.getY() - yOffset) /
+					(float)Block.length;
+			double xDiff = mouseX - playerX;
+			double yDiff = mouseY - playerY;
+			double angle = Math.atan2(xDiff, yDiff);
+
+			/*glBegin(GL_LINES);
+			glColor3f(1f, 0f, 0f);
+			glVertex2f(player.getLocation().getPixelX() + xOffset,
+					player.getLocation().getPixelY() + yOffset);
+			glVertex2f(Mouse.getX(), Display.getHeight() - Mouse.getY());
+			glEnd();*/
+
+			for (double d = 0.5; d <= 5; d += 0.5){
+				double xAdd = d * Math.sin(angle);
+				double yAdd = d * Math.cos(angle);
+				int blockX = (int)Math.floor(playerX + xAdd);
+				int blockY = (int)Math.floor(playerY + yAdd);
+				if (blockY >= 0 && blockY <= 127){
+					if (BlockUtil.getBlock(blockX, blockY) != null){
+						selected = new Location(blockX, blockY);
+						break;
+					}
+				}
+				selected = null;
 			}
 
 			Display.sync(60);
