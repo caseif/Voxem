@@ -20,7 +20,7 @@ public class InputManager {
 	private static int jump3 = KEY_SPACE;
 	
 	private static long lastAction = 0;
-	private static long actionWait = 500;
+	private static long actionWait = 350;
 
 	public static void manage(){
 

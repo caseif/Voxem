@@ -206,17 +206,16 @@ public class MineFlat {
 			double mouseX = (Mouse.getX() - xOffset) / (float)Block.length;
 			double mouseY = (Display.getHeight() - Mouse.getY() - yOffset) /
 					(float)Block.length;
-			double xDiff = (int)(mouseX - playerX);
-			double yDiff = mouseY != playerY ? (mouseY - playerY) :
-				(mouseY - playerY + 1);
+			double xDiff = mouseX - playerX;
+			double yDiff = mouseY - playerY;
 			double angle = Math.atan2(xDiff, yDiff);
 
-			/*glBegin(GL_LINES);
+			glBegin(GL_LINES);
 			glColor3f(1f, 0f, 0f);
 			glVertex2f(player.getLocation().getPixelX() + xOffset,
 					player.getLocation().getPixelY() + yOffset);
 			glVertex2f(Mouse.getX(), Display.getHeight() - Mouse.getY());
-			glEnd();*/
+			glEnd();
 
 			for (double d = 0.5; d <= 5; d += 0.5){
 				double xAdd = d * Math.sin(angle);

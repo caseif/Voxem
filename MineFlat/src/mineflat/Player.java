@@ -140,7 +140,7 @@ public class Player {
 					jumpSpeed * 10 * (MineFlat.delta / MiscUtil.getTimeResolution());
 			Block b = null;
 			if (newY >= 1){
-				b = new Location(MineFlat.player.getX(), (float)Math.floor(newY - 1)).getBlock();
+				b = new Location(MineFlat.player.getX(), (float)Math.floor(newY)).getBlock();
 			}
 			if (jumpFrame < jumpHeight && b == null){
 				jumpFrame += jumpSpeed * 10 * (MineFlat.delta / MiscUtil.getTimeResolution());
