@@ -86,9 +86,10 @@ public class InputManager {
 			}
 		}
 
-		if (isKeyDown(KEY_F3))
+		if (isKeyDown(KEY_F3)){
 			System.out.println("Player: " + MineFlat.player.getX() + ", " +
 					MineFlat.player.getY());
+		}
 
 		/*if (isKeyDown(KEY_F11)){
 			if (System.currentTimeMillis() - lastAction >= actionWait){

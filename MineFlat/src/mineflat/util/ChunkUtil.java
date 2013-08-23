@@ -11,7 +11,7 @@ public class ChunkUtil {
 	/**
 	 * The number of chunks to be included in a world
 	 */
-	public static int totalChunks = 16;
+	public static int totalChunks = 32;
 
 	public static void generateChunks(){
 		System.out.println("Generating chunks...");
@@ -31,8 +31,22 @@ public class ChunkUtil {
 							MineFlat.noise.noise(getBlockXFromChunk(i, x) + 1) / 2 + 0.5) *
 							MineFlat.terrainVariation);
 					h = (h + leftHeight + rightHeight) / 2;
+					Material mat = null;
 					for (int y = h; y < 128; y++){
-						Material mat = Material.STONE;
+						if (mat != Material.STONE){
+							if (y == h){
+								mat = Material.GRASS;
+							}
+							else if (y < 15)
+								mat = Material.DIRT;
+							else if (y >= 15 && y < 17 && mat != Material.STONE){
+								if ((int)(MineFlat.noise.noise(
+										ChunkUtil.getBlockXFromChunk(c.getNum(), x), y) + 1) == 0)
+									mat = Material.STONE;
+							}
+							else if (y >= 17)
+								mat = Material.STONE;
+						}
 						Block b = new Block(
 								mat, new Location(getBlockXFromChunk(c.getNum(), x), y));
 						b.addToWorld();
@@ -59,29 +73,53 @@ public class ChunkUtil {
 							if (mat != Material.STONE){
 								if (y == h){
 									mat = Material.GRASS;
+									if (c.getBlock(x, y + 1) != null && 
+											c.getBlock(x, y + 1).getType() == Material.GRASS)
+										c.getBlock(x, y + 1).setType(Material.DIRT);
 								}
-								else if (y < 15)
+								else if (y < 15){
 									mat = Material.DIRT;
+								}
 								else if (y >= 15 && y < 17 && mat != Material.STONE){
 									if ((int)(MineFlat.noise.noise(
 											ChunkUtil.getBlockXFromChunk(c.getNum(), x), y) + 1) == 0)
 										mat = Material.STONE;
 								}
-								else if (y == 17)
+								else if (y >= 17)
 									mat = Material.STONE;
 							}
 							if (mat != null){
-								Block b = new Block(mat,
-										new Location(getBlockXFromChunk(c.getNum(), x), y));
-								b.addToWorld();
+								Block prev = new Location(getBlockXFromChunk(c.getNum(), x), y)
+								.getBlock();
+								if (prev != null)
+									prev.setType(mat);
+								else {
+									Block b = new Block(mat,
+											new Location(getBlockXFromChunk(c.getNum(), x), y));
+									b.addToWorld();
+								}
 							}
 						}
-						else
-							c.setBlock(x, y, null);
+						else if (c.getBlock(x, y) != null)
+							c.getBlock(x, y).destroy();
 					}
 				}
 				if (ChunkUtil.getBlockXFromChunk(c.getNum(), x) == MineFlat.player.getX())
 					MineFlat.player.setY(h - 2);
+			}
+		}
+		System.out.println("Planting grass...");
+		for (Chunk c : Chunk.chunks){
+			for (int x = 0; x < 16; x++){
+				for (int y = 0; y < 128; y++){
+					if (c.getBlock(x, y) != null){
+						if (c.getBlock(x, y).getType() != Material.GRASS){
+							Block b = new Block(Material.GRASS, c.getBlock(x, y).getLocation());
+							b.addToWorld();
+						}
+						break;
+					}
+				}
 			}
 		}
 		System.out.println("Lighting terrain...");
@@ -107,9 +145,7 @@ public class ChunkUtil {
 	}
 
 	public static int getBlockXFromChunk(int chunk, int block){
-		if (chunk > 0)
-			return (chunk - 1) * 16 + block;
-		return chunk * 16 + block;
+		return chunk > 0 ? (chunk - 1) * 16 + block : chunk * 16 + block;
 	}
 
 	public static int getChunkNum(int x){
