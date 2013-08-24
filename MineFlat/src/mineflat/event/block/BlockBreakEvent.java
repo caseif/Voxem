@@ -12,7 +12,7 @@ public class BlockBreakEvent extends BlockEvent {
 		this.newBlock = null;
 		block.destroy();
 		block = null;
-		VboUtil.updateArray();
+		VboUtil.updateChunkArray(l.getChunk());
 	}
 	
 	//TODO: Implement Cancellable

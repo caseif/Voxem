@@ -11,7 +11,7 @@ public class BlockPlaceEvent extends BlockEvent {
 		this.oldBlock = null;
 		this.newBlock = b;
 		b.updateLight();
-		VboUtil.updateArray();
+		VboUtil.updateChunkArray(l.getChunk());
 	}
 	
 }
