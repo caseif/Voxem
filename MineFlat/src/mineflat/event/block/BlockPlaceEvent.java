@@ -12,6 +12,16 @@ public class BlockPlaceEvent extends BlockEvent {
 		this.newBlock = b;
 		b.updateLight();
 		VboUtil.updateChunkArray(l.getChunk());
+		if (l.getPosInChunk() == 0)
+			if (l.getChunk() == 1)
+				VboUtil.updateChunkArray(l.getChunk() - 2);
+			else
+				VboUtil.updateChunkArray(l.getChunk() - 1);
+		else if (l.getPosInChunk() == 15)
+			if (l.getChunk() == -1)
+				VboUtil.updateChunkArray(l.getChunk() + 2);
+			else
+				VboUtil.updateChunkArray(l.getChunk() + 1);
 	}
 	
 }

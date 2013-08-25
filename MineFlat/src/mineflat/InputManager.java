@@ -153,32 +153,12 @@ public class InputManager {
 									boolean pBlock = false;
 									if (playerY >= 0 && playerY < 128)
 										if (l.getX() == (float)Math.floor(playerX) &&
-										l.getY() == (float)Math.floor(playerY + 1))
+										l.getY() == (float)Math.floor(playerY))
 											pBlock = true;
 									if (playerY >= -1 && playerY < 127)
 										if (l.getX() == (float)Math.floor(playerX) &&
-										l.getY() == (float)Math.floor(playerY + 2))
+										l.getY() == (float)Math.floor(playerY + 1))
 											pBlock = true;
-									if (playerX % 1 < 0.3){
-										if (playerY >= 0 && playerY < 128)
-											if (l.getX() == (float)Math.floor(playerX - 1) &&
-											l.getY() == (float)Math.floor(playerY + 1))
-												pBlock = true;
-										if (playerY >= -1 && playerY < 127)
-											if (l.getX() == (float)Math.floor(playerX - 1) &&
-											l.getY() == (float)Math.floor(playerY + 2))
-												pBlock = true;
-									}
-									else if (playerX % 1 > 0.7){
-										if (playerY >= 0 && playerY < 128)
-											if (l.getX() == (float)Math.floor(playerX + 1) &&
-											l.getY() == (float)Math.floor(playerY))
-												pBlock = true;
-										if (playerY >= -1 && playerY < 127)
-											if (l.getX() == (float)Math.floor(playerX + 1) &&
-											l.getY() == (float)Math.floor(playerY + 1))
-												pBlock = true;
-									}
 									if (!pBlock && l.getY() > 0 && l.getY() < 128){
 										Block block = new Block(Material.LOG, l);
 										block.addToWorld();

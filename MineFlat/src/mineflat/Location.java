@@ -55,7 +55,7 @@ public class Location {
 	}
 
 	public float getPosInChunk(){
-		return x - this.getChunk() * 16; 
+		return x >= 0 ? Math.abs(x) % 16 : 16 - Math.abs(x) % 16; 
 	}
 
 	public int getPixelX(){
