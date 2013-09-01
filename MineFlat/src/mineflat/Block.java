@@ -16,7 +16,7 @@ public class Block {
 	protected int light = 0;
 
 	protected int chunk;
-	
+
 	public static int maxLight = 16;
 	public static int minLight = 1;
 
@@ -26,7 +26,8 @@ public class Block {
 	public static final int length = 32;
 
 	/**
-	 * The factor by which the light level of a block should decrease from its brightest adjacent block
+	 * The factor by which the light level of a block should decrease from its brightest adjacent
+	 * block
 	 */
 	public static final int lightDistance = 1;
 
@@ -42,7 +43,7 @@ public class Block {
 		}
 		chunk = location.getChunk();
 	}
-	
+
 	public void addToWorld(){
 		Chunk c = ChunkUtil.getChunk(location.getChunk());
 		if (c == null)
@@ -130,43 +131,12 @@ public class Block {
 		}
 	}
 
-	public void updateLight(){
-		if (BlockUtil.getTop(this.getX()) == this.getY())
-			this.setLightLevel(16);
-		Block up = null, down = null, left = null, right = null;
-		if (this.getY() > 0)
-			up = BlockUtil.getBlock((int)this.getX(), this.getY() - 1);
-		if (this.getY() < 127)
-			down = BlockUtil.getBlock((int)this.getX(), this.getY() + 1);
-		left = BlockUtil.getBlock((int)this.getX() - 1, this.getY());
-		right = BlockUtil.getBlock((int)this.getX() + 1, this.getY());
-		Block[] adjacent = new Block[]{up, down, left, right};
-		boolean adj = false;
-		for (Block b : adjacent){
-			if (b != null){
-				if (b.getLightLevel() < this.getLightLevel() - 1){
-					if (getLightLevel() <= minLight + 1)
-						b.setLightLevel(minLight);
-					else
-						b.setLightLevel(this.getLightLevel() - 1);
-					if (b == left || b == up)
-						b.updateLight();
-				}
-				adj = true;
-			}
-		}
-		if (!adj)
-			for (int y = getY(); y >= 0; y--)
-				if (BlockUtil.getBlock(getX(), y) != null)
-					light -= 1;
-	}
-	
 	public void destroy(){
 		ChunkUtil.getChunk(ChunkUtil.getChunkNum((int)Math.floor(getX())))
-				.setBlock((int)Math.abs(Math.floor(getX() % 16)), 
+		.setBlock((int)Math.abs(Math.floor(getX() % 16)), 
 				(int)(Math.floor(getY())), null);
 	}
-	
+
 	public Block clone(){
 		return new Block(type, location);
 	}

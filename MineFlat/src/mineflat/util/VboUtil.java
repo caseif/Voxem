@@ -102,7 +102,6 @@ public class VboUtil {
 						// texture
 						cValues.add(tX);
 						cValues.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
-						b.updateLight();
 					}
 				}
 			}
@@ -185,7 +184,6 @@ public class VboUtil {
 						// texture
 						cValues.add(tX);
 						cValues.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
-						b.updateLight();
 					}
 				}
 			}
@@ -213,7 +211,7 @@ public class VboUtil {
 	}
 
 	/**
-	 * Syndicates all chunk arrays into a single VBO.
+	 * Splices all chunk arrays into a single VBO.
 	 */
 	public static void recreateArray(){
 		List<Float> newList = new ArrayList<Float>();

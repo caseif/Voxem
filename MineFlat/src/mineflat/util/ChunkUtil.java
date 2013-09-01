@@ -123,13 +123,8 @@ public class ChunkUtil {
 			}
 		}
 		System.out.println("Lighting terrain...");
-		for (Chunk c : Chunk.chunks){
-			//System.out.println("Lighting chunk " + c.getNum());
-			for (int x = 0; x < 16; x++)
-				for (int y = 0; y < 128; y++)
-					if (c.getBlock(x, y) != null)
-						c.getBlock(x, y).updateLight();
-		}
+		for (Chunk c : Chunk.chunks)
+			c.updateLight();
 	}
 
 	public static Chunk getChunk(int i){
