@@ -21,6 +21,7 @@ public class VboUtil {
 	public static int bufferHandle;
 	public static float[] vertexArray;
 	public static HashMap<Integer, Float[]> chunkArrays = new HashMap<Integer, Float[]>();
+	public static boolean rebindArray = false;
 
 	/**
 	 * Initializes VBO support in the OpenGL instance.
@@ -112,7 +113,6 @@ public class VboUtil {
 		}
 
 		recreateArray();
-		bindArray();
 
 	}
 
@@ -193,7 +193,6 @@ public class VboUtil {
 			chunkArrays.put(c.getNum(), cArray);
 
 			recreateArray();
-			bindArray();
 		}
 	}
 
@@ -224,7 +223,7 @@ public class VboUtil {
 
 	/**
 	 * Renders the VBO to the screen. This does not rebind it, and so block updates will not be
-	 * taken into account until VboUtil.bindArray() is called.
+	 * visible until VboUtil.bindArray() is called.
 	 */
 	public static void render(){
 		glPushMatrix();

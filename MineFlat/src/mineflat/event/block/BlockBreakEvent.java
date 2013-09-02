@@ -32,6 +32,7 @@ public class BlockBreakEvent extends BlockEvent {
 			ChunkUtil.getChunk(l.getChunk() + 1).updateLight();
 			VboUtil.updateChunkArray(l.getChunk() + 1);
 		}
+		VboUtil.rebindArray = true;
 	}
 
 	//TODO: Implement Cancellable

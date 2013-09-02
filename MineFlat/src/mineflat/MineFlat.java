@@ -109,127 +109,161 @@ public class MineFlat {
 	 * The block which is currently selected.
 	 */
 	public static Location selected = null;
+	public static int selectedX = 0;
+	public static int selectedY = 0;
+	public static boolean isSelected = false;
+
+	public static boolean closed = false;
+
+	public static final Object lock = new Object();
 
 	public static void main(String[] args){
-
-		try {
-			DisplayMode[] modes = Display.getAvailableDisplayModes();
-			for (int i = 0; i < modes.length; i++){
-				if (modes[i].getWidth() == Display.getDesktopDisplayMode().getWidth() &&
-						modes[i].getHeight() == Display.getDesktopDisplayMode().getHeight() &&
-						modes[i].isFullscreenCapable()){
-					Display.setDisplayMode(modes[i]);
-					break;
-				}
-			}
-			Display.setVSyncEnabled(true);
-			Display.setTitle("MineFlat");
-			Display.setResizable(true);
-			ByteBuffer[] icons = null;
-			if (System.getProperty("os.name").startsWith("Windows")){
-				icons = new ByteBuffer[2];
-				BufferedImage icon1 = ImageUtil.scaleImage(
-						ImageIO.read(MineFlat.class.getClassLoader()
-								.getResourceAsStream("images/icon.png")), 16, 16);
-				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
-						MineFlat.class.getClassLoader()
-						.getResourceAsStream("images/icon.png")), 32, 32);;
-						icons[0] = BufferUtil.asByteBuffer(icon1);
-						icons[1] = BufferUtil.asByteBuffer(icon2);
-			}
-			else if (System.getProperty("os.name").startsWith("Mac")){
-				icons = new ByteBuffer[1];
-				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
-						MineFlat.class.getClassLoader()
-						.getResourceAsStream("images/icon.png")), 128, 128);
-				icons[0] = BufferUtil.asByteBuffer(icon);
-			}
-			else {
-				icons = new ByteBuffer[1];
-				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
-						MineFlat.class.getClassLoader()
-						.getResourceAsStream("images/icon.png")), 32, 32);
-				icons[0] = BufferUtil.asByteBuffer(icon);
-			}
-			Display.setIcon(icons);
-			Display.create();
-			glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
-			if (glVersion < MINIMUM_GL_VERSION){
-				System.err.println("Minimum required OpenGL version is " +
-						MINIMUM_GL_VERSION + "; " + 
-						"current version is " + glVersion);
-				Display.destroy();
-				System.exit(0);
-			}
-		}
-		catch (Exception ex){
-			ex.printStackTrace();
-		}
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
-		glEnable(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		glClearColor(0.3f, 0.3f, 0.8f, 1f);
-
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		BlockUtil.addTexture(Material.DIRT);
-		BlockUtil.addTexture(Material.GRASS);
-		BlockUtil.addTexture(Material.STONE);
-		BlockUtil.addTexture(Material.LOG);
-		BlockUtil.addTexture(Material.WOOD);
-
-		Player.initialize();
 
 		ChunkUtil.generateChunks();
 
 		EventManager.registerEventListener(new EventListener());
 
-		VboUtil.initialize();
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				try {
+					DisplayMode[] modes = Display.getAvailableDisplayModes();
+					for (int i = 0; i < modes.length; i++){
+						if (modes[i].getWidth() == Display.getDesktopDisplayMode().getWidth() &&
+								modes[i].getHeight() == Display.getDesktopDisplayMode().getHeight() &&
+								modes[i].isFullscreenCapable()){
+							Display.setDisplayMode(modes[i]);
+							break;
+						}
+					}
+					Display.setVSyncEnabled(true);
+					Display.setTitle("MineFlat");
+					Display.setResizable(false);
+					ByteBuffer[] icons = null;
+					if (System.getProperty("os.name").startsWith("Windows")){
+						icons = new ByteBuffer[2];
+						BufferedImage icon1 = ImageUtil.scaleImage(
+								ImageIO.read(MineFlat.class.getClassLoader()
+										.getResourceAsStream("images/icon.png")), 16, 16);
+						BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
+								MineFlat.class.getClassLoader()
+								.getResourceAsStream("images/icon.png")), 32, 32);;
+								icons[0] = BufferUtil.asByteBuffer(icon1);
+								icons[1] = BufferUtil.asByteBuffer(icon2);
+					}
+					else if (System.getProperty("os.name").startsWith("Mac")){
+						icons = new ByteBuffer[1];
+						BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
+								MineFlat.class.getClassLoader()
+								.getResourceAsStream("images/icon.png")), 128, 128);
+						icons[0] = BufferUtil.asByteBuffer(icon);
+					}
+					else {
+						icons = new ByteBuffer[1];
+						BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
+								MineFlat.class.getClassLoader()
+								.getResourceAsStream("images/icon.png")), 32, 32);
+						icons[0] = BufferUtil.asByteBuffer(icon);
+					}
+					Display.setIcon(icons);
+					Display.create();
+					glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
+					if (glVersion < MINIMUM_GL_VERSION){
+						System.err.println("Minimum required OpenGL version is " +
+								MINIMUM_GL_VERSION + "; " + 
+								"current version is " + glVersion);
+						Display.destroy();
+						System.exit(0);
+					}
+				}
+				catch (Exception ex){
+					ex.printStackTrace();
+				}
 
-		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
+				glMatrixMode(GL_MODELVIEW);
+				glLoadIdentity();
 
+				glEnable(GL_TEXTURE_2D);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+				glClearColor(0.3f, 0.3f, 0.8f, 1f);
+
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+				BlockUtil.addTexture(Material.DIRT);
+				BlockUtil.addTexture(Material.GRASS);
+				BlockUtil.addTexture(Material.STONE);
+				BlockUtil.addTexture(Material.LOG);
+				BlockUtil.addTexture(Material.WOOD);
+
+				Player.initialize();
+				VboUtil.initialize();
+				VboUtil.bindArray();
+
+				while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+
+					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+					InputManager.pollInput();
+					if (VboUtil.rebindArray){
+						VboUtil.bindArray();
+						VboUtil.rebindArray = false;
+					}
+					VboUtil.render();
+					
+					synchronized (lock){
+						if (selected != null){
+							selectedX = selected.getPixelX() + xOffset;
+							selectedY = selected.getPixelY() + yOffset;
+							isSelected = true;
+						}
+						else
+							isSelected = false;
+					}
+					if (isSelected){
+						glColor3f(0f, 0f, 0f);
+						glBegin(GL_LINES);
+						glVertex2f(selectedX,
+								selectedY);
+						glVertex2f(selectedX + Block.length,
+								selectedY);
+						glVertex2f(selectedX + Block.length,
+								selectedY);
+						glVertex2f(selectedX + Block.length,
+								selectedY + Block.length);
+						glVertex2f(selectedX + Block.length,
+								selectedY + Block.length);
+						glVertex2f(selectedX,
+								selectedY + Block.length);
+						glVertex2f(selectedX,
+								selectedY + Block.length);
+						glVertex2f(selectedX,
+								selectedY);
+						glEnd();
+					}
+
+					centerPlayer();
+					player.draw();
+
+					Display.update();
+				}
+				closed = true;
+			}
+		});
+		t.start();
+
+		while (!closed){
 			time = MiscUtil.getTime();
 			delta = time - lastTime;
 			lastTime = time;
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			VboUtil.render();
 			InputManager.manage();
-			if (selected != null){
-				glColor3f(0f, 0f, 0f);
-				glBegin(GL_LINES);
-				glVertex2f(selected.getPixelX() + xOffset,
-						selected.getPixelY() + yOffset);
-				glVertex2f(selected.getPixelX() + xOffset + Block.length,
-						selected.getPixelY() + yOffset);
-				glVertex2f(selected.getPixelX() + xOffset + Block.length,
-						selected.getPixelY() + yOffset);
-				glVertex2f(selected.getPixelX() + xOffset + Block.length,
-						selected.getPixelY() + yOffset + Block.length);
-				glVertex2f(selected.getPixelX() + xOffset + Block.length,
-						selected.getPixelY() + yOffset + Block.length);
-				glVertex2f(selected.getPixelX() + xOffset,
-						selected.getPixelY() + yOffset + Block.length);
-				glVertex2f(selected.getPixelX() + xOffset,
-						selected.getPixelY() + yOffset + Block.length);
-				glVertex2f(selected.getPixelX() + xOffset,
-						selected.getPixelY() + yOffset);
-				glEnd();
-			}
 			Player.handleVerticalMovement();
-			player.draw();
-			centerPlayer();
 
 			double playerX = player.getX();
 			double playerY = player.getY();
@@ -240,29 +274,24 @@ public class MineFlat {
 			double yDiff = mouseY - playerY;
 			double angle = Math.atan2(xDiff, yDiff);
 
-			/*glBegin(GL_LINES);
-			glColor3f(1f, 0f, 0f);
-			glVertex2f(player.getLocation().getPixelX() + xOffset,
-					player.getLocation().getPixelY() + yOffset);
-			glVertex2f(Mouse.getX(), Display.getHeight() - Mouse.getY());
-			glEnd();*/
-
+			boolean found = false;
 			for (double d = 0.5; d <= 5; d += 0.5){
 				double xAdd = d * Math.sin(angle);
 				double yAdd = d * Math.cos(angle);
 				int blockX = (int)Math.floor(playerX + xAdd);
 				int blockY = (int)Math.floor(playerY + yAdd);
-				if (blockY >= 0 && blockY <= 127){
-					if (BlockUtil.getBlock(blockX, blockY) != null){
-						selected = new Location(blockX, blockY);
-						break;
+				synchronized (lock){
+					if (blockY >= 0 && blockY <= 127){
+						if (BlockUtil.getBlock(blockX, blockY) != null){
+							selected = new Location(blockX, blockY);
+							found = true;
+							break;
+						}
 					}
 				}
-				selected = null;
 			}
-
-			Display.sync(60);
-			Display.update();
+			if (!found)
+				selected = null;
 
 		}
 

@@ -21,14 +21,52 @@ public class InputManager {
 	private static int jump2 = KEY_UP;
 	private static int jump3 = KEY_SPACE;
 
+	private static boolean left = false;
+	private static boolean right = false;
+	private static boolean jump = false;
+	private static boolean f3 = false;
+	private static boolean mouse1 = false;
+	private static boolean mouse2 = false;
+	private static int mouseX = 0;
+	private static int mouseY = 0;
+
 	private static long lastAction = 0;
 	private static long actionWait = 350;
+
+	public static void pollInput(){
+		if (isKeyDown(left1) || isKeyDown(left2))
+			left = true;
+		else
+			left = false;
+		if (isKeyDown(right1) || isKeyDown(right2))
+			right = true;
+		else
+			right = false;
+		if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3))
+			jump = true;
+		else
+			jump = false;
+		if (isKeyDown(KEY_F3))
+			f3 = true;
+		else
+			f3 = false;
+		if (Mouse.isButtonDown(0))
+			mouse1 = true;
+		else
+			mouse1 = false;
+		if (Mouse.isButtonDown(1))
+			mouse2 = true;
+		else
+			mouse2 = false;
+		mouseX = Mouse.getX();
+		mouseY = Mouse.getY();
+	}
 
 	public static void manage(){
 
 		float xShift = 0;
 
-		if (isKeyDown(left1) || isKeyDown(left2)){
+		if (left){
 			float newX = MineFlat.player.getX() -
 					(Player.playerSpeed * (MineFlat.delta / MiscUtil.getTimeResolution()));
 			float y = MineFlat.player.getY();
@@ -54,7 +92,7 @@ public class InputManager {
 			if (!blocked)
 				MineFlat.player.setX(newX);
 		}
-		if (isKeyDown(right1) || isKeyDown(right2)){
+		if (right){
 			float newX = MineFlat.player.getX() +
 					(Player.playerSpeed * (MineFlat.delta / MiscUtil.getTimeResolution()));
 			float y = MineFlat.player.getY();
@@ -80,13 +118,13 @@ public class InputManager {
 			if (!blocked)
 				MineFlat.player.setX(newX);
 		}
-		if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3)){
+		if (jump){
 			if (Player.jumpFrame == 0 && !Player.falling){
 				Player.jumpFrame += MineFlat.delta / MiscUtil.getTimeResolution();
 			}
 		}
 
-		if (isKeyDown(KEY_F3)){
+		if (f3){
 			System.out.println("Player: " + MineFlat.player.getX() + ", " +
 					MineFlat.player.getY());
 		}
@@ -104,7 +142,7 @@ public class InputManager {
 			}
 		}*/
 
-		if (Mouse.isButtonDown(0)){
+		if (mouse1){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
 				if (MineFlat.selected != null){
 					Block b = BlockUtil.getBlock((int)Math.floor(MineFlat.selected.getX()),
@@ -115,7 +153,7 @@ public class InputManager {
 			}
 		}
 
-		if (Mouse.isButtonDown(1)){
+		if (mouse2){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
 				if (MineFlat.selected != null){
 					int x = MineFlat.selected.getX() > MineFlat.player.getX() ?
@@ -126,10 +164,10 @@ public class InputManager {
 										(int)Math.floor(MineFlat.selected.getY()) + 1;
 									double playerX = MineFlat.player.getX();
 									double playerY = MineFlat.player.getY();
-									double mouseX = (Mouse.getX() - MineFlat.xOffset) /
+									double mouseX = (InputManager.mouseX - MineFlat.xOffset) /
 											(float)Block.length;
 									double mouseY = (Display.getHeight() -
-											Mouse.getY() - MineFlat.yOffset) /
+											InputManager.mouseY - MineFlat.yOffset) /
 											(float)Block.length;
 									double xDiff = mouseX - playerX;
 									double yDiff = mouseY - playerY;
@@ -148,22 +186,24 @@ public class InputManager {
 											y -= 1;
 										l = new Location(MineFlat.selected.getX(), y);
 									}
-									if ((int)playerY == y)
-										playerY -= 1;
-									boolean pBlock = false;
-									if (playerY >= 0 && playerY < 128)
-										if (l.getX() == (float)Math.floor(playerX) &&
-										l.getY() == (float)Math.floor(playerY))
-											pBlock = true;
-									if (playerY >= -1 && playerY < 127)
-										if (l.getX() == (float)Math.floor(playerX) &&
-										l.getY() == (float)Math.floor(playerY + 1))
-											pBlock = true;
-									if (!pBlock && l.getY() > 0 && l.getY() < 128){
-										Block block = new Block(Material.LOG, l);
-										block.addToWorld();
-										Event.fireEvent(
-												new BlockPlaceEvent(l, block));
+									if (l != null){
+										if ((int)playerY == y)
+											playerY -= 1;
+										boolean pBlock = false;
+										if (playerY >= 0 && playerY < 128)
+											if (l.getX() == (float)Math.floor(playerX) &&
+											l.getY() == (float)Math.floor(playerY))
+												pBlock = true;
+										if (playerY >= -1 && playerY < 127)
+											if (l.getX() == (float)Math.floor(playerX) &&
+											l.getY() == (float)Math.floor(playerY + 1))
+												pBlock = true;
+										if (!pBlock && l.getY() > 0 && l.getY() < 128){
+											Block block = new Block(Material.LOG, l);
+											block.addToWorld();
+											Event.fireEvent(
+													new BlockPlaceEvent(l, block));
+										}
 									}
 				}
 				lastAction = System.currentTimeMillis();
