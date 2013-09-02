@@ -23,11 +23,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 /**
- * @author Maxim Roncacé
+ * @author Maxim RoncacÃ©
  * 
  * @License
  *
- * Copyright (c) 2013 Maxim Roncacé
+ * Copyright (c) 2013 Maxim RoncacÃ©
  *
  * THE WORK IS PROVIDED UNDER THE TERMS OF THIS CREATIVE COMMONS PUBLIC LICENSE
  * ("CCPL" OR "LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER APPLICABLE LAW. ANY USE
@@ -76,7 +76,7 @@ public class MineFlat {
 	/**
 	 * The seed to be used for terrain generation
 	 */
-	public static long seed = 1000;
+	public static long seed = System.currentTimeMillis() * 71312 % 1337;
 
 	/**
 	 * The game's noise generator for use in terrain generation
