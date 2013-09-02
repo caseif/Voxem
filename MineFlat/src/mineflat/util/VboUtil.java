@@ -20,6 +20,7 @@ public class VboUtil {
 
 	public static int bufferHandle;
 	public static float[] vertexArray;
+	public static FloatBuffer vertexData = null;
 	public static HashMap<Integer, Float[]> chunkArrays = new HashMap<Integer, Float[]>();
 	public static boolean rebindArray = false;
 
@@ -41,79 +42,9 @@ public class VboUtil {
 	 * Updates the entire VBO. This method may cause a severe drop in FPS while running.
 	 */
 	public static void updateArray(){
-		for (Chunk c : Chunk.chunks){
-			List<Float> cValues = new ArrayList<Float>();
-			for (int x = 0; x < 16; x++){
-				for (int y = 0; y < 128; y++){
-					Block b = c.getBlock(x, y);
-					if (b != null){
-						float tX = Float.valueOf(BlockUtil.texCoords
-								.get(b.getType())
-								.getX());
-						float tY = Float.valueOf(BlockUtil.texCoords.get(b.getType()).getY());
-
-						// top left
-						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
-						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						// texture
-						cValues.add(tX);
-						cValues.add(tY);
-
-						// top right
-						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
-								Block.length);
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
-						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						// texture
-						cValues.add(tX + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
-						cValues.add(tY);
-
-						// bottom right
-						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
-								Block.length);
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) +
-								Block.length);
-						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						// texture
-						cValues.add(tX + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
-						cValues.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
-
-						// bottom left
-						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) +
-								Block.length);
-						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						// texture
-						cValues.add(tX);
-						cValues.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
-					}
-				}
-			}
-
-			chunkArrays.remove(c.getNum());
-			Float[] cArray = cValues.toArray(new Float[]{});
-			chunkArrays.put(c.getNum(), cArray);
-		}
-
+		for (Chunk c : Chunk.chunks)
+				updateChunkArray(c.getNum());
 		recreateArray();
-
 	}
 
 	/**
@@ -197,16 +128,27 @@ public class VboUtil {
 	}
 
 	/**
-	 * Rebinds the VBO to the OpenGL instance, effectively redrawing it.
+	 * Prepares the data to bind to the primary VBO
 	 */
-	public static void bindArray(){
-		FloatBuffer vertexData = (FloatBuffer)BufferUtils
+	public static void prepareBindArray(){
+		vertexData = (FloatBuffer)BufferUtils
 				.createFloatBuffer(vertexArray.length).flip();
 		vertexData.limit(vertexData.capacity());
 		vertexData.put(vertexArray);
 		vertexData.rewind();
-		glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
-		glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
+		rebindArray = true;
+	}
+
+	/**
+	 * Rebinds the VBO to the OpenGL instance, effectively redrawing it.
+	 */
+	public static void bindArray(){
+		if (vertexData != null){
+			glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
+			glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
+			vertexData = null;
+		}
+		rebindArray = false;
 	}
 
 	/**

@@ -135,7 +135,7 @@ public class MineFlat {
 							break;
 						}
 					}
-					Display.setVSyncEnabled(true);
+					//Display.setVSyncEnabled(true);
 					Display.setTitle("MineFlat");
 					Display.setResizable(false);
 					ByteBuffer[] icons = null;
@@ -202,18 +202,17 @@ public class MineFlat {
 				BlockUtil.addTexture(Material.WOOD);
 
 				Player.initialize();
+				
 				VboUtil.initialize();
-				VboUtil.bindArray();
+				VboUtil.prepareBindArray();
 
 				while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 					InputManager.pollInput();
-					if (VboUtil.rebindArray){
+					if (VboUtil.rebindArray)
 						VboUtil.bindArray();
-						VboUtil.rebindArray = false;
-					}
 					VboUtil.render();
 					
 					synchronized (lock){
@@ -250,6 +249,7 @@ public class MineFlat {
 					centerPlayer();
 					player.draw();
 
+					Display.sync(60);
 					Display.update();
 				}
 				closed = true;

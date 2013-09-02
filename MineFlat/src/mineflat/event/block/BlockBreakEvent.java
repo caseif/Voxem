@@ -17,22 +17,30 @@ public class BlockBreakEvent extends BlockEvent {
 		ChunkUtil.getChunk(l.getChunk()).updateLight();
 		VboUtil.updateChunkArray(l.getChunk());
 		if (l.getChunk() == 1){
-			ChunkUtil.getChunk(l.getChunk() - 2).updateLight();
-			VboUtil.updateChunkArray(l.getChunk() - 2);
+			if (ChunkUtil.isChunkGenerated(l.getChunk() - 2)){
+				ChunkUtil.getChunk(l.getChunk() - 2).updateLight();
+				VboUtil.updateChunkArray(l.getChunk() - 2);
+			}
 		}
 		else {
-			ChunkUtil.getChunk(l.getChunk() - 1).updateLight();
-			VboUtil.updateChunkArray(l.getChunk() - 1);
+			if (ChunkUtil.isChunkGenerated(l.getChunk() - 1)){
+				ChunkUtil.getChunk(l.getChunk() - 1).updateLight();
+				VboUtil.updateChunkArray(l.getChunk() - 1);
+			}
 		}
 		if (l.getChunk() == -1){
-			ChunkUtil.getChunk(l.getChunk() + 2).updateLight();
-			VboUtil.updateChunkArray(l.getChunk() + 2);
+			if (ChunkUtil.isChunkGenerated(l.getChunk() + 2)){
+				ChunkUtil.getChunk(l.getChunk() + 2).updateLight();
+				VboUtil.updateChunkArray(l.getChunk() + 2);
+			}
 		}
 		else {
-			ChunkUtil.getChunk(l.getChunk() + 1).updateLight();
-			VboUtil.updateChunkArray(l.getChunk() + 1);
+			if (ChunkUtil.isChunkGenerated(l.getChunk() + 1)){
+				ChunkUtil.getChunk(l.getChunk() + 1).updateLight();
+				VboUtil.updateChunkArray(l.getChunk() + 1);
+			}
 		}
-		VboUtil.rebindArray = true;
+		VboUtil.prepareBindArray();
 	}
 
 	//TODO: Implement Cancellable

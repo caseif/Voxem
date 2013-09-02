@@ -11,7 +11,7 @@ public class ChunkUtil {
 	/**
 	 * The number of chunks to be included in a world
 	 */
-	public static int totalChunks = 32;
+	public static int totalChunks = 5;
 
 	public static void generateChunks(){
 		System.out.println("Generating chunks...");
