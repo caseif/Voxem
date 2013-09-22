@@ -4,6 +4,9 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
@@ -38,7 +41,8 @@ import org.lwjgl.opengl.DisplayMode;
  * GRANTS YOU THE RIGHTS CONTAINED HERE IN CONSIDERATION OF YOUR ACCEPTANCE OF SUCH TERMS AND
  * CONDITIONS.
  *
- * The full text of this license can be found in the root directory of this JAR file under the file "LICENSE"
+ * The full text of this license can be found in the root directory of this JAR file under the file
+ * "LICENSE"
  */
 
 public class MineFlat {
@@ -54,7 +58,8 @@ public class MineFlat {
 	public static double glVersion;
 
 	/**
-	 * The variable used to determine the duration of each iteration so as to move ingame objects at a constant speed
+	 * The variable used to determine the duration of each iteration so as to move ingame objects
+	 * at a constant speed
 	 */
 	public static float delta = 0;
 
@@ -129,8 +134,8 @@ public class MineFlat {
 					DisplayMode[] modes = Display.getAvailableDisplayModes();
 					for (int i = 0; i < modes.length; i++){
 						if (modes[i].getWidth() == Display.getDesktopDisplayMode().getWidth() &&
-								modes[i].getHeight() == Display.getDesktopDisplayMode().getHeight() &&
-								modes[i].isFullscreenCapable()){
+								modes[i].getHeight() == Display.getDesktopDisplayMode()
+								.getHeight() && modes[i].isFullscreenCapable()){
 							Display.setDisplayMode(modes[i]);
 							break;
 						}
@@ -202,7 +207,7 @@ public class MineFlat {
 				BlockUtil.addTexture(Material.WOOD);
 
 				Player.initialize();
-				
+
 				VboUtil.initialize();
 				VboUtil.prepareBindArray();
 
@@ -214,7 +219,7 @@ public class MineFlat {
 					if (VboUtil.rebindArray)
 						VboUtil.bindArray();
 					VboUtil.render();
-					
+
 					synchronized (lock){
 						if (selected != null){
 							selectedX = selected.getPixelX() + xOffset;
@@ -292,14 +297,89 @@ public class MineFlat {
 			}
 			if (!found)
 				selected = null;
-
 		}
+
+		saveWorld("world");
 
 	}
 
 	public static void centerPlayer(){
 		xOffset = Display.getWidth() / 2 - player.getLocation().getPixelX();
-		yOffset = Display.getHeight() / 2 - player.getLocation().getPixelY();	
+		yOffset = Display.getHeight() / 2 - player.getLocation().getPixelY();
+	}
+
+	/**
+	 * Saves a world to disk in the MineFlat Level format. The first two bytes of the file
+	 * represent the revision of the format (currently 1). Each chunk is stored to a separate
+	 * section of the file. The first two bytes (0xFF 0xFF) of each section signify the start
+	 * of a new chunk. The next byte represents whether or not the chunk number is negative. The
+	 * next two bytes store the number of the chunk. Each block is then saved. 6 bytes are reserved
+	 * per block: two for the type, two for a data value (NYI), and two for additional data (NYI).
+	 * In this way, a total of 12293 bytes, or 12 kilobytes plus 5 bytes, are used per chunk.
+	 * @param name The name of the world to be saved (reserved for future use).
+	 */
+	public static void saveWorld(String name){
+		System.out.println("Saving chunks...");
+		try {
+			File saveFolder = new File(MiscUtil.getAppDataFolder() + File.separator +
+					"MineFlat", "saves");
+			if (!saveFolder.exists())
+				saveFolder.mkdir();
+			saveFolder = new File(saveFolder, name);
+			if (!saveFolder.exists())
+				saveFolder.mkdir();
+			File save = new File(saveFolder, "level.mfl");
+			if (save.exists())
+				save.delete();
+			save.createNewFile();
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(save));
+			byte[] bytes = new byte[32 * (128 * 16 * 6 + 5) + 5];
+			// revision
+			bytes[0] = 0x0;
+			bytes[1] = 0x1;
+			int i = 2;
+			for (Chunk c : Chunk.chunks){
+				// chunk definition
+				bytes[i] = (byte)0xFF;
+				bytes[i + 1] = (byte)0xFF;
+				i += 2;
+				bytes[i] = c.getNum() >= 0 ? (byte)0x0 : (byte)0x1;
+				i += 1;
+				for (byte cN : MiscUtil.hexToByte(Integer.toHexString(c.getNum()))){
+					bytes[i] = cN;
+					i += 1;
+				}
+				for (int x = 0; x < 16; x++){
+					for (int y = 0; y < 128; y++){
+						Block b = c.getBlock(x, y);
+						// block type
+						byte[] type = b == null ? new byte[]{0x0, 0x0} :
+							MiscUtil.hexToByte(Integer.toHexString(b.getType().ordinal()));
+						if (bytes.length == 1){
+							bytes[i] = 0x0;
+							i += 1;
+						}
+						for (int o = 0; i < type.length; o++)
+							bytes[i + o] = type[o];
+						i += type.length;
+						// data value (NYI)
+						bytes[i] = 0x0;
+						bytes[i + 1] = 0x0;
+						// additional data (NYI)
+						bytes[i + 2] = 0x0;
+						bytes[i + 3] = 0x0;
+						i += 4;
+					}
+				}
+			}
+			bos.write(bytes);
+			bos.flush();
+			bos.close();
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+			System.err.println("Failed to save world to disk");
+		}
 	}
 
 }
