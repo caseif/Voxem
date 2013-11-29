@@ -1,6 +1,7 @@
 package mineflat.util;
 
 import mineflat.Block;
+import mineflat.CaveFactory;
 import mineflat.Chunk;
 import mineflat.Location;
 import mineflat.Material;
@@ -122,6 +123,21 @@ public class ChunkUtil {
 				}
 			}
 		}
+		System.out.println("Mining caves...");
+		for (Chunk c : Chunk.chunks){
+			int x = ChunkUtil.getBlockXFromChunk(c.getNum(), CaveFactory.r.nextInt(16));
+			new CaveFactory(x, BlockUtil.getTop(x) + 1);
+		}
+		while (CaveFactory.caveFactories.size() > 0){
+			for (int i = 0; i < CaveFactory.caveFactories.size(); i++)
+				CaveFactory.caveFactories.get(i).dig();
+			for (CaveFactory cf : CaveFactory.deactivate)
+				CaveFactory.caveFactories.remove(cf);
+			CaveFactory.deactivate.clear();
+			System.out.println(CaveFactory.caveFactories.size());
+		}
+		CaveFactory.caveFactories.clear();
+		CaveFactory.caveFactories = null;
 		System.out.println("Lighting terrain...");
 		for (Chunk c : Chunk.chunks)
 			c.updateLight();

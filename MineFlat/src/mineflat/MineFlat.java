@@ -299,7 +299,7 @@ public class MineFlat {
 				selected = null;
 		}
 
-		saveWorld("world");
+		//saveWorld("world");
 
 	}
 

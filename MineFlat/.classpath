@@ -2,9 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/slick.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/LWJGL/newest/jar/jinput.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/LWJGL/newest/jar/lwjgl.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/LWJGL/newest/jar/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="/home/maxim/workspace/APIs/slick.jar"/>
+	<classpathentry kind="lib" path="/home/maxim/workspace/APIs/LWJGL/newest/jar/jinput.jar"/>
+	<classpathentry kind="lib" path="/home/maxim/workspace/APIs/LWJGL/newest/jar/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/maxim/workspace/APIs/LWJGL/newest/native/linux"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/maxim/workspace/APIs/LWJGL/newest/jar/lwjgl_util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
