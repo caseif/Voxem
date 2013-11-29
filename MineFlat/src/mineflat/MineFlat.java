@@ -171,7 +171,7 @@ public class MineFlat {
 					}
 					Display.setIcon(icons);
 					Display.create();
-					glVersion = Double.parseDouble(Display.getVersion().substring(0, 3));
+					glVersion = Double.parseDouble(glGetString(GL_VERSION).substring(0, 3));
 					if (glVersion < MINIMUM_GL_VERSION){
 						System.err.println("Minimum required OpenGL version is " +
 								MINIMUM_GL_VERSION + "; " + 

@@ -49,5 +49,13 @@ public class BlockUtil {
 			return c.getBlock(Math.abs(x % 16), y);
 		return null;
 	}
+	
+	public static boolean isBlockEmpty(Block b){
+		if (b == null)
+			return true;
+		else if (b.getType() == Material.AIR)
+			return true;
+		return false;
+	}
 
 }

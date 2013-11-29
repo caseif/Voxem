@@ -1,5 +1,8 @@
 package mineflat.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mineflat.Block;
 import mineflat.CaveFactory;
 import mineflat.Chunk;
@@ -134,10 +137,135 @@ public class ChunkUtil {
 			for (CaveFactory cf : CaveFactory.deactivate)
 				CaveFactory.caveFactories.remove(cf);
 			CaveFactory.deactivate.clear();
-			System.out.println(CaveFactory.caveFactories.size());
 		}
 		CaveFactory.caveFactories.clear();
 		CaveFactory.caveFactories = null;
+		System.out.println("Cleaning up...");
+		for (Chunk c : Chunk.chunks){
+			for (int xx = 0; xx < 16; xx++){
+				int x = ChunkUtil.getBlockXFromChunk(c.getNum(), xx);
+				for (int y = 0; y < 128; y++){
+					//System.out.println("y: " + y);
+					if (!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y))){
+						List<Block> surrounding = new ArrayList<Block>();
+						if (y > 0 && !BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y - 1)))
+							surrounding.add(BlockUtil.getBlock(x, y - 1));
+						if (y < 127 && !BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y + 1)))
+							surrounding.add(BlockUtil.getBlock(x, y + 1));
+						if (x > ChunkUtil.totalChunks / 2 * -16 &&
+								!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x - 1, y)))
+							surrounding.add(BlockUtil.getBlock(x - 1, y));
+						if (x < ChunkUtil.totalChunks / 2 * 16 + 15 &&
+								!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x + 1, y)))
+							surrounding.add(BlockUtil.getBlock(x + 1, y));
+						// remove lonely strands
+						if (surrounding.size() == 1){
+							if (surrounding.contains(BlockUtil.getBlock(x + 1, y)) ||
+									surrounding.contains(BlockUtil.getBlock(x, y + 1))){
+								boolean vert = false;
+								if (surrounding.contains(BlockUtil.getBlock(x, y + 1)))
+									vert = true;
+								Block b = surrounding.get(0);
+								boolean strand = false;
+								List<Block> remove = new ArrayList<Block>();
+								while (true){
+									if (!vert){
+										if (BlockUtil.isBlockEmpty(
+												BlockUtil.getBlock(b.getX(), y - 1)))
+											if (BlockUtil.isBlockEmpty(
+													BlockUtil.getBlock(b.getX(), y + 1))){
+												remove.add(b);
+												if (BlockUtil.isBlockEmpty(
+														BlockUtil.getBlock(b.getX() + 1, y))){
+													strand = true;
+													break;
+												}
+												else {	
+													b = BlockUtil.getBlock(b.getX() + 1, y);
+													continue;
+												}
+											}
+										break;
+									}
+									else {
+										if (BlockUtil.isBlockEmpty(
+												BlockUtil.getBlock(x - 1, b.getY())))
+											if (BlockUtil.isBlockEmpty(
+													BlockUtil.getBlock(x + 1, b.getY()))){
+												remove.add(b);
+												if (BlockUtil.isBlockEmpty(
+														BlockUtil.getBlock(x, b.getY() + 1))){
+													strand = true;
+													break;
+												}
+												else {
+													b = BlockUtil.getBlock(x, b.getY() + 1);
+													continue;
+												}
+											}
+										break;
+									}
+								}
+								if (strand)
+									for (Block bl : remove){
+										bl.destroy();
+									}
+								remove.clear();
+							}
+						}
+						// recalculate because it'sm easier than actually fixing the problem
+						surrounding.clear();
+						if (y > 0 && !BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y - 1)))
+							surrounding.add(BlockUtil.getBlock(x, y - 1));
+						if (y < 127 && !BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y + 1)))
+							surrounding.add(BlockUtil.getBlock(x, y + 1));
+						if (x > ChunkUtil.totalChunks / 2 * -16 &&
+								!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x - 1, y)))
+							surrounding.add(BlockUtil.getBlock(x - 1, y));
+						if (x < ChunkUtil.totalChunks / 2 * 16 + 15 &&
+								!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x + 1, y)))
+							surrounding.add(BlockUtil.getBlock(x + 1, y));
+						// remove lonely blocks
+						if (surrounding.size() == 0)
+							BlockUtil.getBlock(x, y).destroy();
+						// remove lonely islands
+						else if (surrounding.size() == 3){
+							for (Block b : surrounding){
+								List<Block> surround = new ArrayList<Block>();
+								if (b.getY() > 0 && BlockUtil.getBlock(b.getX(), b.getY() - 1)
+										!= null && BlockUtil.getBlock(b.getX(),
+												b.getY() - 1).getType() != Material.AIR)
+									surround.add(BlockUtil.getBlock(b.getX(), b.getY() - 1));
+								if (b.getY() < 127 && BlockUtil.getBlock(b.getX(), b.getY() + 1)
+										!= null && BlockUtil.getBlock(b.getX(),
+												b.getY() + 1).getType() != Material.AIR)
+									surround.add(BlockUtil.getBlock(b.getX(), b.getY() + 1));
+								if (b.getX() > ChunkUtil.totalChunks / 2 * -16 &&
+										BlockUtil.getBlock(b.getX() - 1, b.getY()) != null &&
+										BlockUtil.getBlock(b.getX() - 1,
+												b.getY()).getType() != Material.AIR)
+									surround.add(BlockUtil.getBlock(b.getX() - 1, b.getY()));
+								if (b.getX() < ChunkUtil.totalChunks / 2 * 16 + 15 &&
+										BlockUtil.getBlock(b.getX() + 1, b.getY()) != null &&
+										BlockUtil.getBlock(b.getX() + 1,
+												b.getY()).getType() != Material.AIR)
+									surround.add(BlockUtil.getBlock(b.getX() + 1, b.getY()));
+								int lonely = 0;
+								for (Block bl : surround){
+									if (surrounding.contains(bl) || b.equals(BlockUtil.getBlock(x, y)))
+										lonely += 1;
+								}
+								if (lonely == 3){
+									for (Block bl : surround)
+										bl.destroy();
+									BlockUtil.getBlock(x, y).destroy();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		System.out.println("Lighting terrain...");
 		for (Chunk c : Chunk.chunks)
 			c.updateLight();
