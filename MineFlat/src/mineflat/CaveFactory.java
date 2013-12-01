@@ -44,8 +44,6 @@ public class CaveFactory {
 			surrounding.add(BlockUtil.getBlock(x + 1, y));
 			surrounding.add(BlockUtil.getBlock(x + 1, y));
 		}
-		if (surrounding.size() == 8)
-			System.out.println(surrounding.size());
 		if (surrounding.size() == 0)
 			this.deactivate();
 		else {
@@ -53,7 +51,7 @@ public class CaveFactory {
 			this.x = destroy.getX();
 			this.y = destroy.getY();
 			destroy.destroy(); // destroy *overdrive intensifies*
-			int chance = (150 - y) / 2;
+			int chance = (170 - y) / 2;
 			if (r.nextInt(chance) == 0)
 				new CaveFactory(x, y);
 		}

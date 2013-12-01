@@ -206,6 +206,10 @@ public class MineFlat {
 				BlockUtil.addTexture(Material.LOG);
 				BlockUtil.addTexture(Material.WOOD);
 				BlockUtil.addTexture(Material.BEDROCK);
+				BlockUtil.addTexture(Material.COAL_ORE);
+				BlockUtil.addTexture(Material.IRON_ORE);
+				BlockUtil.addTexture(Material.GOLD_ORE);
+				BlockUtil.addTexture(Material.DIAMOND_ORE);
 
 				Player.initialize();
 

@@ -39,8 +39,8 @@ public class ImageUtil {
 		Graphics2D g = atlas.createGraphics();
 		int y = 0;
 		for (int i = 0; i < BlockUtil.textures.size(); i++){
-			int x = i * 16;
-			if (x + 16 > finalSize){
+			int x = i * 16 - (finalSize * (y / 16));
+			if (x >= finalSize){
 				x = 0;
 				y += 16;
 			}

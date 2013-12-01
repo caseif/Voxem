@@ -2,6 +2,7 @@ package mineflat.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import mineflat.Block;
 import mineflat.CaveFactory;
@@ -21,7 +22,6 @@ public class ChunkUtil {
 		System.out.println("Generating chunks...");
 		//TODO: Save chunks to disk after generating so as not to keep them in memory
 		for (int i = totalChunks * -1 / 2; i <= totalChunks / 2; i++){
-			//System.out.println("Generating chunk " + i);
 			if (!isChunkGenerated(i)){
 				Chunk c = new Chunk(i);
 				for (int x = 0; x < 16; x++){
@@ -61,7 +61,6 @@ public class ChunkUtil {
 		// smoothing pass
 		System.out.println("Smoothing terrain...");
 		for (Chunk c : Chunk.chunks){
-			//System.out.println("Smoothing chunk " + c.getNum());
 			for (int x = 0; x < 16; x++){
 				int h = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x));
 				int leftHeight = BlockUtil.getTop(ChunkUtil.getBlockXFromChunk(c.getNum(), x) - 1);
@@ -114,6 +113,7 @@ public class ChunkUtil {
 					MineFlat.player.setY(h - 2);
 			}
 		}
+		// add grass to top layer of terrain
 		System.out.println("Planting grass...");
 		for (Chunk c : Chunk.chunks){
 			for (int x = 0; x < 16; x++){
@@ -128,6 +128,76 @@ public class ChunkUtil {
 				}
 			}
 		}
+		// generate ore veins
+		System.out.println("Generating ores...");
+		Random r = new Random(MineFlat.seed);
+		int coalChance = 15;
+		int ironChance = 10;
+		int goldChance = 2;
+		int diamondChance = 1;
+		for (Chunk c : Chunk.chunks){
+			for (int xx = 0; xx < 16; xx++){
+				for (int yy = 0; yy < 128; yy++){
+					int x = ChunkUtil.getBlockXFromChunk(c.getNum(), xx);
+					int y = yy;
+					if (!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y)) &&
+							BlockUtil.getBlock(x, y).getType() == Material.STONE){
+						int roll = r.nextInt(10000);
+						Material vein = null;
+						if (roll < coalChance)
+							vein = Material.COAL_ORE;
+						else if (roll >= coalChance &&
+								roll < coalChance + ironChance && yy >= 32)
+							vein = Material.IRON_ORE;
+						else if (roll >= coalChance + ironChance &&
+								roll < coalChance + ironChance + goldChance && yy >= 96)
+							vein = Material.GOLD_ORE;
+						else if (roll >= coalChance + ironChance + goldChance &&
+								roll < coalChance + ironChance + goldChance +
+								diamondChance && yy >= 112)
+							vein = Material.DIAMOND_ORE;
+						if (vein != null){
+							int maxSize = 0;
+							if (vein == Material.COAL_ORE)
+								maxSize = 16;
+							else if (vein == Material.IRON_ORE)
+								maxSize = 8;
+							else if (vein == Material.GOLD_ORE)
+								maxSize = 5;
+							else if (vein == Material.DIAMOND_ORE)
+								maxSize = 4;
+							BlockUtil.getBlock(x, y).setType(vein);
+							for (int i = 1; i < maxSize; i++){
+								List<Block> surrounding = new ArrayList<Block>();
+								if (y > 0 &&
+										!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y - 1)) &&
+										BlockUtil.getBlock(x, y - 1).getType() == Material.STONE)
+									surrounding.add(BlockUtil.getBlock(x, y - 1));
+								if (y < 126 &&
+										!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y + 1)) &&
+										BlockUtil.getBlock(x, y + 1).getType() == Material.STONE)
+									surrounding.add(BlockUtil.getBlock(x, y + 1));
+								if (x > ChunkUtil.totalChunks / 2 * -16 &&
+										!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x - 1, y)) &&
+										BlockUtil.getBlock(x - 1, y).getType() == Material.STONE)
+									surrounding.add(BlockUtil.getBlock(x - 1, y));
+								if (x < ChunkUtil.totalChunks / 2 * 16 + 15 &&
+										!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x + 1, y)) &&
+										BlockUtil.getBlock(x + 1, y).getType() == Material.STONE)
+									surrounding.add(BlockUtil.getBlock(x + 1, y));
+								if (surrounding.size() == 0)
+									break;
+								Block b = surrounding.get(r.nextInt(surrounding.size()));
+								x = b.getX();
+								y = b.getY();
+								b.setType(vein);
+							}
+						}
+					}
+				}
+			}
+		}
+		// generate primitive caves
 		System.out.println("Generating caves...");
 		for (Chunk c : Chunk.chunks){
 			if (CaveFactory.r.nextInt(2) == 0){
@@ -144,12 +214,12 @@ public class ChunkUtil {
 		}
 		CaveFactory.caveFactories.clear();
 		CaveFactory.caveFactories = null;
+		// improve caves
 		System.out.println("Cleaning up...");
 		for (Chunk c : Chunk.chunks){
 			for (int xx = 0; xx < 16; xx++){
 				int x = ChunkUtil.getBlockXFromChunk(c.getNum(), xx);
 				for (int y = 0; y < 128; y++){
-					//System.out.println("y: " + y);
 					if (!BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y))){
 						List<Block> surrounding = new ArrayList<Block>();
 						if (y > 0 && !BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y - 1)))
@@ -272,6 +342,7 @@ public class ChunkUtil {
 				}
 			}
 		}
+		// calculate light levels of all blocks
 		System.out.println("Lighting terrain...");
 		for (Chunk c : Chunk.chunks)
 			c.updateLight();

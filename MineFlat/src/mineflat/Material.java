@@ -7,5 +7,9 @@ public enum Material {
 	LOG,
 	WOOD,
 	STONE,
-	BEDROCK
+	BEDROCK,
+	COAL_ORE,
+	IRON_ORE,
+	GOLD_ORE,
+	DIAMOND_ORE
 }

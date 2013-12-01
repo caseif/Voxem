@@ -201,7 +201,7 @@ public class InputManager {
 											l.getY() == (float)Math.floor(playerY + 1))
 												pBlock = true;
 										if (!pBlock && l.getY() > 0 && l.getY() < 128){
-											Block block = new Block(Material.LOG, l);
+											Block block = new Block(Material.WOOD, l);
 											block.addToWorld();
 											Event.fireEvent(
 													new BlockPlaceEvent(l, block));
