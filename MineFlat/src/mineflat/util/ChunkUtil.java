@@ -74,7 +74,7 @@ public class ChunkUtil {
 					Material mat = null;
 					for (int y = 0; y < 128; y++){
 						if (y >= h){
-							if (mat != Material.STONE){
+							if (mat != Material.STONE || y == 127){
 								if (y == h){
 									mat = Material.GRASS;
 									if (c.getBlock(x, y + 1) != null && 
@@ -89,8 +89,10 @@ public class ChunkUtil {
 											ChunkUtil.getBlockXFromChunk(c.getNum(), x), y) + 1) == 0)
 										mat = Material.STONE;
 								}
-								else if (y >= 17)
+								else if (y >= 17 && y < 127)
 									mat = Material.STONE;
+								else
+									mat = Material.BEDROCK;
 							}
 							if (mat != null){
 								Block prev = new Location(getBlockXFromChunk(c.getNum(), x), y)
@@ -126,10 +128,12 @@ public class ChunkUtil {
 				}
 			}
 		}
-		System.out.println("Mining caves...");
+		System.out.println("Generating caves...");
 		for (Chunk c : Chunk.chunks){
-			int x = ChunkUtil.getBlockXFromChunk(c.getNum(), CaveFactory.r.nextInt(16));
-			new CaveFactory(x, BlockUtil.getTop(x) + 1);
+			if (CaveFactory.r.nextInt(2) == 0){
+				int x = ChunkUtil.getBlockXFromChunk(c.getNum(), CaveFactory.r.nextInt(16));
+				new CaveFactory(x, BlockUtil.getTop(x) + 1);
+			}
 		}
 		while (CaveFactory.caveFactories.size() > 0){
 			for (int i = 0; i < CaveFactory.caveFactories.size(); i++)
@@ -161,18 +165,20 @@ public class ChunkUtil {
 						// remove lonely strands
 						if (surrounding.size() == 1){
 							if (surrounding.contains(BlockUtil.getBlock(x + 1, y)) ||
-									surrounding.contains(BlockUtil.getBlock(x, y + 1))){
+									(y < 127 &&
+											surrounding.contains(BlockUtil.getBlock(x, y + 1)))){
 								boolean vert = false;
-								if (surrounding.contains(BlockUtil.getBlock(x, y + 1)))
+								if (y < 127 &&
+										surrounding.contains(BlockUtil.getBlock(x, y + 1)))
 									vert = true;
 								Block b = surrounding.get(0);
 								boolean strand = false;
 								List<Block> remove = new ArrayList<Block>();
 								while (true){
 									if (!vert){
-										if (BlockUtil.isBlockEmpty(
+										if (y <= 0 || BlockUtil.isBlockEmpty(
 												BlockUtil.getBlock(b.getX(), y - 1)))
-											if (BlockUtil.isBlockEmpty(
+											if (y >= 127 || BlockUtil.isBlockEmpty(
 													BlockUtil.getBlock(b.getX(), y + 1))){
 												remove.add(b);
 												if (BlockUtil.isBlockEmpty(
@@ -193,7 +199,7 @@ public class ChunkUtil {
 											if (BlockUtil.isBlockEmpty(
 													BlockUtil.getBlock(x + 1, b.getY()))){
 												remove.add(b);
-												if (BlockUtil.isBlockEmpty(
+												if (y >= 127 || BlockUtil.isBlockEmpty(
 														BlockUtil.getBlock(x, b.getY() + 1))){
 													strand = true;
 													break;
@@ -213,7 +219,7 @@ public class ChunkUtil {
 								remove.clear();
 							}
 						}
-						// recalculate because it'sm easier than actually fixing the problem
+						// recalculate because it's easier than actually fixing the problem
 						surrounding.clear();
 						if (y > 0 && !BlockUtil.isBlockEmpty(BlockUtil.getBlock(x, y - 1)))
 							surrounding.add(BlockUtil.getBlock(x, y - 1));

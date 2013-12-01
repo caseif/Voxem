@@ -144,7 +144,9 @@ public class InputManager {
 
 		if (mouse1){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
-				if (MineFlat.selected != null){
+				if (MineFlat.selected != null &&
+						!BlockUtil.isBlockEmpty((MineFlat.selected.getBlock())) &&
+								MineFlat.selected.getBlock().getType() != Material.BEDROCK){
 					Block b = BlockUtil.getBlock((int)Math.floor(MineFlat.selected.getX()),
 							(int)Math.floor(MineFlat.selected.getY()));
 					Event.fireEvent(new BlockBreakEvent(MineFlat.selected, b));
