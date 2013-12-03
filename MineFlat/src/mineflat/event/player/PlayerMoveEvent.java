@@ -1,7 +1,7 @@
 package mineflat.event.player;
 
 import mineflat.Location;
-import mineflat.Player;
+import mineflat.entity.Player;
 import mineflat.event.Cancellable;
 
 /**
@@ -47,10 +47,14 @@ public class PlayerMoveEvent extends PlayerEvent implements Cancellable {
 	}
 
 	public void setCancelled(boolean cancelled){
-		if (cancelled)
-			player.setLocation(from);
-		else
-			player.setLocation(to);
+		if (cancelled){
+			player.setX(from.getX());
+			player.setY(from.getY());
+		}
+		else {
+			player.setX(to.getX());
+			player.setY(to.getY());
+		}
 	}
 	
 }

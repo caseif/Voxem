@@ -5,6 +5,7 @@ import static org.lwjgl.input.Keyboard.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
+import mineflat.entity.Player;
 import mineflat.event.Event;
 import mineflat.event.block.BlockBreakEvent;
 import mineflat.event.block.BlockPlaceEvent;

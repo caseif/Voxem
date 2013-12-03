@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import mineflat.entity.Player;
 import mineflat.event.EventManager;
 import mineflat.noise.SimplexNoiseGenerator;
 import mineflat.util.BlockUtil;
@@ -76,7 +77,7 @@ public class MineFlat {
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
-	public static Player player = new Player(new Location(16, 0));
+	public static Player player = new Player(16, 0);
 
 	/**
 	 * The seed to be used for terrain generation

@@ -1,9 +1,12 @@
-package mineflat;
+package mineflat.entity;
 
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import mineflat.Block;
+import mineflat.Location;
+import mineflat.MineFlat;
 import mineflat.event.Event;
 import mineflat.event.player.PlayerMoveEvent;
 import mineflat.util.BlockUtil;
@@ -15,7 +18,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-public class Player {
+public class Player extends LivingEntity {
 
 	/**
 	 * The speed at which the player will move
@@ -37,8 +40,6 @@ public class Player {
 	 */
 	public static float jumpHeight = 3;
 
-	protected Location location;
-
 	protected static Texture sprite = null;
 
 	protected static int playerHandle = 0;
@@ -48,6 +49,12 @@ public class Player {
 	public static float jumpFrame = 0;
 	public static float fallFrame = 0;
 
+	public Player(float x, float y){
+		this.x = x;
+		this.y = y;
+		this.type = EntityType.PLAYER;
+	}
+
 	public static boolean isFalling(){
 		return falling;
 	}
@@ -56,35 +63,19 @@ public class Player {
 		Player.falling = falling;
 	}
 
-	public Player(Location l){
-		this.location = l;
-	}
-
 	public Location getLocation(){
-		return location;
-	}
-
-	public void setLocation(Location location){
-		this.location = location;
-	}
-
-	public float getX(){
-		return location.getX();
-	}
-
-	public float getY(){
-		return location.getY();
+		return new Location(x, y);
 	}
 
 	public void setX(float x){
-		Location old = location;
-		this.location.setX(x);
+		Location old = getLocation();
+		this.x = x;
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}
 
 	public void setY(float y){
-		Location old = location;
-		this.location.setY(y);
+		Location old = getLocation();
+		this.y = y;
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}
 

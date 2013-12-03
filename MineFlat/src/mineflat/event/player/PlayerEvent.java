@@ -1,6 +1,6 @@
 package mineflat.event.player;
 
-import mineflat.Player;
+import mineflat.entity.Player;
 import mineflat.event.Event;
 
 public class PlayerEvent extends Event {
