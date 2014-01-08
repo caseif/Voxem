@@ -80,7 +80,7 @@ public class MiscUtil {
 			float pos = 0f;
 			for (char c : text.toCharArray()){
 				float tx = 25f, ty = 3f;
-				if (Character.isAlphabetic(c)){
+				if (Character.isLetter(c)){
 					if (Character.isUpperCase(c)){
 						tx = c - 'A';
 						ty = 0;
