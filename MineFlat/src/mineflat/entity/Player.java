@@ -12,9 +12,9 @@ import mineflat.event.player.PlayerMoveEvent;
 import mineflat.util.BlockUtil;
 import mineflat.util.ImageUtil;
 import mineflat.util.MiscUtil;
-
 import static org.lwjgl.opengl.GL11.*;
 
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -173,6 +173,11 @@ public class Player extends LivingEntity {
 		else
 			setFalling(false);
 
+	}
+	
+	public static void centerPlayer(){
+		MineFlat.xOffset = Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX();
+		MineFlat.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
 	}
 
 }

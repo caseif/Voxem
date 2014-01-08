@@ -7,7 +7,9 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.concurrent.locks.LockSupport;
 
 import javax.imageio.ImageIO;
 
@@ -25,6 +27,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.util.BufferedImageUtil;
 
 /**
  * @author Maxim Roncacé
@@ -67,12 +72,12 @@ public class MineFlat {
 	/**
 	 * Used in the calculation of delta
 	 */
-	public static long time = MiscUtil.getTime();
+	public static float time = MiscUtil.getTime();
 
 	/**
 	 * Used in the calculation of delta
 	 */
-	public static long lastTime = MiscUtil.getTime();
+	public static float lastTime = MiscUtil.getTime();
 
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
@@ -82,7 +87,7 @@ public class MineFlat {
 	/**
 	 * The seed to be used for terrain generation
 	 */
-	public static long seed = System.currentTimeMillis() * 71312 % 1337;
+	public static long seed = System.currentTimeMillis() * 1337337331 % 1337;
 
 	/**
 	 * The game's noise generator for use in terrain generation
@@ -122,6 +127,21 @@ public class MineFlat {
 	public static boolean closed = false;
 
 	public static final Object lock = new Object();
+
+	private static long starttime = System.currentTimeMillis();
+	
+	public static GameState state = GameState.MAIN_MENU;
+	
+	public static Texture charTexture;
+	
+	public static boolean debug = false;
+	
+	// fps-related stuff
+	public static float renderDelta = 0f;
+	public static long lastRenderTime = MiscUtil.getTime();
+	public static int fps = 0;
+	public static long lastFpsUpdate = 0;
+	public static final long fpsUpdateTime = (long)(0.5 * MiscUtil.getTimeResolution());
 
 	public static void main(String[] args){
 
@@ -211,6 +231,20 @@ public class MineFlat {
 				BlockUtil.addTexture(Material.IRON_ORE);
 				BlockUtil.addTexture(Material.GOLD_ORE);
 				BlockUtil.addTexture(Material.DIAMOND_ORE);
+				
+				try {
+					InputStream is = BlockUtil.class.getClassLoader().getResourceAsStream(
+							"textures/chars.png");
+					//InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
+					//		ImageIO.read(is), 16, 16)); // in case I decide to resize it later on
+					BufferedImage b = ImageIO.read(is);
+					charTexture = BufferedImageUtil.getTexture("", b, GL11.GL_NEAREST);
+				}
+				catch (Exception ex){
+					System.err.println("Exception occurred while preparing texture for characters");
+					ex.printStackTrace();
+					System.exit(0);
+				}
 
 				Player.initialize();
 
@@ -218,6 +252,16 @@ public class MineFlat {
 				VboUtil.prepareBindArray();
 
 				while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+					
+					if (MiscUtil.getTime() - lastFpsUpdate >= fpsUpdateTime){
+						//TODO: This goes wonky every once in a while. Someone (I) should probably get on that.
+						fps = (int)Math.floor(MiscUtil.getTimeResolution() / renderDelta);
+						lastFpsUpdate = MiscUtil.getTime();
+					}
+					
+					renderDelta = MiscUtil.getTime() - lastRenderTime;
+					lastRenderTime = MiscUtil.getTime();
+					
 
 					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -257,8 +301,21 @@ public class MineFlat {
 						glEnd();
 					}
 
-					centerPlayer();
+					Player.centerPlayer();
 					player.draw();
+					
+					// draw debug menu, if necessary
+					if (debug){
+						float height = 16f;
+						MiscUtil.drawString("fps: " + fps, 10, 10, height, true);
+						MiscUtil.drawString("x: " + player.getX(), 10, 45, height, true);
+						MiscUtil.drawString("y: " + player.getY(), 10, 80, height, true);
+						int mb = 1024 * 1024;
+						Runtime runtime = Runtime.getRuntime();
+						MiscUtil.drawString(runtime.maxMemory() / mb + "mb allocated memory: " +
+								(runtime.maxMemory() - runtime.freeMemory()) / mb + "mb used, " +
+								runtime.freeMemory() / mb + "mb free", 10, 115, height, true);
+					}
 
 					Display.sync(60);
 					Display.update();
@@ -303,15 +360,14 @@ public class MineFlat {
 			}
 			if (!found)
 				selected = null;
+
+			// throttle CPU usage
+			starttime += (1000.0 / 60); 
+			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
 		}
 
 		//saveWorld("world");
 
-	}
-
-	public static void centerPlayer(){
-		xOffset = Display.getWidth() / 2 - player.getLocation().getPixelX();
-		yOffset = Display.getHeight() / 2 - player.getLocation().getPixelY();
 	}
 
 	/**

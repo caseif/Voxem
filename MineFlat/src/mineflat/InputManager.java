@@ -125,9 +125,9 @@ public class InputManager {
 			}
 		}
 
-		if (f3){
-			System.out.println("Player: " + MineFlat.player.getX() + ", " +
-					MineFlat.player.getY());
+		if (f3 && System.currentTimeMillis() - lastAction >= actionWait){
+			MineFlat.debug = !MineFlat.debug;
+			lastAction = System.currentTimeMillis();
 		}
 
 		/*if (isKeyDown(KEY_F11)){
