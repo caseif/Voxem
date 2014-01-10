@@ -11,7 +11,6 @@ import mineflat.event.Event;
 import mineflat.event.player.PlayerMoveEvent;
 import mineflat.util.BlockUtil;
 import mineflat.util.ImageUtil;
-import mineflat.util.MiscUtil;
 import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.opengl.Display;
@@ -20,6 +19,8 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 public class Player extends LivingEntity {
 
+	public static float jumpPower = .1f;
+	public static float terminalVelocity = 2;
 	/**
 	 * The speed at which the player will move
 	 */
@@ -28,7 +29,7 @@ public class Player extends LivingEntity {
 	/**
 	 * The speed at which the player will fall
 	 */
-	public static float gravity = 1;
+	public static float gravity = .2f;
 
 	/**
 	 * The speed at which the player will jump
@@ -44,23 +45,14 @@ public class Player extends LivingEntity {
 
 	protected static int playerHandle = 0;
 
-	public static boolean falling = false;
-
-	public static float jumpFrame = 0;
-	public static float fallFrame = 0;
+	public static float velocityY = 0;
+	
+	
 
 	public Player(float x, float y){
 		this.x = x;
 		this.y = y;
 		this.type = EntityType.PLAYER;
-	}
-
-	public static boolean isFalling(){
-		return falling;
-	}
-
-	public static void setFalling(boolean falling){
-		Player.falling = falling;
 	}
 
 	public Location getLocation(){
@@ -78,6 +70,15 @@ public class Player extends LivingEntity {
 		this.y = y;
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}
+	
+	public void setVelocityY(float v){
+		velocityY = v;
+	}
+	
+	public float getVelocityY(){
+		return velocityY;
+	}
+	
 
 	public void draw(){
 		glPushMatrix();
@@ -116,68 +117,24 @@ public class Player extends LivingEntity {
 		}
 	}
 
-	public static void handleVerticalMovement(){
 
-		float oldY = MineFlat.player.getY();
-
-		if (isFalling()){
-			float newY = MineFlat.player.getY() +
-					gravity * 10 * (MineFlat.delta / MiscUtil.getTimeResolution());
-			fallFrame +=  10 * MineFlat.delta / MiscUtil.getTimeResolution();
-			MineFlat.player.setY(newY);
-		}
-		else if (jumpFrame > 0){
-			float newY = MineFlat.player.getY() -
-					jumpSpeed * 10 * (MineFlat.delta / MiscUtil.getTimeResolution());
-			Block b = null;
-			if (newY >= 1){
-				float playerX = MineFlat.player.getX() >= 0 ? MineFlat.player.getX() :
-					MineFlat.player.getX() - 1;
-				b = new Location(playerX, (float)Math.floor(newY)).getBlock();
-			}
-			if (jumpFrame < jumpHeight && b == null){
-				jumpFrame += jumpSpeed * 10 * (MineFlat.delta / MiscUtil.getTimeResolution());
-				MineFlat.player.setY(newY);
-			}
-			else {
-				jumpFrame = 0;
-				setFalling(true);
-			}
-		}
-
-
-		// check if the player should be fallling
-		if (Math.floor(MineFlat.player.getY() + 2) < 128){
-			//System.out.println(MineFlat.player.getX());
-			//System.out.println(Math.floor(MineFlat.player.getX()));
-			float x = (Math.abs(MineFlat.player.getX()) % 1 >= 0.5 && MineFlat.player.getX() > 0) ||
-					(Math.abs(MineFlat.player.getX()) % 1 <= 0.5 && MineFlat.player.getX() < 0) ?
-							MineFlat.player.getX() - 4f / 16 : MineFlat.player.getX() + 4f / 16;
-							if (x < 0)
-								x -= 1;
-							Block below = null;
-							if (MineFlat.player.getY() >= -2)
-								below = new Location((float)x,
-										(float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
-							//System.out.println(below);
-
-							if (below != null && isFalling()){
-								setFalling(false);
-								MineFlat.player.setY((float)Math.round(oldY));
-								fallFrame = 0;
-							}
-							else if (below == null && !isFalling() && jumpFrame == 0){
-								setFalling(true);
-							}
-		}
-		else
-			setFalling(false);
-
-	}
 	
 	public static void centerPlayer(){
 		MineFlat.xOffset = Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX();
 		MineFlat.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
+	}
+
+	public boolean isOnGround() {
+		if (Math.floor(MineFlat.player.getY() + 2) < 128){
+			   float x = (Math.abs(MineFlat.player.getX()) % 1 >= 0.5 && MineFlat.player.getX() > 0) || (Math.abs(MineFlat.player.getX()) % 1 <= 0.5 && MineFlat.player.getX() < 0) ? MineFlat.player.getX() - 4f / 16 : MineFlat.player.getX() + 4f / 16;
+			       if (x < 0) x -= 1;
+			       Block below = null;
+			       if (MineFlat.player.getY() >= -2) below = new Location((float)x, (float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
+			       if (below != null) return true;
+			       else return false;
+		}
+			       
+		else return true;
 	}
 
 }

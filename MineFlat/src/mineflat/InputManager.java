@@ -119,12 +119,48 @@ public class InputManager {
 			if (!blocked)
 				MineFlat.player.setX(newX);
 		}
-		if (jump){
-			if (Player.jumpFrame == 0 && !Player.falling){
-				Player.jumpFrame += MineFlat.delta / MiscUtil.getTimeResolution();
+
+		
+		
+		if(MineFlat.player.isOnGround()){
+			MineFlat.player.setVelocityY(0);
+			
+		}else{
+			if(MineFlat.player.getVelocityY() < Player.terminalVelocity){
+				float newFallSpeed = MineFlat.player.getVelocityY() + (Player.gravity * (MineFlat.delta / MiscUtil.getTimeResolution()));
+				if(newFallSpeed > Player.terminalVelocity){
+					newFallSpeed = Player.terminalVelocity;
+				}
+				MineFlat.player.setVelocityY(newFallSpeed);
+					
 			}
 		}
+		
+		if(jump && MineFlat.player.isOnGround()){
+			MineFlat.player.setVelocityY(-Player.jumpPower);
+		}
+		
+		
+		
+		
+		MineFlat.player.setY(MineFlat.player.getY() + MineFlat.player.getVelocityY());
 
+		if (Math.floor(MineFlat.player.getY() + 2) < 128){
+			   float x = (Math.abs(MineFlat.player.getX()) % 1 >= 0.5 && MineFlat.player.getX() > 0) || (Math.abs(MineFlat.player.getX()) % 1 <= 0.5 && MineFlat.player.getX() < 0) ? MineFlat.player.getX() - 4f / 16 : MineFlat.player.getX() + 4f / 16;
+			   if (x < 0) x -= 1;
+			   Block below = null;
+			   if (MineFlat.player.getY() >= -2) below = new Location((float)x, (float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
+			   if (below != null){
+			       if((float)below.getY() - MineFlat.player.getY() < 2){
+			   		   MineFlat.player.setY(below.getY() - 2);
+			   	   }  	   
+			   }
+		}
+		
+		
+		
+		
+		
 		if (f3 && System.currentTimeMillis() - lastAction >= actionWait){
 			MineFlat.debug = !MineFlat.debug;
 			lastAction = System.currentTimeMillis();

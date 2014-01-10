@@ -49,7 +49,7 @@ import org.newdawn.slick.opengl.Texture;
  */
 
 public class MineFlat {
-
+	
 	/**
 	 * The minimum OpenGL version required to run the game
 	 */
@@ -329,7 +329,6 @@ public class MineFlat {
 			lastTime = time;
 
 			InputManager.manage();
-			Player.handleVerticalMovement();
 
 			double playerX = player.getX();
 			double playerY = player.getY();
