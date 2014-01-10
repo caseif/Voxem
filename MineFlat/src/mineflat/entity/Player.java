@@ -5,6 +5,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import mineflat.Block;
+import mineflat.Direction;
 import mineflat.Location;
 import mineflat.MineFlat;
 import mineflat.event.Event;
@@ -25,7 +26,9 @@ public class Player extends LivingEntity {
 	public static float jumpHeight = 3;
 
 	protected static Texture sprite = null;
-
+	protected static Texture sprite_flip = null;
+	protected static char lastSprite;
+	
 	protected static int playerHandle = 0;
 	
 	
@@ -64,7 +67,20 @@ public class Player extends LivingEntity {
 	public void draw(){
 		glPushMatrix();
 		glEnable(GL_BLEND);
-		glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
+		if(MineFlat.player.dir == Direction.LEFT){
+			glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
+			lastSprite = 'l';
+		}else if(MineFlat.player.dir == Direction.RIGHT){
+			glBindTexture(GL_TEXTURE_2D, sprite_flip.getTextureID());
+			lastSprite = 'r';
+		}else{
+			if(lastSprite == 'r'){
+				glBindTexture(GL_TEXTURE_2D, sprite_flip.getTextureID());
+			}else{
+				glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
+			}
+		}
+		
 		glColor3f(1f, 1f, 1f);
 		glTranslatef(getX() * Block.length + MineFlat.xOffset - (4f / 16) * Block.length, getY() * Block.length + MineFlat.yOffset, 0);
 		glBegin(GL_QUADS);
@@ -91,6 +107,11 @@ public class Player extends LivingEntity {
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
 					ImageIO.read(is), 64, 64));
 			sprite = TextureLoader.getTexture("PNG", newIs);
+			InputStream is2 = BlockUtil.class.getClassLoader().getResourceAsStream(
+					"textures/char_flip.png");
+			InputStream new2 = ImageUtil.asInputStream(ImageUtil.scaleImage(
+					ImageIO.read(is2), 64, 64));
+			sprite_flip = TextureLoader.getTexture("PNG", new2);
 		}
 		catch (Exception ex){
 			System.err.println("Exception occurred while preparing texture for player sprite");
