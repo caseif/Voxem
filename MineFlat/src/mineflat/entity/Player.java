@@ -19,22 +19,18 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 public class Player extends LivingEntity {
 
-	public static float jumpPower = .1f;
-	public static float terminalVelocity = 2;
-	/**
-	 * The speed at which the player will move
-	 */
-	public static float playerSpeed = 5;
+
 
 	/**
 	 * The speed at which the player will fall
 	 */
-	public static float gravity = .2f;
-
+	public static float gravity = .5f;
+	public static float jumpPower = .2f;
+	public static float terminalVelocity = 1.5f;
 	/**
-	 * The speed at which the player will jump
+	 * The speed at which the player will move
 	 */
-	public static float jumpSpeed = 1;
+	public static float playerSpeed = 5;
 
 	/**
 	 * The height to which the player will jump

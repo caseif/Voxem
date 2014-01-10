@@ -113,21 +113,6 @@ public class ChunkUtil {
 					MineFlat.player.setY(h - 2);
 			}
 		}
-		// add grass to top layer of terrain
-		System.out.println("Planting grass...");
-		for (Chunk c : Chunk.chunks){
-			for (int x = 0; x < 16; x++){
-				for (int y = 0; y < 128; y++){
-					if (c.getBlock(x, y) != null){
-						if (c.getBlock(x, y).getType() != Material.GRASS){
-							Block b = new Block(Material.GRASS, c.getBlock(x, y).getLocation());
-							b.addToWorld();
-						}
-						break;
-					}
-				}
-			}
-		}
 		// generate ore veins
 		System.out.println("Generating ores...");
 		Random r = new Random(MineFlat.seed);
@@ -215,7 +200,7 @@ public class ChunkUtil {
 		CaveFactory.caveFactories.clear();
 		CaveFactory.caveFactories = null;
 		// improve caves
-		System.out.println("Cleaning up...");
+		System.out.println("Touching up caves...");
 		for (Chunk c : Chunk.chunks){
 			for (int xx = 0; xx < 16; xx++){
 				int x = ChunkUtil.getBlockXFromChunk(c.getNum(), xx);
@@ -338,6 +323,21 @@ public class ChunkUtil {
 								}
 							}
 						}
+					}
+				}
+			}
+		}
+		// add grass to bald dirt on top of terrain
+		System.out.println("Planting grass...");
+		for (Chunk c : Chunk.chunks){
+			for (int x = 0; x < 16; x++){
+				for (int y = 0; y < 128; y++){
+					if (c.getBlock(x, y) != null){
+						if (c.getBlock(x, y).getType() == Material.DIRT){
+							Block b = new Block(Material.GRASS, c.getBlock(x, y).getLocation());
+							b.addToWorld();
+						}
+						break;
 					}
 				}
 			}
