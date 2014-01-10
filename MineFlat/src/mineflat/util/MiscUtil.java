@@ -2,7 +2,16 @@ package mineflat.util;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.util.BufferedImageUtil;
 
 import mineflat.MineFlat;
 
@@ -15,6 +24,8 @@ public class MiscUtil {
 	
 	// offset of shadows (duh)
 	private static final float shadowOffset = 1;
+	
+	public static HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
 
 	// why the hell did I think it was a good idea to have this return a long?
 	public static long getTime(){
@@ -56,6 +67,24 @@ public class MiscUtil {
 		return System.getProperty("user.dir");
 	}
 
+	public static void initializeChars() throws IOException {
+		InputStream is = BlockUtil.class.getClassLoader().getResourceAsStream(
+				"textures/chars.png");
+		//InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
+		//		ImageIO.read(is), 16, 16)); // in case I decide to resize it later on
+		BufferedImage b = ImageIO.read(is);
+		MineFlat.charTexture = BufferedImageUtil.getTexture("", b, GL11.GL_NEAREST);
+		specialChars.put('!', 0f);
+		specialChars.put('?', 1f);
+		specialChars.put('.', 2f);
+		specialChars.put(',', 3f);
+		specialChars.put(':', 4f);
+		specialChars.put('-', 5f);
+		specialChars.put('+', 6f);
+		specialChars.put('(', 7f);
+		specialChars.put(')', 8f);
+	}
+	
 	public static void drawString(String text, float x, float y, float height, boolean shadow){
 		float wm = 42f + 2f / 3f;
 		float hm = 4f;
@@ -100,16 +129,10 @@ public class MiscUtil {
 				}
 				else {
 					ty = 3f;
-					switch (c){
-					case '!': tx = 0f; break;
-					case '?': tx = 1f; break;
-					case '.': tx = 2f; break;
-					case ',': tx = 3f; break;
-					case ':': tx = 4f; break;
-					case '-': tx = 5f; break;
-					case '+': tx = 6f; break;
-					default: tx = 25f; break;
-					}
+					if (specialChars.containsKey((Character)c))
+						tx = (float)specialChars.get((Character)c);
+					else
+						tx = 25f;
 				}
 				glTexCoord2f(tx / wm, (ty / hm));
 				glVertex2f(x + pos * width, y);

@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.LockSupport;
 
@@ -27,9 +26,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.util.BufferedImageUtil;
 
 /**
  * @author Maxim Roncacé
@@ -68,16 +65,17 @@ public class MineFlat {
 	 * at a constant speed
 	 */
 	public static float delta = 0;
+	public static double displayDelta = 0;
 
 	/**
 	 * Used in the calculation of delta
 	 */
-	public static float time = MiscUtil.getTime();
+	public static long time = MiscUtil.getTime();
 
 	/**
 	 * Used in the calculation of delta
 	 */
-	public static float lastTime = MiscUtil.getTime();
+	public static long lastTime = MiscUtil.getTime();
 
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
@@ -129,13 +127,13 @@ public class MineFlat {
 	public static final Object lock = new Object();
 
 	private static long starttime = System.currentTimeMillis();
-	
+
 	public static GameState state = GameState.MAIN_MENU;
-	
+
 	public static Texture charTexture;
-	
+
 	public static boolean debug = false;
-	
+
 	// fps-related stuff
 	public static float renderDelta = 0f;
 	public static long lastRenderTime = MiscUtil.getTime();
@@ -231,14 +229,9 @@ public class MineFlat {
 				BlockUtil.addTexture(Material.IRON_ORE);
 				BlockUtil.addTexture(Material.GOLD_ORE);
 				BlockUtil.addTexture(Material.DIAMOND_ORE);
-				
+
 				try {
-					InputStream is = BlockUtil.class.getClassLoader().getResourceAsStream(
-							"textures/chars.png");
-					//InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
-					//		ImageIO.read(is), 16, 16)); // in case I decide to resize it later on
-					BufferedImage b = ImageIO.read(is);
-					charTexture = BufferedImageUtil.getTexture("", b, GL11.GL_NEAREST);
+					MiscUtil.initializeChars();
 				}
 				catch (Exception ex){
 					System.err.println("Exception occurred while preparing texture for characters");
@@ -252,16 +245,17 @@ public class MineFlat {
 				VboUtil.prepareBindArray();
 
 				while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
-					
+
 					if (MiscUtil.getTime() - lastFpsUpdate >= fpsUpdateTime){
 						//TODO: This goes wonky every once in a while. Someone (I) should probably get on that.
 						fps = (int)Math.floor(MiscUtil.getTimeResolution() / renderDelta);
+						displayDelta = (int)delta;
 						lastFpsUpdate = MiscUtil.getTime();
 					}
-					
+
 					renderDelta = MiscUtil.getTime() - lastRenderTime;
 					lastRenderTime = MiscUtil.getTime();
-					
+
 
 					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -303,18 +297,22 @@ public class MineFlat {
 
 					Player.centerPlayer();
 					player.draw();
-					
+
 					// draw debug menu, if necessary
 					if (debug){
 						float height = 16f;
 						MiscUtil.drawString("fps: " + fps, 10, 10, height, true);
-						MiscUtil.drawString("x: " + player.getX(), 10, 45, height, true);
-						MiscUtil.drawString("y: " + player.getY(), 10, 80, height, true);
+						MiscUtil.drawString("delta (ms): " +
+								String.format("%.3f", displayDelta / 1000000), 10, 45, height, true);
+						MiscUtil.drawString("x: " +
+								String.format("%.3f", player.getX()), 10, 80, height, true);
+						MiscUtil.drawString("y: " +
+								String.format("%.3f", player.getY()), 10, 115, height, true);
 						int mb = 1024 * 1024;
 						Runtime runtime = Runtime.getRuntime();
 						MiscUtil.drawString(runtime.maxMemory() / mb + "mb allocated memory: " +
 								(runtime.maxMemory() - runtime.freeMemory()) / mb + "mb used, " +
-								runtime.freeMemory() / mb + "mb free", 10, 115, height, true);
+								runtime.freeMemory() / mb + "mb free", 10, 150, height, true);
 					}
 
 					Display.sync(60);
@@ -380,6 +378,7 @@ public class MineFlat {
 	 * In this way, a total of 12293 bytes, or 12 kilobytes plus 5 bytes, are used per chunk.
 	 * @param name The name of the world to be saved (reserved for future use).
 	 */
+	//TODO: Fix this steaming pile of sh*t
 	public static void saveWorld(String name){
 		System.out.println("Saving chunks...");
 		try {
