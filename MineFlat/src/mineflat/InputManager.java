@@ -5,12 +5,10 @@ import static org.lwjgl.input.Keyboard.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
-import mineflat.entity.Player;
 import mineflat.event.Event;
 import mineflat.event.block.BlockBreakEvent;
 import mineflat.event.block.BlockPlaceEvent;
 import mineflat.util.BlockUtil;
-import mineflat.util.MiscUtil;
 
 public class InputManager {
 
@@ -22,9 +20,6 @@ public class InputManager {
 	private static int jump2 = KEY_UP;
 	private static int jump3 = KEY_SPACE;
 
-	private static boolean left = false;
-	private static boolean right = false;
-	private static boolean jump = false;
 	private static boolean f3 = false;
 	private static boolean mouse1 = false;
 	private static boolean mouse2 = false;
@@ -35,18 +30,18 @@ public class InputManager {
 	private static long actionWait = 350;
 
 	public static void pollInput(){
-		if (isKeyDown(left1) || isKeyDown(left2))
-			left = true;
+		if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
+			MineFlat.player.setDirection(Direction.STATIONARY);
+		else if (isKeyDown(left1) || isKeyDown(left2))
+			MineFlat.player.setDirection(Direction.LEFT);
+		else if (isKeyDown(right1) || isKeyDown(right2))
+			MineFlat.player.setDirection(Direction.RIGHT);
 		else
-			left = false;
-		if (isKeyDown(right1) || isKeyDown(right2))
-			right = true;
-		else
-			right = false;
+			MineFlat.player.setDirection(Direction.STATIONARY);
 		if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3))
-			jump = true;
+			MineFlat.player.setJumping(true);
 		else
-			jump = false;
+			MineFlat.player.setJumping(false);
 		if (isKeyDown(KEY_F3))
 			f3 = true;
 		else
@@ -65,102 +60,6 @@ public class InputManager {
 
 	public static void manage(){
 
-		float xShift = 0;
-
-		if (left){
-			float newX = MineFlat.player.getX() -
-					(Player.playerSpeed * (MineFlat.delta / MiscUtil.getTimeResolution()));
-			float y = MineFlat.player.getY();
-			if ((int)y == y)
-				y -= 1;
-			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0 && y < 128 && y % 1 != 0)
-				b1 = new Location((float)Math.floor(newX + xShift),
-						(float)Math.floor(y)).getBlock();
-			if (y >= -1 && y < 127)
-				b2 = new Location((float)Math.floor(newX + xShift),
-						(float)Math.floor(y) + 1).getBlock();
-			if (y >= -2 && y < 126)
-				b3 = new Location((float)Math.floor(newX + xShift),
-						(float)Math.floor(y) + 2).getBlock();
-			boolean blocked = false;
-			if (b1 != null)
-				blocked = true;
-			else if (b2 != null)
-				blocked = true;
-			else if (b3 != null)
-				blocked = true;
-			if (!blocked)
-				MineFlat.player.setX(newX);
-		}
-		if (right){
-			float newX = MineFlat.player.getX() +
-					(Player.playerSpeed * (MineFlat.delta / MiscUtil.getTimeResolution()));
-			float y = MineFlat.player.getY();
-			if ((int)y == y)
-				y -= 1;
-			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0 && y < 128 && y % 1 != 0)
-				b1 = new Location((float)Math.floor(newX + xShift),
-						(float)Math.floor(y)).getBlock();
-			if (y >= -1 && y < 127)
-				b2 = new Location((float)Math.floor(newX + xShift),
-						(float)Math.floor(y) + 1).getBlock();
-			if (y >= -2 && y < 126)
-				b3 = new Location((float)Math.floor(newX + xShift),
-						(float)Math.floor(y) + 2).getBlock();
-			boolean blocked = false;
-			if (b1 != null)
-				blocked = true;
-			else if (b2 != null)
-				blocked = true;
-			else if (b3 != null)
-				blocked = true;
-			if (!blocked)
-				MineFlat.player.setX(newX);
-		}
-
-		
-		
-		if(MineFlat.player.isOnGround()){
-			MineFlat.player.setVelocityY(0);
-			
-		}else{
-			if(MineFlat.player.getVelocityY() < Player.terminalVelocity){
-				float newFallSpeed = MineFlat.player.getVelocityY() + (Player.gravity * (MineFlat.delta / MiscUtil.getTimeResolution()));
-				if(newFallSpeed > Player.terminalVelocity){
-					newFallSpeed = Player.terminalVelocity;
-				}
-				MineFlat.player.setVelocityY(newFallSpeed);
-					
-			}
-		}
-		
-		if(jump && MineFlat.player.isOnGround()){
-			MineFlat.player.setVelocityY(-Player.jumpPower);
-		}
-		
-		
-		
-		
-		MineFlat.player.setY(MineFlat.player.getY() + MineFlat.player.getVelocityY());
-
-		if (Math.floor(MineFlat.player.getY() + 2) < 128){
-			   float x = (Math.abs(MineFlat.player.getX()) % 1 >= 0.5 && MineFlat.player.getX() > 0) || (Math.abs(MineFlat.player.getX()) % 1 <= 0.5 && MineFlat.player.getX() < 0) ? MineFlat.player.getX() - 4f / 16 : MineFlat.player.getX() + 4f / 16;
-			   if (x < 0) x -= 1;
-			   Block below = null;
-			   if (MineFlat.player.getY() >= -2) below = new Location((float)x, (float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
-			   if (below != null){
-			       if((float)below.getY() - MineFlat.player.getY() < 2){
-			   		   MineFlat.player.setY(below.getY() - 2);
-			   	   }  	   
-			   }
-		}
-		
-		
-		
-		
-		
 		if (f3 && System.currentTimeMillis() - lastAction >= actionWait){
 			MineFlat.debug = !MineFlat.debug;
 			lastAction = System.currentTimeMillis();
@@ -183,7 +82,7 @@ public class InputManager {
 			if (System.currentTimeMillis() - lastAction >= actionWait){
 				if (MineFlat.selected != null &&
 						!BlockUtil.isBlockEmpty((MineFlat.selected.getBlock())) &&
-								MineFlat.selected.getBlock().getType() != Material.BEDROCK){
+						MineFlat.selected.getBlock().getType() != Material.BEDROCK){
 					Block b = BlockUtil.getBlock((int)Math.floor(MineFlat.selected.getX()),
 							(int)Math.floor(MineFlat.selected.getY()));
 					Event.fireEvent(new BlockBreakEvent(MineFlat.selected, b));

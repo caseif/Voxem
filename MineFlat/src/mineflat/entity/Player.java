@@ -19,19 +19,6 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 public class Player extends LivingEntity {
 
-
-
-	/**
-	 * The speed at which the player will fall
-	 */
-	public static float gravity = .5f;
-	public static float jumpPower = .2f;
-	public static float terminalVelocity = 1.5f;
-	/**
-	 * The speed at which the player will move
-	 */
-	public static float playerSpeed = 5;
-
 	/**
 	 * The height to which the player will jump
 	 */
@@ -40,8 +27,6 @@ public class Player extends LivingEntity {
 	protected static Texture sprite = null;
 
 	protected static int playerHandle = 0;
-
-	public static float velocityY = 0;
 	
 	
 
@@ -67,12 +52,12 @@ public class Player extends LivingEntity {
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}
 	
-	public void setVelocityY(float v){
-		velocityY = v;
+	public void setYVelocity(float v){
+		yVelocity = v;
 	}
 	
-	public float getVelocityY(){
-		return velocityY;
+	public float getYVelocity(){
+		return yVelocity;
 	}
 	
 
@@ -118,19 +103,6 @@ public class Player extends LivingEntity {
 	public static void centerPlayer(){
 		MineFlat.xOffset = Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX();
 		MineFlat.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
-	}
-
-	public boolean isOnGround() {
-		if (Math.floor(MineFlat.player.getY() + 2) < 128){
-			   float x = (Math.abs(MineFlat.player.getX()) % 1 >= 0.5 && MineFlat.player.getX() > 0) || (Math.abs(MineFlat.player.getX()) % 1 <= 0.5 && MineFlat.player.getX() < 0) ? MineFlat.player.getX() - 4f / 16 : MineFlat.player.getX() + 4f / 16;
-			       if (x < 0) x -= 1;
-			       Block below = null;
-			       if (MineFlat.player.getY() >= -2) below = new Location((float)x, (float)Math.floor(MineFlat.player.getY() + 2)).getBlock();
-			       if (below != null) return true;
-			       else return false;
-		}
-			       
-		else return true;
 	}
 
 }

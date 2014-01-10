@@ -16,6 +16,8 @@ import org.newdawn.slick.util.BufferedImageUtil;
 import mineflat.MineFlat;
 
 public class MiscUtil {
+	
+	public static long timeResolution = 1000000000L;
 
 	private static final float charWHRatio = 3f / 4f;
 
@@ -29,13 +31,7 @@ public class MiscUtil {
 
 	// why the hell did I think it was a good idea to have this return a long?
 	public static long getTime(){
-		//return (Sys.getTime() * 1000) / Sys.getTimerResolution();
 		return System.nanoTime();
-	}
-
-	public static float getTimeResolution(){
-		//return Sys.getTimerResolution();
-		return 1000000000;
 	}
 
 	public static int nextPowerOfTwo(int i){

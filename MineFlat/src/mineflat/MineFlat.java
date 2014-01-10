@@ -139,7 +139,7 @@ public class MineFlat {
 	public static long lastRenderTime = MiscUtil.getTime();
 	public static int fps = 0;
 	public static long lastFpsUpdate = 0;
-	public static final long fpsUpdateTime = (long)(0.5 * MiscUtil.getTimeResolution());
+	public static final long fpsUpdateTime = (long)(0.5 * MiscUtil.timeResolution);
 
 	public static void main(String[] args){
 
@@ -248,7 +248,7 @@ public class MineFlat {
 
 					if (MiscUtil.getTime() - lastFpsUpdate >= fpsUpdateTime){
 						//TODO: This goes wonky every once in a while. Someone (I) should probably get on that.
-						fps = (int)Math.floor(MiscUtil.getTimeResolution() / renderDelta);
+						fps = (int)Math.floor(MiscUtil.timeResolution / renderDelta);
 						displayDelta = (int)delta;
 						lastFpsUpdate = MiscUtil.getTime();
 					}
@@ -329,22 +329,21 @@ public class MineFlat {
 			lastTime = time;
 
 			InputManager.manage();
+			player.manageMovement();
 
-			double playerX = player.getX();
-			double playerY = player.getY();
 			double mouseX = (Mouse.getX() - xOffset) / (float)Block.length;
 			double mouseY = (Display.getHeight() - Mouse.getY() - yOffset) /
 					(float)Block.length;
-			double xDiff = mouseX - playerX;
-			double yDiff = mouseY - playerY;
+			double xDiff = mouseX - player.getX();
+			double yDiff = mouseY - player.getY();
 			double angle = Math.atan2(xDiff, yDiff);
 
 			boolean found = false;
 			for (double d = 0.5; d <= 5; d += 0.5){
 				double xAdd = d * Math.sin(angle);
 				double yAdd = d * Math.cos(angle);
-				int blockX = (int)Math.floor(playerX + xAdd);
-				int blockY = (int)Math.floor(playerY + yAdd);
+				int blockX = (int)Math.floor(player.getX() + xAdd);
+				int blockY = (int)Math.floor(player.getY() + yAdd);
 				synchronized (lock){
 					if (blockY >= 0 && blockY <= 127){
 						if (BlockUtil.getBlock(blockX, blockY) != null){

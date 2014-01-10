@@ -2,9 +2,10 @@ package mineflat;
 
 public enum Direction {
 
-	UP,
-	DOWN,
+	UP, // probably for flying entities at some point
+	DOWN, // same here
 	LEFT,
-	RIGHT
+	RIGHT,
+	STATIONARY
 	
 }
