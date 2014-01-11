@@ -19,6 +19,7 @@ public class LivingEntity extends Entity {
 	public static float jumpPower = .2f;
 
 	protected Direction dir;
+	protected Direction facing;
 	protected boolean jump = false;
 	protected int walkFor;
 	protected int walkTime;
@@ -26,6 +27,10 @@ public class LivingEntity extends Entity {
 	
 	public Direction getDirection(){
 		return dir;
+	}
+	
+	public Direction getFacing(){
+		return facing;
 	}
 	
 	public int getPlannedWalkTime(){
@@ -42,6 +47,12 @@ public class LivingEntity extends Entity {
 	
 	public void setDirection(Direction dir){
 		this.dir = dir;
+		if (dir != Direction.STATIONARY)
+			setFacing(dir);
+	}
+	
+	public void setFacing(Direction facing){
+		this.facing = facing;
 	}
 	
 	public void setPlannedWalkTime(int time){
