@@ -3,9 +3,12 @@ package mineflat;
 import java.util.ArrayList;
 import java.util.List;
 
-import mineflat.util.BlockUtil;
-
 public class Chunk {
+
+	/**
+	 * The number of chunks to be included in a world
+	 */
+	public static int totalChunks = 8;
 
 	public static List<Chunk> chunks = new ArrayList<Chunk>();
 
@@ -42,15 +45,15 @@ public class Chunk {
 
 
 	public void updateLight(){
-		/*if (BlockUtil.getTop(this.getX()) == this.getY())
+		/*if (Block.getTop(this.getX()) == this.getY())
 			this.setLightLevel(16);
 		Block up = null, down = null, left = null, right = null;
 		if (this.getY() > 0)
-			up = BlockUtil.getBlock((int)this.getX(), this.getY() - 1);
+			up = Block.getBlock((int)this.getX(), this.getY() - 1);
 		if (this.getY() < 127)
-			down = BlockUtil.getBlock((int)this.getX(), this.getY() + 1);
-		left = BlockUtil.getBlock((int)this.getX() - 1, this.getY());
-		right = BlockUtil.getBlock((int)this.getX() + 1, this.getY());
+			down = Block.getBlock((int)this.getX(), this.getY() + 1);
+		left = Block.getBlock((int)this.getX() - 1, this.getY());
+		right = Block.getBlock((int)this.getX() + 1, this.getY());
 		Block[] adjacent = new Block[]{up, down, left, right};
 		boolean adj = false;
 		for (Block b : adjacent){
@@ -68,7 +71,7 @@ public class Chunk {
 		}
 		if (!adj)
 			for (int y = getY(); y >= 0; y--)
-				if (BlockUtil.getBlock(getX(), y) != null)
+				if (Block.getBlock(getX(), y) != null)
 					light -= 1;*/
 		for (int x = 0; x < 16; x++)
 			for (int y = 0; y < 128; y++)
@@ -81,17 +84,17 @@ public class Chunk {
 				int y = i == 0 ? yy : 127 - yy;
 				Block b = this.getBlock(x, y);
 				if (b != null){
-					if (BlockUtil.getTop(b.getX()) == b.getY())
+					if (Block.getTop(b.getX()) == b.getY())
 						this.getBlock(x, y).setLightLevel(16);
 					else {
 						Block up = null, down = null, left = null, right = null;
 						if (b.getY() > 0)
-							up = BlockUtil.getBlock((int)b.getX(), b.getY() - 1);
+							up = Block.getBlock((int)b.getX(), b.getY() - 1);
 						if (b.getY() < 127)
-							down = BlockUtil.getBlock((int)b.getX(), b.getY() +
+							down = Block.getBlock((int)b.getX(), b.getY() +
 									1);
-						left = BlockUtil.getBlock((int)b.getX() - 1, b.getY());
-						right = BlockUtil.getBlock((int)b.getX() + 1, b.getY());
+						left = Block.getBlock((int)b.getX() - 1, b.getY());
+						right = Block.getBlock((int)b.getX() + 1, b.getY());
 						Block[] adjacent = new Block[]{up, down, left, right};
 						int brightest = 0;
 						for (Block bl : adjacent){
@@ -106,5 +109,28 @@ public class Chunk {
 				}
 			}
 		}
+	}
+	
+	public static Chunk getChunk(int i){
+		for (Chunk c : Chunk.chunks){
+			if (c.getNum() == i)
+				return c;
+		}
+		return null;
+	}
+
+	public static boolean isChunkGenerated(int i){
+		return getChunk(i) != null;
+	}
+
+	public static int getBlockXFromChunk(int chunk, int block){
+		return chunk > 0 ? (chunk - 1) * 16 + block : chunk * 16 + block;
+	}
+
+	public static int getChunkNum(int x){
+		int add = 1;
+		if (x < 0)
+			add = -1;
+		return x / 16 + add;
 	}
 }

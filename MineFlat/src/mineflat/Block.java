@@ -1,9 +1,9 @@
 package mineflat;
 
-import mineflat.util.BlockUtil;
-import mineflat.util.ChunkUtil;
-
 import static org.lwjgl.opengl.GL11.*;
+
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 public class Block {
 
@@ -21,6 +21,14 @@ public class Block {
 	public static int minLight = 1;
 
 	/**
+	 * The block which is currently selected.
+	 */
+	public static Location selected = null;
+	public static int selectedX = 0;
+	public static int selectedY = 0;
+	public static boolean isSelected = false;
+
+	/**
 	 * The diameter of a block
 	 */
 	public static final int length = 32;
@@ -35,7 +43,7 @@ public class Block {
 		this.type = m;
 		this.location = location;
 		for (int i = (int)location.getY() - 1; i >= 0; i--){
-			Block b = BlockUtil.getBlock((int)location.getX(), i);
+			Block b = Block.getBlock((int)location.getX(), i);
 			if (b != null){
 				light = b.getLightLevel() - lightDistance;
 				break;
@@ -45,7 +53,7 @@ public class Block {
 	}
 
 	public void addToWorld(){
-		Chunk c = ChunkUtil.getChunk(location.getChunk());
+		Chunk c = Chunk.getChunk(location.getChunk());
 		if (c == null)
 			c = new Chunk(location.getChunk());
 		c.setBlock(Math.abs((int)location.getX() % 16), (int)location.getY(), this);
@@ -100,7 +108,7 @@ public class Block {
 		for (Chunk c : Chunk.chunks){
 			// check if player is within range
 			if (Math.abs(MineFlat.player.getLocation().getChunk() - c.getNum()) <=
-					MineFlat.renderDistance){
+					GraphicsHandler.renderDistance){
 				for (int x = 0; x < 16; x++){
 					for (int y = 0; y < 128; y++){
 						Block b = c.getBlock(x, y);
@@ -110,8 +118,8 @@ public class Block {
 							//		BlockUtil.textures.get(b.getType()).getTextureID());
 							float fracLight = (float)(b.getLightLevel()) / maxLight;
 							glColor3f(fracLight, fracLight, fracLight);
-							int drawX = b.getX() * length + MineFlat.xOffset;
-							int drawY = b.getY() * length + MineFlat.yOffset;
+							int drawX = b.getX() * length + GraphicsHandler.xOffset;
+							int drawY = b.getY() * length + GraphicsHandler.yOffset;
 							glBegin(GL_QUADS);
 							glTexCoord2f(0, 0);
 							glVertex2f(drawX, drawY); // top left
@@ -132,12 +140,63 @@ public class Block {
 	}
 
 	public void destroy(){
-		ChunkUtil.getChunk(ChunkUtil.getChunkNum((int)Math.floor(getX())))
+		Chunk.getChunk(Chunk.getChunkNum((int)Math.floor(getX())))
 		.setBlock((int)Math.abs(Math.floor(getX() % 16)), 
 				(int)(Math.floor(getY())), null);
 	}
 
 	public Block clone(){
 		return new Block(type, location);
+	}
+
+	public static int getTop(int x){
+		for (int yy = 0; yy < 128; yy++){
+			if (new Location(x, yy).getBlock() != null){
+				return yy;
+			}
+		}
+		return -1;
+	}
+
+	public static Block getBlock(int x, int y){
+		Chunk c = Chunk.getChunk(new Location(x, y).getChunk());
+		if (c != null)
+			return c.getBlock(Math.abs(x % 16), y);
+		return null;
+	}
+
+	public static boolean isBlockEmpty(Block b){
+		if (b == null)
+			return true;
+		else if (b.getType() == Material.AIR)
+			return true;
+		return false;
+	}
+
+	public static void updateSelectedBlock(){
+		double mouseX = (Mouse.getX() - GraphicsHandler.xOffset) / (float)Block.length;
+		double mouseY = (Display.getHeight() - Mouse.getY() - GraphicsHandler.yOffset) /
+				(float)Block.length;
+		double xDiff = mouseX - MineFlat.player.getX();
+		double yDiff = mouseY - MineFlat.player.getY();
+		double angle = Math.atan2(xDiff, yDiff);
+		boolean found = false;
+		for (double d = 0.5; d <= 5; d += 0.5){
+			double xAdd = d * Math.sin(angle);
+			double yAdd = d * Math.cos(angle);
+			int blockX = (int)Math.floor(MineFlat.player.getX() + xAdd);
+			int blockY = (int)Math.floor(MineFlat.player.getY() + yAdd);
+			synchronized (MineFlat.lock){
+				if (blockY >= 0 && blockY <= 127){
+					if (Block.getBlock(blockX, blockY) != null){
+						Block.selected = new Location(blockX, blockY);
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+		if (!found)
+			Block.selected = null;
 	}
 }

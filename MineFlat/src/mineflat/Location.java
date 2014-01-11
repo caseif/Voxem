@@ -1,7 +1,5 @@
 package mineflat;
 
-import mineflat.util.ChunkUtil;
-
 public class Location {
 
 	protected float x;
@@ -30,7 +28,7 @@ public class Location {
 	}
 
 	public Block getBlock(){
-		Chunk c = ChunkUtil.getChunk(getChunk());
+		Chunk c = Chunk.getChunk(getChunk());
 		if (c != null){
 			int index = (int)Math.floor(Math.abs(x % 16));
 			return c.getBlock(index, (int)y);
@@ -67,11 +65,11 @@ public class Location {
 	}
 
 	public static int getXFromPixels(int x){
-		return x / Block.length - MineFlat.xOffset;
+		return x / Block.length - GraphicsHandler.xOffset;
 	}
 
 	public static int getYFromPixels(int y){
-		return y / Block.length - MineFlat.yOffset;
+		return y / Block.length - GraphicsHandler.yOffset;
 	}
 
 }

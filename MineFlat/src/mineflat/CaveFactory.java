@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import mineflat.util.BlockUtil;
-import mineflat.util.ChunkUtil;
-
 public class CaveFactory {
 
-	public static Random r = new Random(MineFlat.seed);
+	public static Random r = new Random(Terrain.seed);
 	public static List<CaveFactory> caveFactories = new ArrayList<CaveFactory>();
 	public static List<CaveFactory> deactivate = new ArrayList<CaveFactory>(); // dem CMEs :P
 
@@ -24,25 +21,25 @@ public class CaveFactory {
 
 	public void dig(){
 		List<Block> surrounding = new ArrayList<Block>();
-		if (y > 0 && BlockUtil.getBlock(x, y - 1) != null &&
-				BlockUtil.getBlock(x, y - 1).getType() != Material.AIR){
-			surrounding.add(BlockUtil.getBlock(x, y - 1));
+		if (y > 0 && Block.getBlock(x, y - 1) != null &&
+				Block.getBlock(x, y - 1).getType() != Material.AIR){
+			surrounding.add(Block.getBlock(x, y - 1));
 		}
-		if (y < 126 && BlockUtil.getBlock(x, y + 1) != null &&
-				BlockUtil.getBlock(x, y + 1).getType() != Material.AIR){
-			surrounding.add(BlockUtil.getBlock(x, y + 1));
-			surrounding.add(BlockUtil.getBlock(x, y + 1));
-			surrounding.add(BlockUtil.getBlock(x, y + 1));
+		if (y < 126 && Block.getBlock(x, y + 1) != null &&
+				Block.getBlock(x, y + 1).getType() != Material.AIR){
+			surrounding.add(Block.getBlock(x, y + 1));
+			surrounding.add(Block.getBlock(x, y + 1));
+			surrounding.add(Block.getBlock(x, y + 1));
 		}
-		if (x > ChunkUtil.totalChunks / 2 * -16 && BlockUtil.getBlock(x - 1, y) != null &&
-				BlockUtil.getBlock(x - 1, y).getType() != Material.AIR){
-			surrounding.add(BlockUtil.getBlock(x - 1, y));
-			surrounding.add(BlockUtil.getBlock(x - 1, y));
+		if (x > Chunk.totalChunks / 2 * -16 && Block.getBlock(x - 1, y) != null &&
+				Block.getBlock(x - 1, y).getType() != Material.AIR){
+			surrounding.add(Block.getBlock(x - 1, y));
+			surrounding.add(Block.getBlock(x - 1, y));
 		}
-		if (x < ChunkUtil.totalChunks / 2 * 16 + 15 && BlockUtil.getBlock(x + 1, y) != null &&
-				BlockUtil.getBlock(x + 1, y).getType() != Material.AIR){
-			surrounding.add(BlockUtil.getBlock(x + 1, y));
-			surrounding.add(BlockUtil.getBlock(x + 1, y));
+		if (x < Chunk.totalChunks / 2 * 16 + 15 && Block.getBlock(x + 1, y) != null &&
+				Block.getBlock(x + 1, y).getType() != Material.AIR){
+			surrounding.add(Block.getBlock(x + 1, y));
+			surrounding.add(Block.getBlock(x + 1, y));
 		}
 		if (surrounding.size() == 0)
 			this.deactivate();

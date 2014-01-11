@@ -3,20 +3,19 @@ package mineflat.entity;
 import mineflat.Block;
 import mineflat.Direction;
 import mineflat.Location;
-import mineflat.MineFlat;
-import mineflat.util.MiscUtil;
+import mineflat.Timing;
 
 public class LivingEntity extends Entity {
 
 	/**
 	 * The speed at which entities will move
 	 */
-	public static float speed = 5;
+	public static final float speed = 5;
 	
 	/**
 	 * The speed at which entities will jump
 	 */
-	public static float jumpPower = .2f;
+	public static final float jumpPower = .2f;
 
 	protected Direction dir;
 	protected Direction facing;
@@ -74,7 +73,7 @@ public class LivingEntity extends Entity {
 		
 		if (dir == Direction.LEFT){
 			float newX = getX() -
-					(speed * (MineFlat.delta / MiscUtil.timeResolution));
+					(speed * (Timing.delta / Timing.timeResolution));
 			float y = getY();
 			if ((int)y == y)
 				y -= 1;
@@ -100,7 +99,7 @@ public class LivingEntity extends Entity {
 		}
 		if (dir == Direction.RIGHT){
 			float newX = x +
-					(speed * (MineFlat.delta / MiscUtil.timeResolution));
+					(speed * (Timing.delta / Timing.timeResolution));
 			float y = getY();
 			if ((int)y == y)
 				y -= 1;
@@ -134,7 +133,7 @@ public class LivingEntity extends Entity {
 				getX() - 1;
 			if (new Location(pX, (float)Math.floor(newY)).getBlock() != null)
 				setYVelocity(
-						gravity * MineFlat.delta / MiscUtil.timeResolution);
+						gravity * Timing.delta / Timing.timeResolution);
 		}
 
 		setY(getY() + getYVelocity());

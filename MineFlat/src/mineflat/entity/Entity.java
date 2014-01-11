@@ -1,20 +1,6 @@
 package mineflat.entity;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.HashMap;
 
@@ -22,21 +8,22 @@ import org.newdawn.slick.opengl.Texture;
 
 import mineflat.Block;
 import mineflat.Direction;
+import mineflat.GraphicsHandler;
 import mineflat.Location;
 import mineflat.MineFlat;
-import mineflat.util.MiscUtil;
+import mineflat.Timing;
 
 public class Entity {
 
 	/**
 	 * The speed at which entities will fall
 	 */
-	public static float gravity = .5f;
+	public static final float gravity = .5f;
 
 	/**
 	 * The terminal downwards velocity of entities
 	 */
-	public static float terminalVelocity = 1f;
+	public static final float terminalVelocity = 1f;
 
 	/**
 	 * The current velocity on the y axis (e.g. from falling, jumping)
@@ -88,7 +75,7 @@ public class Entity {
 		else {
 			if (getYVelocity() < terminalVelocity){
 				float newFallSpeed = getYVelocity() +
-						(gravity * MineFlat.delta / MiscUtil.timeResolution);
+						(gravity * Timing.delta / Timing.timeResolution);
 				if (newFallSpeed > terminalVelocity)
 					newFallSpeed = terminalVelocity;
 				setYVelocity(newFallSpeed);
@@ -120,8 +107,8 @@ public class Entity {
 		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, sprites.get(type).getTextureID());
 		glColor3f(1f, 1f, 1f);
-		glTranslatef(getX() * Block.length + MineFlat.xOffset - (1f / 4f) * Block.length,
-				getY() * Block.length + MineFlat.yOffset, 0);
+		glTranslatef(getX() * Block.length + GraphicsHandler.xOffset - (1f / 4f) * Block.length,
+				getY() * Block.length + GraphicsHandler.yOffset, 0);
 		if (this instanceof LivingEntity && ((LivingEntity)this).getFacing() == Direction.RIGHT){
 			glTranslatef(Block.length / 2, 0f, 0f);
 			glScalef(-1f, 1f, 1f);

@@ -34,22 +34,22 @@ public class ImageUtil {
 	}
 	
 	public static void createAtlas(){
-		int finalSize = MiscUtil.nextPowerOfTwo((int)Math.sqrt(((BlockUtil.textures.size() * 16  * 16))));
+		int finalSize = NumUtil.nextPowerOfTwo((int)Math.sqrt(((GraphicsUtil.textures.size() * 16  * 16))));
 		BufferedImage atlas = new BufferedImage(finalSize, finalSize, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = atlas.createGraphics();
 		int y = 0;
-		for (int i = 0; i < BlockUtil.textures.size(); i++){
+		for (int i = 0; i < GraphicsUtil.textures.size(); i++){
 			int x = i * 16 - (finalSize * (y / 16));
 			if (x >= finalSize){
 				x = 0;
 				y += 16;
 			}
-			g.drawImage(BlockUtil.textures.get(BlockUtil.textures.keySet().toArray()[i]), x, y, null);
-			BlockUtil.texCoords.put((Material)(BlockUtil.textures.keySet().toArray()[i]),
+			g.drawImage(GraphicsUtil.textures.get(GraphicsUtil.textures.keySet().toArray()[i]), x, y, null);
+			GraphicsUtil.texCoords.put((Material)(GraphicsUtil.textures.keySet().toArray()[i]),
 					new Location((float)x / finalSize, (float)y / finalSize));
 		}
 		atlas = scaleImage(atlas, finalSize, finalSize);
-		try {BlockUtil.atlas = BufferedImageUtil.getTexture("", atlas, GL11.GL_NEAREST);}
+		try {GraphicsUtil.atlas = BufferedImageUtil.getTexture("", atlas, GL11.GL_NEAREST);}
 		catch (Exception ex){ex.printStackTrace();}
 	}
 

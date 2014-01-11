@@ -8,7 +8,6 @@ import org.lwjgl.opengl.Display;
 import mineflat.event.Event;
 import mineflat.event.block.BlockBreakEvent;
 import mineflat.event.block.BlockPlaceEvent;
-import mineflat.util.BlockUtil;
 
 public class InputManager {
 
@@ -80,12 +79,12 @@ public class InputManager {
 
 		if (mouse1){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
-				if (MineFlat.selected != null &&
-						!BlockUtil.isBlockEmpty((MineFlat.selected.getBlock())) &&
-						MineFlat.selected.getBlock().getType() != Material.BEDROCK){
-					Block b = BlockUtil.getBlock((int)Math.floor(MineFlat.selected.getX()),
-							(int)Math.floor(MineFlat.selected.getY()));
-					Event.fireEvent(new BlockBreakEvent(MineFlat.selected, b));
+				if (Block.selected != null &&
+						!Block.isBlockEmpty((Block.selected.getBlock())) &&
+						Block.selected.getBlock().getType() != Material.BEDROCK){
+					Block b = Block.getBlock((int)Math.floor(Block.selected.getX()),
+							(int)Math.floor(Block.selected.getY()));
+					Event.fireEvent(new BlockBreakEvent(Block.selected, b));
 				}
 				lastAction = System.currentTimeMillis();
 			}
@@ -93,36 +92,36 @@ public class InputManager {
 
 		if (mouse2){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
-				if (MineFlat.selected != null){
-					int x = MineFlat.selected.getX() > MineFlat.player.getX() ?
-							(int)Math.floor(MineFlat.selected.getX()) :
-								(int)Math.floor(MineFlat.selected.getX()) + 1;
-							int y = MineFlat.selected.getY() > MineFlat.player.getY() ?
-									(int)Math.floor(MineFlat.selected.getY()) :
-										(int)Math.floor(MineFlat.selected.getY()) + 1;
+				if (Block.selected != null){
+					int x = Block.selected.getX() > MineFlat.player.getX() ?
+							(int)Math.floor(Block.selected.getX()) :
+								(int)Math.floor(Block.selected.getX()) + 1;
+							int y = Block.selected.getY() > MineFlat.player.getY() ?
+									(int)Math.floor(Block.selected.getY()) :
+										(int)Math.floor(Block.selected.getY()) + 1;
 									double playerX = MineFlat.player.getX();
 									double playerY = MineFlat.player.getY();
-									double mouseX = (InputManager.mouseX - MineFlat.xOffset) /
+									double mouseX = (InputManager.mouseX - GraphicsHandler.xOffset) /
 											(float)Block.length;
 									double mouseY = (Display.getHeight() -
-											InputManager.mouseY - MineFlat.yOffset) /
+											InputManager.mouseY - GraphicsHandler.yOffset) /
 											(float)Block.length;
 									double xDiff = mouseX - playerX;
 									double yDiff = mouseY - playerY;
 									double m = yDiff / xDiff;
 									double b = playerY - m * playerX;
 									Location l = null;
-									if (m * x + b >= MineFlat.selected.getY() &&
-											m * x + b <= MineFlat.selected.getY() + 1){
-										if (x == MineFlat.selected.getX())
+									if (m * x + b >= Block.selected.getY() &&
+											m * x + b <= Block.selected.getY() + 1){
+										if (x == Block.selected.getX())
 											x -= 1;
-										l = new Location(x, MineFlat.selected.getY());
+										l = new Location(x, Block.selected.getY());
 									}
-									else if ((y - b) / m >= MineFlat.selected.getX() &&
-											(y - b) / m <= MineFlat.selected.getX() + 1){
-										if (y == MineFlat.selected.getY())
+									else if ((y - b) / m >= Block.selected.getX() &&
+											(y - b) / m <= Block.selected.getX() + 1){
+										if (y == Block.selected.getY())
 											y -= 1;
-										l = new Location(MineFlat.selected.getX(), y);
+										l = new Location(Block.selected.getX(), y);
 									}
 									if (l != null){
 										if ((int)playerY == y)

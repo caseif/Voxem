@@ -12,7 +12,7 @@ import java.util.List;
 
 import mineflat.Block;
 import mineflat.Chunk;
-import mineflat.MineFlat;
+import mineflat.GraphicsHandler;
 
 import org.lwjgl.BufferUtils;
 
@@ -52,17 +52,17 @@ public class VboUtil {
 	 * @param chunk The chunk to update in the VBO.
 	 */
 	public static void updateChunkArray(int chunk){
-		Chunk c = ChunkUtil.getChunk(chunk);
+		Chunk c = Chunk.getChunk(chunk);
 		if (c != null){
 			List<Float> cValues = new ArrayList<Float>();
 			for (int x = 0; x < 16; x++){
 				for (int y = 0; y < 128; y++){
 					Block b = c.getBlock(x, y);
 					if (b != null){
-						float tX = Float.valueOf(BlockUtil.texCoords
+						float tX = Float.valueOf(GraphicsUtil.texCoords
 								.get(b.getType())
 								.getX());
-						float tY = Float.valueOf(BlockUtil.texCoords.get(b.getType()).getY());
+						float tY = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getY());
 
 						// top left
 						// vertex
@@ -86,7 +86,7 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
-						cValues.add(tX + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
 						cValues.add(tY);
 
 						// bottom right
@@ -100,8 +100,8 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
-						cValues.add(tX + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
-						cValues.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
 
 						// bottom left
 						// vertex
@@ -114,7 +114,7 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
 						cValues.add(tX);
-						cValues.add(tY + 1 / ((float)BlockUtil.atlas.getImageWidth() / 16));
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
 					}
 				}
 			}
@@ -169,8 +169,8 @@ public class VboUtil {
 	 */
 	public static void render(){
 		glPushMatrix();
-		glTranslatef(MineFlat.xOffset, MineFlat.yOffset, 0);
-		glBindTexture(GL_TEXTURE_2D, BlockUtil.atlas.getTextureID());
+		glTranslatef(GraphicsHandler.xOffset, GraphicsHandler.yOffset, 0);
+		glBindTexture(GL_TEXTURE_2D, GraphicsUtil.atlas.getTextureID());
 		glVertexPointer(2, GL_FLOAT, 28, 0);
 		glColorPointer(3, GL_FLOAT, 28, 8);
 		glTexCoordPointer(2, GL_FLOAT, 28, 20);

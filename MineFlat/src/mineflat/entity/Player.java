@@ -4,11 +4,11 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import mineflat.GraphicsHandler;
 import mineflat.Location;
 import mineflat.MineFlat;
 import mineflat.event.Event;
 import mineflat.event.player.PlayerMoveEvent;
-import mineflat.util.BlockUtil;
 import mineflat.util.ImageUtil;
 
 import org.lwjgl.opengl.Display;
@@ -17,9 +17,9 @@ import org.newdawn.slick.opengl.TextureLoader;
 public class Player extends LivingEntity {
 
 	/**
-	 * The height to which the player will jump
+	 * Distance from center of screen at which the screen will begin scrolling when the player reaches it
 	 */
-	public static float jumpHeight = 3;
+	public static final float scrollTolerance = 0.5f;
 
 	public Player(float x, float y){
 		this.x = x;
@@ -31,29 +31,31 @@ public class Player extends LivingEntity {
 		return new Location(x, y);
 	}
 
+	@Override
 	public void setX(float x){
 		Location old = getLocation();
-		this.x = x;
+		super.setX(x);
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}
 
+	@Override
 	public void setY(float y){
 		Location old = getLocation();
-		this.y = y;
+		super.setY(y);
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}
-	
+
 	public void setYVelocity(float v){
 		yVelocity = v;
 	}
-	
+
 	public float getYVelocity(){
 		return yVelocity;
 	}
 
 	public static void initialize(){
 		try {
-			InputStream is = BlockUtil.class.getClassLoader().getResourceAsStream(
+			InputStream is = Player.class.getClassLoader().getResourceAsStream(
 					"textures/char_prim.png");
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
 					ImageIO.read(is), 64, 64));
@@ -66,10 +68,23 @@ public class Player extends LivingEntity {
 	}
 
 
-	
+
 	public static void centerPlayer(){
-		MineFlat.xOffset = Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX();
-		MineFlat.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
+		if (MineFlat.player.getLocation().getPixelX() <
+				Display.getWidth() / 2 - GraphicsHandler.xOffset -
+				(int)(Display.getWidth() / 2 * scrollTolerance))
+			GraphicsHandler.xOffset =
+					Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX() -
+					(int)(Display.getWidth() / 2 * scrollTolerance);
+		else if (MineFlat.player.getLocation().getPixelX() >
+		Display.getWidth() / 2 - GraphicsHandler.xOffset + (int)(Display.getWidth() / 2 * scrollTolerance))
+			GraphicsHandler.xOffset =
+					Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX() +
+					(int)(Display.getWidth() / 2 * scrollTolerance);
+
+		//TODO: That scrolling tolerance thingy for the y-axis
+		GraphicsHandler.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
+
 	}
 
 }
