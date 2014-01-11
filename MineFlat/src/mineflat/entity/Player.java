@@ -12,7 +12,6 @@ import mineflat.util.BlockUtil;
 import mineflat.util.ImageUtil;
 
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 public class Player extends LivingEntity {
@@ -21,13 +20,6 @@ public class Player extends LivingEntity {
 	 * The height to which the player will jump
 	 */
 	public static float jumpHeight = 3;
-
-	protected static Texture sprite = null;
-	protected static char lastSprite;
-	
-	protected static int playerHandle = 0;
-	
-	
 
 	public Player(float x, float y){
 		this.x = x;
