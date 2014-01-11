@@ -19,7 +19,7 @@ public class Player extends LivingEntity {
 	/**
 	 * Distance from center of screen at which the screen will begin scrolling when the player reaches it
 	 */
-	public static final float scrollTolerance = 0.5f;
+	public static final float scrollTolerance = 0.25f;
 
 	public Player(float x, float y){
 		this.x = x;
@@ -74,16 +74,26 @@ public class Player extends LivingEntity {
 				Display.getWidth() / 2 - GraphicsHandler.xOffset -
 				(int)(Display.getWidth() / 2 * scrollTolerance))
 			GraphicsHandler.xOffset =
-					Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX() -
-					(int)(Display.getWidth() / 2 * scrollTolerance);
+			Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX() -
+			(int)(Display.getWidth() / 2 * scrollTolerance);
 		else if (MineFlat.player.getLocation().getPixelX() >
 		Display.getWidth() / 2 - GraphicsHandler.xOffset + (int)(Display.getWidth() / 2 * scrollTolerance))
 			GraphicsHandler.xOffset =
-					Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX() +
-					(int)(Display.getWidth() / 2 * scrollTolerance);
+			Display.getWidth() / 2 - MineFlat.player.getLocation().getPixelX() +
+			(int)(Display.getWidth() / 2 * scrollTolerance);
 
-		//TODO: That scrolling tolerance thingy for the y-axis
-		GraphicsHandler.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
+		if (MineFlat.player.getLocation().getPixelY() <
+				Display.getHeight() / 2 - GraphicsHandler.yOffset -
+				(int)(Display.getHeight() / 2 * scrollTolerance))
+			GraphicsHandler.yOffset =
+			Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY() -
+			(int)(Display.getHeight() / 2 * scrollTolerance);
+		else if (MineFlat.player.getLocation().getPixelY() >
+		Display.getHeight() / 2 - GraphicsHandler.yOffset + (int)(Display.getHeight() / 2 * scrollTolerance))
+			GraphicsHandler.yOffset =
+			Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY() +
+			(int)(Display.getHeight() / 2 * scrollTolerance);
+		//GraphicsHandler.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
 
 	}
 
