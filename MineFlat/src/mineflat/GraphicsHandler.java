@@ -235,8 +235,8 @@ public class GraphicsHandler implements Runnable {
 						String.format("%.3f", MineFlat.player.getY()), 10, 115, height, true);
 				int mb = 1024 * 1024;
 				Runtime runtime = Runtime.getRuntime();
-				drawString(runtime.maxMemory() / mb + "mb allocated memory: " +
-						(runtime.maxMemory() - runtime.freeMemory()) / mb + "mb used, " +
+				drawString(runtime.totalMemory() / mb + "mb allocated memory: " +
+						(runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
 						runtime.freeMemory() / mb + "mb free", 10, 150, height, true);
 			}
 
