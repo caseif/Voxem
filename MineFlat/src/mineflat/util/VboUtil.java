@@ -13,6 +13,7 @@ import java.util.List;
 import mineflat.Block;
 import mineflat.Chunk;
 import mineflat.GraphicsHandler;
+import mineflat.MineFlat;
 
 import org.lwjgl.BufferUtils;
 
@@ -55,8 +56,8 @@ public class VboUtil {
 		Chunk c = Chunk.getChunk(chunk);
 		if (c != null){
 			List<Float> cValues = new ArrayList<Float>();
-			for (int x = 0; x < 16; x++){
-				for (int y = 0; y < 128; y++){
+			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
+				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
 					if (b != null){
 						float tX = Float.valueOf(GraphicsUtil.texCoords
@@ -86,7 +87,8 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+								GraphicsHandler.texSize));
 						cValues.add(tY);
 
 						// bottom right
@@ -100,8 +102,10 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
-						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+								GraphicsHandler.texSize));
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+								GraphicsHandler.texSize));
 
 						// bottom left
 						// vertex
@@ -114,7 +118,8 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
 						// texture
 						cValues.add(tX);
-						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() / 16));
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+								GraphicsHandler.texSize));
 					}
 				}
 			}

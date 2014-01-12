@@ -25,18 +25,20 @@ public class CaveFactory {
 				Block.getBlock(x, y - 1).getType() != Material.AIR){
 			surrounding.add(Block.getBlock(x, y - 1));
 		}
-		if (y < 126 && Block.getBlock(x, y + 1) != null &&
+		if (y < MineFlat.world.getChunkHeight() - 2 && Block.getBlock(x, y + 1) != null &&
 				Block.getBlock(x, y + 1).getType() != Material.AIR){
 			surrounding.add(Block.getBlock(x, y + 1));
 			surrounding.add(Block.getBlock(x, y + 1));
 			surrounding.add(Block.getBlock(x, y + 1));
 		}
-		if (x > Chunk.totalChunks / 2 * -16 && Block.getBlock(x - 1, y) != null &&
+		if (x > MineFlat.world.getChunkCount() / 2 * -MineFlat.world.getChunkLength() &&
+				Block.getBlock(x - 1, y) != null &&
 				Block.getBlock(x - 1, y).getType() != Material.AIR){
 			surrounding.add(Block.getBlock(x - 1, y));
 			surrounding.add(Block.getBlock(x - 1, y));
 		}
-		if (x < Chunk.totalChunks / 2 * 16 + 15 && Block.getBlock(x + 1, y) != null &&
+		if (x < (MineFlat.world.getChunkCount() / 2 + 1) * MineFlat.world.getChunkLength() - 1 &&
+				Block.getBlock(x + 1, y) != null &&
 				Block.getBlock(x + 1, y).getType() != Material.AIR){
 			surrounding.add(Block.getBlock(x + 1, y));
 			surrounding.add(Block.getBlock(x + 1, y));

@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import mineflat.GraphicsHandler;
 import mineflat.Location;
 import mineflat.Material;
 
@@ -22,7 +23,7 @@ public class GraphicsUtil {
 			InputStream is = GraphicsUtil.class.getClassLoader().getResourceAsStream(
 					"textures/" + m.toString().toLowerCase() + ".png");
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
-					ImageIO.read(is), 16, 16));
+					ImageIO.read(is), GraphicsHandler.texSize, GraphicsHandler.texSize));
 			BufferedImage b = ImageIO.read(newIs);
 			textures.put(m, b);
 		}

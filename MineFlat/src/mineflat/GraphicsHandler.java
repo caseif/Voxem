@@ -25,7 +25,7 @@ import mineflat.util.NumUtil;
 import mineflat.util.VboUtil;
 
 public class GraphicsHandler implements Runnable {
-	
+
 	/**
 	 * The minimum OpenGL version required to run the game
 	 */
@@ -42,6 +42,8 @@ public class GraphicsHandler implements Runnable {
 	public static int fps = 0;
 	public static long lastFpsUpdate = 0;
 	public static final long fpsUpdateTime = (long)(0.5 * Timing.timeResolution);
+
+	public static int texSize = 16;
 
 	/**
 	 * The number of horizontal pixels visual elements will be shifted before being rendered
@@ -64,12 +66,12 @@ public class GraphicsHandler implements Runnable {
 
 	// space between characters when height is 32px
 	private static final float interCharSpace = 0.1f;
-	
+
 	// offset of shadows (duh)
 	private static final float shadowOffset = 1;
-	
+
 	public static HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
-	
+
 	public void run(){
 		try {
 			DisplayMode[] modes = Display.getAvailableDisplayModes();
@@ -89,7 +91,8 @@ public class GraphicsHandler implements Runnable {
 				icons = new ByteBuffer[2];
 				BufferedImage icon1 = ImageUtil.scaleImage(
 						ImageIO.read(MineFlat.class.getClassLoader()
-								.getResourceAsStream("images/icon.png")), 16, 16);
+								.getResourceAsStream("images/icon.png")), GraphicsHandler.texSize,
+								GraphicsHandler.texSize);
 				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
 						MineFlat.class.getClassLoader()
 						.getResourceAsStream("images/icon.png")), 32, 32);;
@@ -100,7 +103,7 @@ public class GraphicsHandler implements Runnable {
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
 						MineFlat.class.getClassLoader()
-						.getResourceAsStream("images/icon.png")), 128, 128);
+						.getResourceAsStream("images/icon.png")), MineFlat.world.getChunkHeight(), MineFlat.world.getChunkHeight());
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			else {
@@ -242,12 +245,13 @@ public class GraphicsHandler implements Runnable {
 		}
 		MineFlat.closed = true;
 	}
-	
+
 	public static void initializeChars() throws IOException {
 		InputStream is = NumUtil.class.getClassLoader().getResourceAsStream(
 				"textures/chars.png");
 		//InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
-		//		ImageIO.read(is), 16, 16)); // in case I decide to resize it later on
+		//		ImageIO.read(is), MineFlat.world.getChunkLength(),
+		//		MineFlat.world.getChunkLength())); // in case I decide to resize it later on
 		BufferedImage b = ImageIO.read(is);
 		MineFlat.charTexture = BufferedImageUtil.getTexture("", b, GL11.GL_NEAREST);
 		specialChars.put('!', 0f);
@@ -260,7 +264,7 @@ public class GraphicsHandler implements Runnable {
 		specialChars.put('(', 7f);
 		specialChars.put(')', 8f);
 	}
-	
+
 	public static void drawString(String text, float x, float y, float height, boolean shadow){
 		float wm = 42f + 2f / 3f;
 		float hm = 4f;

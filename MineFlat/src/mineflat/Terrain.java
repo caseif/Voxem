@@ -35,10 +35,10 @@ public class Terrain {
 	public static void generateChunks(){
 		System.out.println("Generating chunks...");
 		//TODO: Save chunks to disk after generating so as not to keep them in memory
-		for (int i = Chunk.totalChunks * -1 / 2; i <= Chunk.totalChunks / 2; i++){
+		for (int i = MineFlat.world.getChunkCount() * -1 / 2; i <= MineFlat.world.getChunkCount() / 2; i++){
 			if (!Chunk.isChunkGenerated(i)){
 				Chunk c = new Chunk(i);
-				for (int x = 0; x < 16; x++){
+				for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 					int h = (int)Math.floor((
 							noise.noise(Chunk.getBlockXFromChunk(i, x)) / 2 + 0.5) *
 							terrainVariation);
@@ -50,7 +50,7 @@ public class Terrain {
 							terrainVariation);
 					h = (h + leftHeight + rightHeight) / 2;
 					Material mat = null;
-					for (int y = h; y < 128; y++){
+					for (int y = h; y < MineFlat.world.getChunkHeight(); y++){
 						if (mat != Material.STONE){
 							if (y == h){
 								mat = Material.GRASS;
@@ -77,7 +77,7 @@ public class Terrain {
 	public static void smoothTerrain(){
 		System.out.println("Smoothing terrain...");
 		for (Chunk c : Chunk.chunks){
-			for (int x = 0; x < 16; x++){
+			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 				int h = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x));
 				int leftHeight = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x) - 1);
 				if (leftHeight != -1){
@@ -87,9 +87,9 @@ public class Terrain {
 					else if (leftHeight - h <= -3)
 						h = leftHeight + 2;
 					Material mat = null;
-					for (int y = 0; y < 128; y++){
+					for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
 						if (y >= h){
-							if (mat != Material.STONE || y == 127){
+							if (mat != Material.STONE || y == MineFlat.world.getChunkHeight() - 1){
 								if (y == h){
 									mat = Material.GRASS;
 									if (c.getBlock(x, y + 1) != null && 
@@ -104,7 +104,7 @@ public class Terrain {
 											Chunk.getBlockXFromChunk(c.getNum(), x), y) + 1) == 0)
 										mat = Material.STONE;
 								}
-								else if (y >= 17 && y < 127)
+								else if (y >= 17 && y < MineFlat.world.getChunkHeight() - 1)
 									mat = Material.STONE;
 								else
 									mat = Material.BEDROCK;
@@ -139,8 +139,8 @@ public class Terrain {
 		int goldChance = 2;
 		int diamondChance = 1;
 		for (Chunk c : Chunk.chunks){
-			for (int xx = 0; xx < 16; xx++){
-				for (int yy = 0; yy < 128; yy++){
+			for (int xx = 0; xx < MineFlat.world.getChunkLength(); xx++){
+				for (int yy = 0; yy < MineFlat.world.getChunkHeight(); yy++){
 					int x = Chunk.getBlockXFromChunk(c.getNum(), xx);
 					int y = yy;
 					if (!Block.isBlockEmpty(Block.getBlock(x, y)) &&
@@ -150,14 +150,16 @@ public class Terrain {
 						if (roll < coalChance)
 							vein = Material.COAL_ORE;
 						else if (roll >= coalChance &&
-								roll < coalChance + ironChance && yy >= 32)
+								roll < coalChance + ironChance &&
+								yy >= 0.25 * MineFlat.world.getChunkHeight())
 							vein = Material.IRON_ORE;
 						else if (roll >= coalChance + ironChance &&
-								roll < coalChance + ironChance + goldChance && yy >= 96)
+								roll < coalChance + ironChance + goldChance &&
+								yy >= 0.75 * MineFlat.world.getChunkHeight())
 							vein = Material.GOLD_ORE;
 						else if (roll >= coalChance + ironChance + goldChance &&
 								roll < coalChance + ironChance + goldChance +
-								diamondChance && yy >= 112)
+								diamondChance && yy >= MineFlat.world.getChunkHeight() - 16)
 							vein = Material.DIAMOND_ORE;
 						if (vein != null){
 							int maxSize = 0;
@@ -180,11 +182,13 @@ public class Terrain {
 										!Block.isBlockEmpty(Block.getBlock(x, y + 1)) &&
 										Block.getBlock(x, y + 1).getType() == Material.STONE)
 									surrounding.add(Block.getBlock(x, y + 1));
-								if (x > Chunk.totalChunks / 2 * -16 &&
+								if (x > (MineFlat.world.getChunkCount() / 2 + 1) *
+										MineFlat.world.getChunkLength() - 1 &&
 										!Block.isBlockEmpty(Block.getBlock(x - 1, y)) &&
 										Block.getBlock(x - 1, y).getType() == Material.STONE)
 									surrounding.add(Block.getBlock(x - 1, y));
-								if (x < Chunk.totalChunks / 2 * 16 + 15 &&
+								if (x < (MineFlat.world.getChunkCount() / 2 + 1) *
+										MineFlat.world.getChunkLength() - 1 &&
 										!Block.isBlockEmpty(Block.getBlock(x + 1, y)) &&
 										Block.getBlock(x + 1, y).getType() == Material.STONE)
 									surrounding.add(Block.getBlock(x + 1, y));
@@ -206,7 +210,8 @@ public class Terrain {
 		System.out.println("Generating caves...");
 		for (Chunk c : Chunk.chunks){
 			if (CaveFactory.r.nextInt(2) == 0){
-				int x = Chunk.getBlockXFromChunk(c.getNum(), CaveFactory.r.nextInt(16));
+				int x = Chunk.getBlockXFromChunk(c.getNum(),
+						CaveFactory.r.nextInt(MineFlat.world.getChunkLength()));
 				new CaveFactory(x, Block.getTop(x) + 1);
 			}
 		}
@@ -221,28 +226,31 @@ public class Terrain {
 		CaveFactory.caveFactories = null;
 		// analyze and improve cave systems
 		for (Chunk c : Chunk.chunks){
-			for (int xx = 0; xx < 16; xx++){
+			for (int xx = 0; xx < MineFlat.world.getChunkLength(); xx++){
 				int x = Chunk.getBlockXFromChunk(c.getNum(), xx);
-				for (int y = 0; y < 128; y++){
+				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
 					if (!Block.isBlockEmpty(Block.getBlock(x, y))){
 						List<Block> surrounding = new ArrayList<Block>();
 						if (y > 0 && !Block.isBlockEmpty(Block.getBlock(x, y - 1)))
 							surrounding.add(Block.getBlock(x, y - 1));
-						if (y < 127 && !Block.isBlockEmpty(Block.getBlock(x, y + 1)))
+						if (y < MineFlat.world.getChunkHeight() - 1 &&
+								!Block.isBlockEmpty(Block.getBlock(x, y + 1)))
 							surrounding.add(Block.getBlock(x, y + 1));
-						if (x > Chunk.totalChunks / 2 * -16 &&
+						if (x > (MineFlat.world.getChunkCount() / 2 + 1) * 
+							-MineFlat.world.getChunkLength() - 1 &&
 								!Block.isBlockEmpty(Block.getBlock(x - 1, y)))
 							surrounding.add(Block.getBlock(x - 1, y));
-						if (x < Chunk.totalChunks / 2 * 16 + 15 &&
+						if (x < (MineFlat.world.getChunkCount() / 2 + 1) *
+								MineFlat.world.getChunkLength() - 1 &&
 								!Block.isBlockEmpty(Block.getBlock(x + 1, y)))
 							surrounding.add(Block.getBlock(x + 1, y));
 						// remove lonely strands
 						if (surrounding.size() == 1){
 							if (surrounding.contains(Block.getBlock(x + 1, y)) ||
-									(y < 127 &&
+									(y < MineFlat.world.getChunkHeight() - 1 &&
 											surrounding.contains(Block.getBlock(x, y + 1)))){
 								boolean vert = false;
-								if (y < 127 &&
+								if (y < MineFlat.world.getChunkHeight() - 1 &&
 										surrounding.contains(Block.getBlock(x, y + 1)))
 									vert = true;
 								Block b = surrounding.get(0);
@@ -252,7 +260,8 @@ public class Terrain {
 									if (!vert){
 										if (y <= 0 || Block.isBlockEmpty(
 												Block.getBlock(b.getX(), y - 1)))
-											if (y >= 127 || Block.isBlockEmpty(
+											if (y >= MineFlat.world.getChunkHeight() - 1 ||
+											Block.isBlockEmpty(
 													Block.getBlock(b.getX(), y + 1))){
 												remove.add(b);
 												if (Block.isBlockEmpty(
@@ -273,7 +282,7 @@ public class Terrain {
 											if (Block.isBlockEmpty(
 													Block.getBlock(x + 1, b.getY()))){
 												remove.add(b);
-												if (y >= 127 || Block.isBlockEmpty(
+												if (y >= MineFlat.world.getChunkHeight() - 1 || Block.isBlockEmpty(
 														Block.getBlock(x, b.getY() + 1))){
 													strand = true;
 													break;
@@ -297,12 +306,14 @@ public class Terrain {
 						surrounding.clear();
 						if (y > 0 && !Block.isBlockEmpty(Block.getBlock(x, y - 1)))
 							surrounding.add(Block.getBlock(x, y - 1));
-						if (y < 127 && !Block.isBlockEmpty(Block.getBlock(x, y + 1)))
+						if (y < MineFlat.world.getChunkHeight() - 1 &&
+								!Block.isBlockEmpty(Block.getBlock(x, y + 1)))
 							surrounding.add(Block.getBlock(x, y + 1));
-						if (x > Chunk.totalChunks / 2 * -16 &&
+						if (x > MineFlat.world.getChunkCount() / 2 * -MineFlat.world.getChunkLength() &&
 								!Block.isBlockEmpty(Block.getBlock(x - 1, y)))
 							surrounding.add(Block.getBlock(x - 1, y));
-						if (x < Chunk.totalChunks / 2 * 16 + 15 &&
+						if (x < (MineFlat.world.getChunkCount() / 2 + 1) *
+								MineFlat.world.getChunkLength() - 1 &&
 								!Block.isBlockEmpty(Block.getBlock(x + 1, y)))
 							surrounding.add(Block.getBlock(x + 1, y));
 						// remove lonely blocks
@@ -316,16 +327,19 @@ public class Terrain {
 										!= null && Block.getBlock(b.getX(),
 												b.getY() - 1).getType() != Material.AIR)
 									surround.add(Block.getBlock(b.getX(), b.getY() - 1));
-								if (b.getY() < 127 && Block.getBlock(b.getX(), b.getY() + 1)
+								if (b.getY() < MineFlat.world.getChunkHeight() - 1 &&
+										Block.getBlock(b.getX(), b.getY() + 1)
 										!= null && Block.getBlock(b.getX(),
 												b.getY() + 1).getType() != Material.AIR)
 									surround.add(Block.getBlock(b.getX(), b.getY() + 1));
-								if (b.getX() > Chunk.totalChunks / 2 * -16 &&
+								if (b.getX() > MineFlat.world.getChunkCount() / 2 *
+										-MineFlat.world.getChunkLength() &&
 										Block.getBlock(b.getX() - 1, b.getY()) != null &&
 										Block.getBlock(b.getX() - 1,
 												b.getY()).getType() != Material.AIR)
 									surround.add(Block.getBlock(b.getX() - 1, b.getY()));
-								if (b.getX() < Chunk.totalChunks / 2 * 16 + 15 &&
+								if (b.getX() < (MineFlat.world.getChunkCount() / 2 + 1) *
+										MineFlat.world.getChunkLength() - 1 &&
 										Block.getBlock(b.getX() + 1, b.getY()) != null &&
 										Block.getBlock(b.getX() + 1,
 												b.getY()).getType() != Material.AIR)
@@ -351,8 +365,8 @@ public class Terrain {
 	public static void plantGrass(){
 		System.out.println("Planting grass...");
 		for (Chunk c : Chunk.chunks){
-			for (int x = 0; x < 16; x++){
-				for (int y = 0; y < 128; y++){
+			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
+				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
 					if (c.getBlock(x, y) != null){
 						if (c.getBlock(x, y).getType() == Material.DIRT){
 							Block b = new Block(Material.GRASS, c.getBlock(x, y).getLocation());

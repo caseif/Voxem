@@ -127,15 +127,15 @@ public class InputManager {
 										if ((int)playerY == y)
 											playerY -= 1;
 										boolean pBlock = false;
-										if (playerY >= 0 && playerY < 128)
+										if (playerY >= 0 && playerY < MineFlat.world.getChunkHeight())
 											if (l.getX() == (float)Math.floor(playerX) &&
 											l.getY() == (float)Math.floor(playerY))
 												pBlock = true;
-										if (playerY >= -1 && playerY < 127)
+										if (playerY >= -1 && playerY < MineFlat.world.getChunkHeight() - 1)
 											if (l.getX() == (float)Math.floor(playerX) &&
 											l.getY() == (float)Math.floor(playerY + 1))
 												pBlock = true;
-										if (!pBlock && l.getY() > 0 && l.getY() < 128){
+										if (!pBlock && l.getY() > 0 && l.getY() < MineFlat.world.getChunkHeight()){
 											Block block = new Block(Material.WOOD, l);
 											block.addToWorld();
 											Event.fireEvent(

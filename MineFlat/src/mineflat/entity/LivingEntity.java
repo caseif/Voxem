@@ -3,6 +3,7 @@ package mineflat.entity;
 import mineflat.Block;
 import mineflat.Direction;
 import mineflat.Location;
+import mineflat.MineFlat;
 import mineflat.Timing;
 
 public class LivingEntity extends Entity {
@@ -78,10 +79,10 @@ public class LivingEntity extends Entity {
 			if ((int)y == y)
 				y -= 1;
 			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0 && y < 128 && y % 1 != 0)
+			if (y >= 0 && y < MineFlat.world.getChunkHeight() && y % 1 != 0)
 				b1 = new Location((float)Math.floor(newX),
 						(float)Math.floor(y)).getBlock();
-			if (y >= -1 && y < 127)
+			if (y >= -1 && y < MineFlat.world.getChunkHeight() - 1)
 				b2 = new Location((float)Math.floor(newX),
 						(float)Math.floor(y) + 1).getBlock();
 			if (y >= -2 && y < 126)
@@ -104,10 +105,10 @@ public class LivingEntity extends Entity {
 			if ((int)y == y)
 				y -= 1;
 			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0 && y < 128 && y % 1 != 0)
+			if (y >= 0 && y < MineFlat.world.getChunkHeight() && y % 1 != 0)
 				b1 = new Location((float)Math.floor(newX),
 						(float)Math.floor(y)).getBlock();
-			if (y >= -1 && y < 127)
+			if (y >= -1 && y < MineFlat.world.getChunkHeight() - 1)
 				b2 = new Location((float)Math.floor(newX),
 						(float)Math.floor(y) + 1).getBlock();
 			if (y >= -2 && y < 126)
@@ -128,7 +129,7 @@ public class LivingEntity extends Entity {
 			setYVelocity(-jumpPower);
 
 		float newY = getY() + getYVelocity() + 0.06f;
-		if (newY >= 0 && newY <= 127){
+		if (newY >= 0 && newY <= MineFlat.world.getChunkHeight() - 1){
 			float pX = getX() >= 0 ? getX() :
 				getX() - 1;
 			if (new Location(pX, (float)Math.floor(newY)).getBlock() != null)
@@ -138,10 +139,10 @@ public class LivingEntity extends Entity {
 
 		setY(getY() + getYVelocity());
 
-		if (Math.floor(getY() + 2) < 128){
+		if (Math.floor(getY() + 2) < MineFlat.world.getChunkHeight()){
 			float x = (Math.abs(getX()) % 1 >= 0.5 && getX() > 0) ||
 					(Math.abs(getX()) % 1 <= 0.5 && getX() < 0) ?
-							getX() - 4f / 16 : getX() + 4f / 16;
+							getX() - 4f / Block.length : getX() + 4f / Block.length;
 			if (x < 0) x -= 1;
 			Block below = null;
 			if (getY() >= -2) below = new Location((float)x,

@@ -30,7 +30,7 @@ public class Location {
 	public Block getBlock(){
 		Chunk c = Chunk.getChunk(getChunk());
 		if (c != null){
-			int index = (int)Math.floor(Math.abs(x % 16));
+			int index = (int)Math.floor(Math.abs(x % MineFlat.world.getChunkLength()));
 			return c.getBlock(index, (int)y);
 		}
 		return null;
@@ -49,11 +49,13 @@ public class Location {
 	}
 
 	public int getChunk(){
-		return x >= 0 ? (int)x / 16 + 1 : (int)x / 16 - 1;
+		return x >= 0 ? (int)x / MineFlat.world.getChunkLength() + 1 :
+			(int)x / MineFlat.world.getChunkLength() - 1;
 	}
 
 	public float getPosInChunk(){
-		return x >= 0 ? Math.abs(x) % 16 : 16 - Math.abs(x) % 16; 
+		return x >= 0 ? Math.abs(x) % MineFlat.world.getChunkLength() :
+			MineFlat.world.getChunkLength() - Math.abs(x) % MineFlat.world.getChunkLength(); 
 	}
 
 	public int getPixelX(){

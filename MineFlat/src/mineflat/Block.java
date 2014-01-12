@@ -56,7 +56,8 @@ public class Block {
 		Chunk c = Chunk.getChunk(location.getChunk());
 		if (c == null)
 			c = new Chunk(location.getChunk());
-		c.setBlock(Math.abs((int)location.getX() % 16), (int)location.getY(), this);
+		c.setBlock(Math.abs((int)location.getX() % MineFlat.world.getChunkLength()),
+				(int)location.getY(), this);
 	}
 
 	public int getX(){
@@ -109,8 +110,8 @@ public class Block {
 			// check if player is within range
 			if (Math.abs(MineFlat.player.getLocation().getChunk() - c.getNum()) <=
 					GraphicsHandler.renderDistance){
-				for (int x = 0; x < 16; x++){
-					for (int y = 0; y < 128; y++){
+				for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
+					for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
 						Block b = c.getBlock(x, y);
 						if (b != null){
 							glPushMatrix();
@@ -141,7 +142,7 @@ public class Block {
 
 	public void destroy(){
 		Chunk.getChunk(Chunk.getChunkNum((int)Math.floor(getX())))
-		.setBlock((int)Math.abs(Math.floor(getX() % 16)), 
+		.setBlock((int)Math.abs(Math.floor(getX() % MineFlat.world.getChunkLength())), 
 				(int)(Math.floor(getY())), null);
 	}
 
@@ -150,7 +151,7 @@ public class Block {
 	}
 
 	public static int getTop(int x){
-		for (int yy = 0; yy < 128; yy++){
+		for (int yy = 0; yy < MineFlat.world.getChunkHeight(); yy++){
 			if (new Location(x, yy).getBlock() != null){
 				return yy;
 			}
@@ -161,7 +162,7 @@ public class Block {
 	public static Block getBlock(int x, int y){
 		Chunk c = Chunk.getChunk(new Location(x, y).getChunk());
 		if (c != null)
-			return c.getBlock(Math.abs(x % 16), y);
+			return c.getBlock(Math.abs(x % MineFlat.world.getChunkLength()), y);
 		return null;
 	}
 
@@ -187,7 +188,7 @@ public class Block {
 			int blockX = (int)Math.floor(MineFlat.player.getX() + xAdd);
 			int blockY = (int)Math.floor(MineFlat.player.getY() + yAdd);
 			synchronized (MineFlat.lock){
-				if (blockY >= 0 && blockY <= 127){
+				if (blockY >= 0 && blockY <= MineFlat.world.getChunkHeight() - 1){
 					if (Block.getBlock(blockX, blockY) != null){
 						Block.selected = new Location(blockX, blockY);
 						found = true;

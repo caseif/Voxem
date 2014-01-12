@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import mineflat.GraphicsHandler;
 import mineflat.Location;
 import mineflat.Material;
 
@@ -34,15 +35,16 @@ public class ImageUtil {
 	}
 	
 	public static void createAtlas(){
-		int finalSize = NumUtil.nextPowerOfTwo((int)Math.sqrt(((GraphicsUtil.textures.size() * 16  * 16))));
+		int finalSize = NumUtil.nextPowerOfTwo((int)Math.sqrt(GraphicsUtil.textures.size() *
+				Math.pow(GraphicsHandler.texSize, 2)));
 		BufferedImage atlas = new BufferedImage(finalSize, finalSize, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = atlas.createGraphics();
 		int y = 0;
 		for (int i = 0; i < GraphicsUtil.textures.size(); i++){
-			int x = i * 16 - (finalSize * (y / 16));
+			int x = i * GraphicsHandler.texSize - (finalSize * (y / GraphicsHandler.texSize));
 			if (x >= finalSize){
 				x = 0;
-				y += 16;
+				y += GraphicsHandler.texSize;
 			}
 			g.drawImage(GraphicsUtil.textures.get(GraphicsUtil.textures.keySet().toArray()[i]), x, y, null);
 			GraphicsUtil.texCoords.put((Material)(GraphicsUtil.textures.keySet().toArray()[i]),

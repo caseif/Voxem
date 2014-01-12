@@ -30,7 +30,7 @@ public class MineFlat {
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
-	public static Player player = new Player(16, 0);
+	public static Player player = new Player(32, 0);
 
 	public static boolean closed = false;
 
@@ -41,8 +41,15 @@ public class MineFlat {
 	public static Texture charTexture;
 
 	public static boolean debug = false;
+	
+	/**
+	 * The currently loaded world
+	 */
+	public static World world;
 
 	public static void main(String[] args){
+		
+		world = new World("world", 8, 16, 128);
 
 		Terrain.generateTerrain();
 		EventManager.registerEventListener(new EventListener());
@@ -56,6 +63,7 @@ public class MineFlat {
 			Block.updateSelectedBlock();
 			Timing.throttleCpu();
 		}
+		SaveManager.saveWorld();
 
 	}
 
