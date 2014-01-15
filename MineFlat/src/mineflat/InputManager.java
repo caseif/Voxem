@@ -30,13 +30,15 @@ public class InputManager {
 
 	public static void pollInput(){
 		if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
-			MineFlat.player.setXVelocity(0);
-		else if (isKeyDown(left1) || isKeyDown(left2))
-			MineFlat.player.setXVelocity(-MineFlat.player.getSpeed());
-		else if (isKeyDown(right1) || isKeyDown(right2))
-			MineFlat.player.setXVelocity(MineFlat.player.getSpeed());
-		else
-			MineFlat.player.setXVelocity(0);
+			MineFlat.player.setDirection(Direction.STATIONARY);
+		else if (isKeyDown(left1) || isKeyDown(left2)){
+			MineFlat.player.setFacing(Direction.LEFT);
+			MineFlat.player.setDirection(Direction.LEFT);
+		}else if (isKeyDown(right1) || isKeyDown(right2)){
+			MineFlat.player.setDirection(Direction.RIGHT);
+			MineFlat.player.setFacing(Direction.RIGHT);
+		}else
+			MineFlat.player.setDirection(Direction.STATIONARY);
 		if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3))
 			MineFlat.player.setJumping(true);
 		else

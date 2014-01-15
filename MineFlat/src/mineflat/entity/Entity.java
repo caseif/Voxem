@@ -82,7 +82,10 @@ public class Entity {
 	}
 
 	public void manageMovement(){
-
+		
+		
+		setY(getY() + getYVelocity());
+		
 		if (!isXMovementBlocked())
 			setX(x + xVelocity * (Timing.delta / Timing.timeResolution));
 		
@@ -98,6 +101,23 @@ public class Entity {
 
 			}
 		}
+		
+		if (Math.floor(getY() + 2) < MineFlat.world.getChunkHeight()){
+			float x = (Math.abs(getX()) % 1 >= 0.5 && getX() > 0) ||
+					(Math.abs(getX()) % 1 <= 0.5 && getX() < 0) ?
+							getX() - 4f / Block.length : getX() + 4f / Block.length;
+			if (x < 0) x -= 1;
+			Block below = null;
+			if (getY() >= -2) below = new Location((float)x,
+					(float)Math.floor(getY() + 2)).getBlock();
+			if (below != null){
+				if((float)below.getY() - getY() < 2){
+					setY(below.getY() - 2);
+				}  	   
+			}
+		}
+		
+		
 	}
 
 	public boolean isOnGround(){
