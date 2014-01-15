@@ -26,6 +26,11 @@ public class Entity {
 	public static final float terminalVelocity = 1f;
 
 	/**
+	 * The current velocity on the x axis (e.g. from moving, throwing)
+	 */
+	public static float xVelocity = 0;
+	
+	/**
 	 * The current velocity on the y axis (e.g. from falling, jumping)
 	 */
 	public static float yVelocity = 0;
@@ -60,6 +65,14 @@ public class Entity {
 		this.type = type;
 	}
 
+	public float getXVelocity(){
+		return xVelocity;
+	}
+
+	public void setXVelocity(float v){
+		xVelocity = v;
+	}
+
 	public float getYVelocity(){
 		return yVelocity;
 	}
@@ -70,6 +83,9 @@ public class Entity {
 
 	public void manageMovement(){
 
+		if (!isXMovementBlocked())
+			setX(x + xVelocity * (Timing.delta / Timing.timeResolution));
+		
 		if(isOnGround())
 			MineFlat.player.setYVelocity(0);	
 		else {
@@ -84,7 +100,7 @@ public class Entity {
 		}
 	}
 
-	public boolean isOnGround() {
+	public boolean isOnGround(){
 		if (Math.floor(getY() + 2) < MineFlat.world.getChunkHeight()){
 			float x = (Math.abs(getX()) % 1 >= 0.5 && getX() > 0) || (Math.abs(getX()) % 1 <= 0.5 &&
 					getX() < 0) ? getX() - 4f / Block.length : getX() + 4f / Block.length;
@@ -100,6 +116,27 @@ public class Entity {
 		}
 
 		else return true;
+	}
+	
+	public boolean isXMovementBlocked(){
+		float newX = getX() +
+				(xVelocity * (Timing.delta / Timing.timeResolution));
+		float y = getY();
+		if ((int)y == y)
+			y -= 1;
+		Block b1 = null, b2 = null, b3 = null;
+		if (y >= 0 && y < MineFlat.world.getChunkHeight() && y % 1 != 0)
+			b1 = new Location((float)Math.floor(newX),
+					(float)Math.floor(y)).getBlock();
+		if (y >= -1 && y < MineFlat.world.getChunkHeight() - 1)
+			b2 = new Location((float)Math.floor(newX),
+					(float)Math.floor(y) + 1).getBlock();
+		if (y >= -2 && y < 126)
+			b3 = new Location((float)Math.floor(newX),
+					(float)Math.floor(y) + 2).getBlock();
+		if (b1 != null || b2 != null || b3 != null)
+			return true;
+		return false;
 	}
 	
 	public void draw(){

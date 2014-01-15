@@ -7,27 +7,21 @@ import mineflat.MineFlat;
 import mineflat.Timing;
 
 public class LivingEntity extends Entity {
-
-	/**
-	 * The speed at which entities will move
-	 */
-	public static final float speed = 5;
 	
 	/**
 	 * The speed at which entities will jump
 	 */
 	public static final float jumpPower = .2f;
 
-	protected Direction dir;
+	/**
+	 * The speed at which this particular entity will move
+	 */
+	protected float speed = 5f;
 	protected Direction facing;
 	protected boolean jump = false;
 	protected int walkFor;
 	protected int walkTime;
 	protected int lastUpdate;
-	
-	public Direction getDirection(){
-		return dir;
-	}
 	
 	public Direction getFacing(){
 		return facing;
@@ -43,12 +37,6 @@ public class LivingEntity extends Entity {
 	
 	public int getLastUpdate(){
 		return lastUpdate;
-	}
-	
-	public void setDirection(Direction dir){
-		this.dir = dir;
-		if (dir != Direction.STATIONARY)
-			setFacing(dir);
 	}
 	
 	public void setFacing(Direction facing){
@@ -71,59 +59,6 @@ public class LivingEntity extends Entity {
 	public void manageMovement(){
 		
 		super.manageMovement();
-		
-		if (dir == Direction.LEFT){
-			float newX = getX() -
-					(speed * (Timing.delta / Timing.timeResolution));
-			float y = getY();
-			if ((int)y == y)
-				y -= 1;
-			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0 && y < MineFlat.world.getChunkHeight() && y % 1 != 0)
-				b1 = new Location((float)Math.floor(newX),
-						(float)Math.floor(y)).getBlock();
-			if (y >= -1 && y < MineFlat.world.getChunkHeight() - 1)
-				b2 = new Location((float)Math.floor(newX),
-						(float)Math.floor(y) + 1).getBlock();
-			if (y >= -2 && y < 126)
-				b3 = new Location((float)Math.floor(newX),
-						(float)Math.floor(y) + 2).getBlock();
-			boolean blocked = false;
-			if (b1 != null)
-				blocked = true;
-			else if (b2 != null)
-				blocked = true;
-			else if (b3 != null)
-				blocked = true;
-			if (!blocked)
-				setX(newX);
-		}
-		if (dir == Direction.RIGHT){
-			float newX = x +
-					(speed * (Timing.delta / Timing.timeResolution));
-			float y = getY();
-			if ((int)y == y)
-				y -= 1;
-			Block b1 = null, b2 = null, b3 = null;
-			if (y >= 0 && y < MineFlat.world.getChunkHeight() && y % 1 != 0)
-				b1 = new Location((float)Math.floor(newX),
-						(float)Math.floor(y)).getBlock();
-			if (y >= -1 && y < MineFlat.world.getChunkHeight() - 1)
-				b2 = new Location((float)Math.floor(newX),
-						(float)Math.floor(y) + 1).getBlock();
-			if (y >= -2 && y < 126)
-				b3 = new Location((float)Math.floor(newX),
-						(float)Math.floor(y) + 2).getBlock();
-			boolean blocked = false;
-			if (b1 != null)
-				blocked = true;
-			else if (b2 != null)
-				blocked = true;
-			else if (b3 != null)
-				blocked = true;
-			if (!blocked)
-				setX(newX);
-		}
 
 		if(jump && isOnGround())
 			setYVelocity(-jumpPower);
@@ -155,11 +90,19 @@ public class LivingEntity extends Entity {
 		}
 	}
 	
-	public boolean getJumping(){
+	public boolean isJumping(){
 		return jump;
 	}
 	
 	public void setJumping(boolean jump){
 		this.jump = jump;
+	}
+	
+	public float getSpeed(){
+		return speed;
+	}
+	
+	public void setSpeed(float speed){
+		this.speed = speed;
 	}
 }

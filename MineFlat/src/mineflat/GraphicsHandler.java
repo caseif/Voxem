@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.util.BufferedImageUtil;
 
 import mineflat.entity.Player;
@@ -253,7 +252,7 @@ public class GraphicsHandler implements Runnable {
 		//		ImageIO.read(is), MineFlat.world.getChunkLength(),
 		//		MineFlat.world.getChunkLength())); // in case I decide to resize it later on
 		BufferedImage b = ImageIO.read(is);
-		MineFlat.charTexture = BufferedImageUtil.getTexture("", b, GL11.GL_NEAREST);
+		MineFlat.charTexture = BufferedImageUtil.getTexture("", b, GL_NEAREST);
 		specialChars.put('!', 0f);
 		specialChars.put('?', 1f);
 		specialChars.put('.', 2f);
