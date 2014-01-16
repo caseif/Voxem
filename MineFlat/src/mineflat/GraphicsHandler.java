@@ -238,7 +238,10 @@ public class GraphicsHandler implements Runnable {
 						(runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
 						runtime.freeMemory() / mb + "mb free", 10, 150, height, true);
 			}
-
+			
+			if(InputManager.isConsoleEnabled())
+				showConsole();
+			
 			Display.sync(60);
 			Display.update();
 		}
@@ -331,6 +334,27 @@ public class GraphicsHandler implements Runnable {
 		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
+	}
+	
+	public static void showConsole(){
+		
+		glEnable(GL_BLEND);
+		glBegin(GL_QUADS);
+		glColor4f(.5f,.5f, .5f, .32f);
+		glVertex2f(20, 20);
+		glVertex2f(Display.getWidth() - 20, 20);
+		glVertex2f(Display.getWidth()-20, 300);
+		glVertex2f(20, 300);
+		glEnd();
+		
+		glEnable(GL_BLEND);
+		glBegin(GL_QUADS);
+		glColor4f(.6f,.6f, .6f, .85f);
+		glVertex2f(30, 265);
+		glVertex2f(Display.getWidth() - 30, 265);
+		glVertex2f(Display.getWidth()-30, 290);
+		glVertex2f(30, 290);
+		glEnd();
 	}
 
 }

@@ -125,7 +125,6 @@ public class Entity {
 		}
 
 		setY(getY() + getYVelocity());
-
 		if (Math.floor(getY() + height) < MineFlat.world.getChunkHeight()){
 			float x = (Math.abs(getX()) % 1 >= 0.5 && getX() > 0) ||
 					(Math.abs(getX()) % 1 <= 0.5 && getX() < 0) ?

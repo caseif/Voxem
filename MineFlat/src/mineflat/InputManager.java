@@ -2,6 +2,8 @@ package mineflat;
 
 import static org.lwjgl.input.Keyboard.*;
 
+import java.util.ArrayList;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -28,46 +30,56 @@ public class InputManager {
 
 	private static long lastAction = 0;
 	private static long actionWait = 350;
-	private static long lastType = 0;
-	private static long typingWait = 25;
 
 	public static boolean consoleEnabled = false;
 
-	public static int[] keysToCheck= {console};
-	public static boolean[] keysDownLastFrame = new boolean[keysToCheck.length];
-	public static boolean[] keysPressed = new boolean[keysToCheck.length];
+	public static ArrayList<Integer> baseKeysToCheck = new ArrayList<Integer>();
+	public static ArrayList<Integer> keysToCheck= new ArrayList<Integer>();
+	public static ArrayList<Boolean> keysDownLastFrame = new ArrayList<Boolean>();
+	public static ArrayList<Boolean> keysPressed = new ArrayList<Boolean>();
 
-
-
-	public static void initialize(){
-		for(int i = 0; i < keysToCheck.length; i++){
-			keysDownLastFrame[i] = false;
-			keysPressed[i] = false;
+	public static void updateKeys(ArrayList<Integer> keys){
+		keysToCheck = keys;
+		keysDownLastFrame.clear();
+		keysPressed.clear();
+		for(int i = 0; i < keysToCheck.size(); i++){
+			keysDownLastFrame.add(false);
+			keysPressed.add(false);
 		}
+	}
+	public static boolean isConsoleEnabled(){
+		return consoleEnabled;
+	}
+	
+	public static void initialize(){
+		baseKeysToCheck.add(console);
+		InputManager.updateKeys(baseKeysToCheck);
 	}
 
 	public static boolean isKeyPressed(int key){
-		if (Timing.getTime() - lastType > typingWait){
-			for(int i = 0; i < keysToCheck.length; i++){
-				if(key == keysToCheck[i]){
-					return keysPressed[i];
-				}
-			}
-			lastType = Timing.getTime();
+		if(keysToCheck.indexOf(key) != -1){
+			return keysPressed.get(keysToCheck.indexOf(key));
 		}
 		return false;
 	}
+	
+	public static void addKeyPressListener(int key){
+		keysToCheck.add(key);
+		keysDownLastFrame.add(false);
+		keysPressed.add(false);
+	}
+	
 	public static void pollInput(){
-		for(int i = 0; i < keysToCheck.length; i++){
-			if(!isKeyDown(keysToCheck[i]) && keysDownLastFrame[i]){
-				keysPressed[i] = true;
+		for(int i = 0; i < keysToCheck.size(); i++){
+			if(!isKeyDown(keysToCheck.get(i)) && keysDownLastFrame.get(i)){
+				keysPressed.set(i, true);
 			}else{
-				keysPressed[i] = false;
+				keysPressed.set(i, false);
 			}
-			if(isKeyDown(keysToCheck[i]))
-				keysDownLastFrame[i] = true;
+			if(isKeyDown(keysToCheck.get(i)))
+				keysDownLastFrame.set(i, true);
 			else
-				keysDownLastFrame[i] = false;
+				keysDownLastFrame.set(i, false);
 		}
 
 
@@ -104,14 +116,21 @@ public class InputManager {
 			mouseY = Mouse.getY();
 
 		}else{
-
+			
+			
+			
+			
 		}
 
 		if(isKeyPressed(console)){
-			if(consoleEnabled)
+			if(consoleEnabled){
 				consoleEnabled = false;
-			else
+				InputManager.updateKeys(baseKeysToCheck);
+			}else{
 				consoleEnabled = true;
+				MineFlat.player.setDirection(Direction.STATIONARY);
+				MineFlat.player.setJumping(false);
+			}
 		}
 
 	}
