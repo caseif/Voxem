@@ -31,10 +31,6 @@ public class InputManager {
 	private static long lastAction = 0;
 	private static long actionWait = 350;
 
-	public static boolean consoleEnabled = false;
-	public static String currentlyTyping = "";
-	public static boolean consoleSelected = false;
-
 	public static ArrayList<Integer> baseKeysToCheck = new ArrayList<Integer>();
 	public static ArrayList<Integer> keysToCheck= new ArrayList<Integer>();
 	public static ArrayList<Boolean> keysDownLastFrame = new ArrayList<Boolean>();
@@ -49,14 +45,7 @@ public class InputManager {
 			keysPressed.add(false);
 		}
 	}
-	public static boolean isConsoleEnabled(){
-		return consoleEnabled;
-	}
-	
-	public static boolean isConsoleSelected(){
-		return consoleSelected;
-	}
-	
+
 	public static void initialize(){
 		baseKeysToCheck.add(console);
 		InputManager.updateKeys(baseKeysToCheck);
@@ -68,13 +57,13 @@ public class InputManager {
 		}
 		return false;
 	}
-	
+
 	public static void addKeyPressListener(int key){
 		keysToCheck.add(key);
 		keysDownLastFrame.add(false);
 		keysPressed.add(false);
 	}
-	
+
 	public static void pollInput(){
 		for(int i = 0; i < keysToCheck.size(); i++){
 			if(!isKeyDown(keysToCheck.get(i)) && keysDownLastFrame.get(i)){
@@ -99,7 +88,7 @@ public class InputManager {
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
 
-		if(!consoleEnabled){
+		if(!Console.enabled){
 
 			if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
 				MineFlat.player.setDirection(Direction.STATIONARY);
@@ -119,21 +108,17 @@ public class InputManager {
 				f3 = true;
 			else
 				f3 = false;
-			
 
-		}else{
-			
-			
-			
-			
+
 		}
 
-		if(isKeyPressed(console)){
-			if(consoleEnabled){
-				consoleEnabled = false;
+		if (isKeyPressed(console)){
+			Console.enabled = !Console.enabled;
+			if(Console.enabled){
 				InputManager.updateKeys(baseKeysToCheck);
-			}else{
-				consoleEnabled = true;
+				Console.focused = true;
+			}
+			else {
 				MineFlat.player.setDirection(Direction.STATIONARY);
 				MineFlat.player.setJumping(false);
 			}
@@ -161,86 +146,86 @@ public class InputManager {
 			}
 		}*/
 
-		if (mouse1 && !consoleEnabled){
-			if (System.currentTimeMillis() - lastAction >= actionWait){
-				if (Block.selected != null &&
-						!Block.isBlockEmpty((Block.selected.getBlock())) &&
-						Block.selected.getBlock().getType() != Material.BEDROCK){
-					Block b = Block.getBlock((int)Math.floor(Block.selected.getX()),
-							(int)Math.floor(Block.selected.getY()));
-					Event.fireEvent(new BlockBreakEvent(Block.selected, b));
-				}
-				lastAction = System.currentTimeMillis();
+		if (Console.enabled){
+			if (mouse1){
+				if(mouseX > 30 && mouseX < Display.getWidth() - 30 && mouseY < Display.getHeight() - 270 && mouseY > Display.getHeight() - 290)
+					Console.focused = true;
+				else
+					Console.focused = false;
 			}
+			if (Console.focused) Console.pollTextInput();
 		}
+		else {
+			if (mouse1){
+				if (System.currentTimeMillis() - lastAction >= actionWait){
+					if (Block.selected != null &&
+							!Block.isBlockEmpty((Block.selected.getBlock())) &&
+							Block.selected.getBlock().getType() != Material.BEDROCK){
+						Block b = Block.getBlock((int)Math.floor(Block.selected.getX()),
+								(int)Math.floor(Block.selected.getY()));
+						Event.fireEvent(new BlockBreakEvent(Block.selected, b));
+					}
+					lastAction = System.currentTimeMillis();
+				}
+			}
 
-		if (mouse2 && !consoleEnabled){
-			if (System.currentTimeMillis() - lastAction >= actionWait){
-				if (Block.selected != null){
-					int x = Block.selected.getX() > MineFlat.player.getX() ?
-							(int)Math.floor(Block.selected.getX()) :
-								(int)Math.floor(Block.selected.getX()) + 1;
-							int y = Block.selected.getY() > MineFlat.player.getY() ?
-									(int)Math.floor(Block.selected.getY()) :
-										(int)Math.floor(Block.selected.getY()) + 1;
-									double playerX = MineFlat.player.getX();
-									double playerY = MineFlat.player.getY();
-									double mouseX = (InputManager.mouseX - GraphicsHandler.xOffset) /
-											(float)Block.length;
-									double mouseY = (Display.getHeight() -
-											InputManager.mouseY - GraphicsHandler.yOffset) /
-											(float)Block.length;
-									double xDiff = mouseX - playerX;
-									double yDiff = mouseY - playerY;
-									double m = yDiff / xDiff;
-									double b = playerY - m * playerX;
-									Location l = null;
-									if (m * x + b >= Block.selected.getY() &&
-											m * x + b <= Block.selected.getY() + 1){
-										if (x == Block.selected.getX())
-											x -= 1;
-										l = new Location(x, Block.selected.getY());
-									}
-									else if ((y - b) / m >= Block.selected.getX() &&
-											(y - b) / m <= Block.selected.getX() + 1){
-										if (y == Block.selected.getY())
-											y -= 1;
-										l = new Location(Block.selected.getX(), y);
-									}
-									if (l != null){
-										if ((int)playerY == y)
-											playerY -= 1;
-										boolean pBlock = false;
-										if (playerY >= 0 && playerY < MineFlat.world.getChunkHeight())
-											if (l.getX() == (float)Math.floor(playerX) &&
-											l.getY() == (float)Math.floor(playerY))
-												pBlock = true;
-										if (playerY >= -1 && playerY < MineFlat.world.getChunkHeight() - 1)
-											if (l.getX() == (float)Math.floor(playerX) &&
-											l.getY() == (float)Math.floor(playerY + 1))
-												pBlock = true;
-										if (!pBlock && l.getY() > 0 && l.getY() < MineFlat.world.getChunkHeight()){
-											Block block = new Block(Material.WOOD, l);
-											block.addToWorld();
-											Event.fireEvent(
-													new BlockPlaceEvent(l, block));
+			if (mouse2){
+				if (System.currentTimeMillis() - lastAction >= actionWait){
+					if (Block.selected != null){
+						int x = Block.selected.getX() > MineFlat.player.getX() ?
+								(int)Math.floor(Block.selected.getX()) :
+									(int)Math.floor(Block.selected.getX()) + 1;
+								int y = Block.selected.getY() > MineFlat.player.getY() ?
+										(int)Math.floor(Block.selected.getY()) :
+											(int)Math.floor(Block.selected.getY()) + 1;
+										double playerX = MineFlat.player.getX();
+										double playerY = MineFlat.player.getY();
+										double mouseX = (InputManager.mouseX - GraphicsHandler.xOffset) /
+												(float)Block.length;
+										double mouseY = (Display.getHeight() -
+												InputManager.mouseY - GraphicsHandler.yOffset) /
+												(float)Block.length;
+										double xDiff = mouseX - playerX;
+										double yDiff = mouseY - playerY;
+										double m = yDiff / xDiff;
+										double b = playerY - m * playerX;
+										Location l = null;
+										if (m * x + b >= Block.selected.getY() &&
+												m * x + b <= Block.selected.getY() + 1){
+											if (x == Block.selected.getX())
+												x -= 1;
+											l = new Location(x, Block.selected.getY());
 										}
-									}
+										else if ((y - b) / m >= Block.selected.getX() &&
+												(y - b) / m <= Block.selected.getX() + 1){
+											if (y == Block.selected.getY())
+												y -= 1;
+											l = new Location(Block.selected.getX(), y);
+										}
+										if (l != null){
+											if ((int)playerY == y)
+												playerY -= 1;
+											boolean pBlock = false;
+											if (playerY >= 0 && playerY < MineFlat.world.getChunkHeight())
+												if (l.getX() == (float)Math.floor(playerX) &&
+												l.getY() == (float)Math.floor(playerY))
+													pBlock = true;
+											if (playerY >= -1 && playerY < MineFlat.world.getChunkHeight() - 1)
+												if (l.getX() == (float)Math.floor(playerX) &&
+												l.getY() == (float)Math.floor(playerY + 1))
+													pBlock = true;
+											if (!pBlock && l.getY() > 0 && l.getY() < MineFlat.world.getChunkHeight()){
+												Block block = new Block(Material.WOOD, l);
+												block.addToWorld();
+												Event.fireEvent(
+														new BlockPlaceEvent(l, block));
+											}
+										}
+					}
+					lastAction = System.currentTimeMillis();
 				}
-				lastAction = System.currentTimeMillis();
 			}
 		}
-		
-		if(mouse1 && consoleEnabled){
-			if(mouseX > 30 && mouseX < Display.getWidth() - 30 && mouseY < Display.getHeight() - 270 && mouseY > Display.getHeight() - 290)
-				consoleSelected = true;
-			else
-				consoleSelected = false;
-			
-		}
-		
-		
-
 	}
 
 }

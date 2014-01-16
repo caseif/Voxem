@@ -18,7 +18,7 @@ public class Entity {
 	/**
 	 * The speed at which entities will fall
 	 */
-	public static final float gravity = .5f;
+	public static final float gravity = .4f;
 
 	/**
 	 * The terminal downwards velocity of entities
@@ -115,7 +115,8 @@ public class Entity {
 		if (!isXMovementBlocked())
 			setX(x + xVelocity * (Timing.delta / Timing.timeResolution));
 
-		float newY = getY() + getYVelocity() + 0.06f;
+		float newY = getY() + getYVelocity();
+		
 		if (newY >= 0 && newY <= MineFlat.world.getChunkHeight() - 1){
 			float pX = getX() >= 0 ? getX() :
 				getX() - 1;

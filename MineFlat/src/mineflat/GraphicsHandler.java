@@ -3,6 +3,8 @@ package mineflat;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,8 @@ import javax.imageio.ImageIO;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.util.BufferedImageUtil;
 
 import mineflat.entity.Player;
@@ -66,11 +70,13 @@ public class GraphicsHandler implements Runnable {
 	// space between characters when height is 32px
 	private static final float interCharSpace = 0.1f;
 
-	// offset of shadows (duh)
+	// offset of character shadows (duh)
 	private static final float shadowOffset = 1;
 
 	public static HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
 
+	public static UnicodeFont font;
+	
 	public void run(){
 		try {
 			DisplayMode[] modes = Display.getAvailableDisplayModes();
@@ -154,6 +160,8 @@ public class GraphicsHandler implements Runnable {
 		GraphicsUtil.addTexture(Material.GOLD_ORE);
 		GraphicsUtil.addTexture(Material.DIAMOND_ORE);
 
+		initializeFont();
+		
 		try {
 			initializeChars();
 		}
@@ -239,8 +247,8 @@ public class GraphicsHandler implements Runnable {
 						runtime.freeMemory() / mb + "mb free", 10, 150, height, true);
 			}
 			
-			if(InputManager.isConsoleEnabled())
-				showConsole();
+			if(Console.enabled)
+				Console.draw();
 			
 			Display.sync(60);
 			Display.update();
@@ -336,40 +344,21 @@ public class GraphicsHandler implements Runnable {
 		glPopMatrix();
 	}
 	
-	public static void showConsole(){
-		
-		//Console log
-		glEnable(GL_BLEND);
-		glBegin(GL_QUADS);
-		glColor4f(.5f,.5f, .5f, .32f);
-		glVertex2f(20, 20);
-		glVertex2f(Display.getWidth() - 20, 20);
-		glVertex2f(Display.getWidth()-20, 300);
-		glVertex2f(20, 300);
-		glEnd();
-		
-		//Text entry section
-		glEnable(GL_BLEND);
-		glBegin(GL_QUADS);
-		if(InputManager.isConsoleSelected())
-			glColor4f(.7f,.7f, .7f, .85f);
-		else
-			glColor4f(.6f,.6f, .6f, .85f);
-		glVertex2f(30, 265);
-		glVertex2f(Display.getWidth() - 30, 265);
-		glVertex2f(Display.getWidth()-30, 290);
-		glVertex2f(30, 290);
-		glEnd();
-		
-		//Cursor
-		if(InputManager.isConsoleSelected()){
-			glBegin(GL_LINES);
-			glColor3f(0f, 0f, 0f);
-			glVertex2f(35, 267);
-			glVertex2f(35, 288);
-			glEnd();
+	@SuppressWarnings("unchecked")
+	public static void initializeFont(){
+		float size = 16F;
+		Font awtFont = new Font("Courier New", Font.PLAIN, (int)size);
+		font = new UnicodeFont(awtFont.deriveFont(0, size));
+		font.addAsciiGlyphs();
+		ColorEffect e = new ColorEffect();
+		e.setColor(Color.BLACK);
+		font.getEffects().add(e);
+		try {
+			font.loadGlyphs();
 		}
-		
+		catch (Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 }

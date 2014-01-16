@@ -54,6 +54,7 @@ public class MineFlat {
 		Terrain.generateTerrain();
 		EventManager.registerEventListener(new EventListener());
 		InputManager.initialize();
+		Console.initialize();
 		Thread t = new Thread(new GraphicsHandler());
 		t.start();
 
