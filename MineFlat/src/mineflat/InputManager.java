@@ -19,7 +19,7 @@ public class InputManager {
 	private static int jump2 = KEY_UP;
 	private static int jump3 = KEY_SPACE;
 	private static int console = KEY_GRAVE;
-	
+
 	private static boolean f3 = false;
 	private static boolean mouse1 = false;
 	private static boolean mouse2 = false;
@@ -28,32 +28,34 @@ public class InputManager {
 
 	private static long lastAction = 0;
 	private static long actionWait = 350;
-	
+	private static long lastType = 0;
+	private static long typingWait = 25;
+
 	public static boolean consoleEnabled = false;
-	
+
 	public static int[] keysToCheck= {console};
 	public static boolean[] keysDownLastFrame = new boolean[keysToCheck.length];
 	public static boolean[] keysPressed = new boolean[keysToCheck.length];
-	
-	
-	
+
+
+
 	public static void initialize(){
-		
 		for(int i = 0; i < keysToCheck.length; i++){
 			keysDownLastFrame[i] = false;
 			keysPressed[i] = false;
 		}
 	}
-	
+
 	public static boolean isKeyPressed(int key){
-		for(int i = 0; i < keysToCheck.length; i++){
-			if(key == keysToCheck[i]){
-				System.out.println(keysPressed[i]);
-				return keysPressed[i];
+		if (Timing.getTime() - lastType > typingWait){
+			for(int i = 0; i < keysToCheck.length; i++){
+				if(key == keysToCheck[i]){
+					return keysPressed[i];
+				}
 			}
+			lastType = Timing.getTime();
 		}
 		return false;
-		
 	}
 	public static void pollInput(){
 		for(int i = 0; i < keysToCheck.length; i++){
@@ -67,11 +69,11 @@ public class InputManager {
 			else
 				keysDownLastFrame[i] = false;
 		}
-		
-		
-			
+
+
+
 		if(!consoleEnabled){
-		
+
 			if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
 				MineFlat.player.setDirection(Direction.STATIONARY);
 			else if (isKeyDown(left1) || isKeyDown(left2)){
@@ -100,18 +102,18 @@ public class InputManager {
 				mouse2 = false;
 			mouseX = Mouse.getX();
 			mouseY = Mouse.getY();
-			
+
 		}else{
-			
+
 		}
-			
+
 		if(isKeyPressed(console)){
 			if(consoleEnabled)
 				consoleEnabled = false;
 			else
 				consoleEnabled = true;
 		}
-		
+
 	}
 
 	public static void manage(){
