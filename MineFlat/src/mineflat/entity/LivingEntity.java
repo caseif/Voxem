@@ -19,6 +19,10 @@ public class LivingEntity extends Entity {
 	protected int walkFor;
 	protected int walkTime;
 	protected int lastUpdate;
+
+	public LivingEntity(EntityType type, float x, float y, float width, float height){
+		super(type, x, y, width, height);
+	}
 	
 	public Direction getFacing(){
 		return facing;

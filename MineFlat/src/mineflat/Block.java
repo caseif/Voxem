@@ -165,6 +165,15 @@ public class Block {
 			return c.getBlock(Math.abs(x % MineFlat.world.getChunkLength()), y);
 		return null;
 	}
+	
+	public static Block getBlock(float x, float y){
+		int xI = (int)Math.floor(x);
+		int yI = (int)Math.floor(y);
+		Chunk c = Chunk.getChunk(new Location(xI, yI).getChunk());
+		if (c != null)
+			return c.getBlock(Math.abs(xI % MineFlat.world.getChunkLength()), yI);
+		return null;
+	}
 
 	public static boolean isBlockEmpty(Block b){
 		if (b == null)

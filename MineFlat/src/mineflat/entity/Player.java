@@ -22,9 +22,7 @@ public class Player extends LivingEntity {
 	public static final float scrollTolerance = 0.25f;
 
 	public Player(float x, float y){
-		this.x = x;
-		this.y = y;
-		this.type = EntityType.PLAYER;
+		super(EntityType.PLAYER, x, y, 0.5f, 2f);
 	}
 
 	public Location getLocation(){
