@@ -18,7 +18,8 @@ public class InputManager {
 	private static int jump1 = KEY_W;
 	private static int jump2 = KEY_UP;
 	private static int jump3 = KEY_SPACE;
-
+	private static int console = KEY_GRAVE;
+	
 	private static boolean f3 = false;
 	private static boolean mouse1 = false;
 	private static boolean mouse2 = false;
@@ -27,36 +28,90 @@ public class InputManager {
 
 	private static long lastAction = 0;
 	private static long actionWait = 350;
-
+	
+	public static boolean consoleEnabled = false;
+	
+	public static int[] keysToCheck= {console};
+	public static boolean[] keysDownLastFrame = new boolean[keysToCheck.length];
+	public static boolean[] keysPressed = new boolean[keysToCheck.length];
+	
+	
+	
+	public static void initialize(){
+		
+		for(int i = 0; i < keysToCheck.length; i++){
+			keysDownLastFrame[i] = false;
+			keysPressed[i] = false;
+		}
+	}
+	
+	public static boolean isKeyPressed(int key){
+		for(int i = 0; i < keysToCheck.length; i++){
+			if(key == keysToCheck[i]){
+				System.out.println(keysPressed[i]);
+				return keysPressed[i];
+			}
+		}
+		return false;
+		
+	}
 	public static void pollInput(){
-		if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
-			MineFlat.player.setDirection(Direction.STATIONARY);
-		else if (isKeyDown(left1) || isKeyDown(left2)){
-			MineFlat.player.setFacing(Direction.LEFT);
-			MineFlat.player.setDirection(Direction.LEFT);
-		}else if (isKeyDown(right1) || isKeyDown(right2)){
-			MineFlat.player.setDirection(Direction.RIGHT);
-			MineFlat.player.setFacing(Direction.RIGHT);
-		}else
-			MineFlat.player.setDirection(Direction.STATIONARY);
-		if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3))
-			MineFlat.player.setJumping(true);
-		else
-			MineFlat.player.setJumping(false);
-		if (isKeyDown(KEY_F3))
-			f3 = true;
-		else
-			f3 = false;
-		if (Mouse.isButtonDown(0))
-			mouse1 = true;
-		else
-			mouse1 = false;
-		if (Mouse.isButtonDown(1))
-			mouse2 = true;
-		else
-			mouse2 = false;
-		mouseX = Mouse.getX();
-		mouseY = Mouse.getY();
+		for(int i = 0; i < keysToCheck.length; i++){
+			if(!isKeyDown(keysToCheck[i]) && keysDownLastFrame[i]){
+				keysPressed[i] = true;
+			}else{
+				keysPressed[i] = false;
+			}
+			if(isKeyDown(keysToCheck[i]))
+				keysDownLastFrame[i] = true;
+			else
+				keysDownLastFrame[i] = false;
+		}
+		
+		
+			
+		if(!consoleEnabled){
+		
+			if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
+				MineFlat.player.setDirection(Direction.STATIONARY);
+			else if (isKeyDown(left1) || isKeyDown(left2)){
+				MineFlat.player.setFacing(Direction.LEFT);
+				MineFlat.player.setDirection(Direction.LEFT);
+			}else if (isKeyDown(right1) || isKeyDown(right2)){
+				MineFlat.player.setDirection(Direction.RIGHT);
+				MineFlat.player.setFacing(Direction.RIGHT);
+			}else
+				MineFlat.player.setDirection(Direction.STATIONARY);
+			if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3))
+				MineFlat.player.setJumping(true);
+			else
+				MineFlat.player.setJumping(false);
+			if (isKeyDown(KEY_F3))
+				f3 = true;
+			else
+				f3 = false;
+			if (Mouse.isButtonDown(0))
+				mouse1 = true;
+			else
+				mouse1 = false;
+			if (Mouse.isButtonDown(1))
+				mouse2 = true;
+			else
+				mouse2 = false;
+			mouseX = Mouse.getX();
+			mouseY = Mouse.getY();
+			
+		}else{
+			
+		}
+			
+		if(isKeyPressed(console)){
+			if(consoleEnabled)
+				consoleEnabled = false;
+			else
+				consoleEnabled = true;
+		}
+		
 	}
 
 	public static void manage(){
