@@ -338,6 +338,7 @@ public class GraphicsHandler implements Runnable {
 	
 	public static void showConsole(){
 		
+		//Console log
 		glEnable(GL_BLEND);
 		glBegin(GL_QUADS);
 		glColor4f(.5f,.5f, .5f, .32f);
@@ -347,14 +348,28 @@ public class GraphicsHandler implements Runnable {
 		glVertex2f(20, 300);
 		glEnd();
 		
+		//Text entry section
 		glEnable(GL_BLEND);
 		glBegin(GL_QUADS);
-		glColor4f(.6f,.6f, .6f, .85f);
+		if(InputManager.isConsoleSelected())
+			glColor4f(.7f,.7f, .7f, .85f);
+		else
+			glColor4f(.6f,.6f, .6f, .85f);
 		glVertex2f(30, 265);
 		glVertex2f(Display.getWidth() - 30, 265);
 		glVertex2f(Display.getWidth()-30, 290);
 		glVertex2f(30, 290);
 		glEnd();
+		
+		//Cursor
+		if(InputManager.isConsoleSelected()){
+			glBegin(GL_LINES);
+			glColor3f(0f, 0f, 0f);
+			glVertex2f(35, 267);
+			glVertex2f(35, 288);
+			glEnd();
+		}
+		
 	}
 
 }

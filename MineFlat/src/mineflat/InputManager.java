@@ -32,6 +32,8 @@ public class InputManager {
 	private static long actionWait = 350;
 
 	public static boolean consoleEnabled = false;
+	public static String currentlyTyping = "";
+	public static boolean consoleSelected = false;
 
 	public static ArrayList<Integer> baseKeysToCheck = new ArrayList<Integer>();
 	public static ArrayList<Integer> keysToCheck= new ArrayList<Integer>();
@@ -49,6 +51,10 @@ public class InputManager {
 	}
 	public static boolean isConsoleEnabled(){
 		return consoleEnabled;
+	}
+	
+	public static boolean isConsoleSelected(){
+		return consoleSelected;
 	}
 	
 	public static void initialize(){
@@ -82,7 +88,16 @@ public class InputManager {
 				keysDownLastFrame.set(i, false);
 		}
 
-
+		if (Mouse.isButtonDown(0))
+			mouse1 = true;
+		else
+			mouse1 = false;
+		if (Mouse.isButtonDown(1))
+			mouse2 = true;
+		else
+			mouse2 = false;
+		mouseX = Mouse.getX();
+		mouseY = Mouse.getY();
 
 		if(!consoleEnabled){
 
@@ -104,16 +119,7 @@ public class InputManager {
 				f3 = true;
 			else
 				f3 = false;
-			if (Mouse.isButtonDown(0))
-				mouse1 = true;
-			else
-				mouse1 = false;
-			if (Mouse.isButtonDown(1))
-				mouse2 = true;
-			else
-				mouse2 = false;
-			mouseX = Mouse.getX();
-			mouseY = Mouse.getY();
+			
 
 		}else{
 			
@@ -155,7 +161,7 @@ public class InputManager {
 			}
 		}*/
 
-		if (mouse1){
+		if (mouse1 && !consoleEnabled){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
 				if (Block.selected != null &&
 						!Block.isBlockEmpty((Block.selected.getBlock())) &&
@@ -168,7 +174,7 @@ public class InputManager {
 			}
 		}
 
-		if (mouse2){
+		if (mouse2 && !consoleEnabled){
 			if (System.currentTimeMillis() - lastAction >= actionWait){
 				if (Block.selected != null){
 					int x = Block.selected.getX() > MineFlat.player.getX() ?
@@ -224,6 +230,16 @@ public class InputManager {
 				lastAction = System.currentTimeMillis();
 			}
 		}
+		
+		if(mouse1 && consoleEnabled){
+			if(mouseX > 30 && mouseX < Display.getWidth() - 30 && mouseY < Display.getHeight() - 270 && mouseY > Display.getHeight() - 290)
+				consoleSelected = true;
+			else
+				consoleSelected = false;
+			
+		}
+		
+		
 
 	}
 
