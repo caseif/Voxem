@@ -21,25 +21,23 @@ public class CaveFactory {
 
 	public void dig(){
 		List<Block> surrounding = new ArrayList<Block>();
-		if (y > 0 && Block.getBlock(x, y - 1) != null &&
-				Block.getBlock(x, y - 1).getType() != Material.AIR){
+		if (y > 0 &&
+				Block.isSolid(x + 1, y)){
 			surrounding.add(Block.getBlock(x, y - 1));
 		}
-		if (y < MineFlat.world.getChunkHeight() - 2 && Block.getBlock(x, y + 1) != null &&
-				Block.getBlock(x, y + 1).getType() != Material.AIR){
+		if (y < MineFlat.world.getChunkHeight() - 2 &&
+				Block.isSolid(x, y + 1)){
 			surrounding.add(Block.getBlock(x, y + 1));
 			surrounding.add(Block.getBlock(x, y + 1));
 			surrounding.add(Block.getBlock(x, y + 1));
 		}
 		if (x > MineFlat.world.getChunkCount() / 2 * -MineFlat.world.getChunkLength() &&
-				Block.getBlock(x - 1, y) != null &&
-				Block.getBlock(x - 1, y).getType() != Material.AIR){
+				Block.isSolid(x - 1, y)){
 			surrounding.add(Block.getBlock(x - 1, y));
 			surrounding.add(Block.getBlock(x - 1, y));
 		}
 		if (x < (MineFlat.world.getChunkCount() / 2 + 1) * MineFlat.world.getChunkLength() - 1 &&
-				Block.getBlock(x + 1, y) != null &&
-				Block.getBlock(x + 1, y).getType() != Material.AIR){
+				Block.isSolid(x + 1, y)){
 			surrounding.add(Block.getBlock(x + 1, y));
 			surrounding.add(Block.getBlock(x + 1, y));
 		}

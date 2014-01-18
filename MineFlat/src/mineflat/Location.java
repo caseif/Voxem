@@ -50,7 +50,7 @@ public class Location {
 
 	public int getChunk(){
 		return x >= 0 ? (int)x / MineFlat.world.getChunkLength() + 1 :
-			(int)x / MineFlat.world.getChunkLength() - 1;
+			(int)(x + 1) / MineFlat.world.getChunkLength() - 1;
 	}
 
 	public float getPosInChunk(){

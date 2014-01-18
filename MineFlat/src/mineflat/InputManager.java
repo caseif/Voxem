@@ -148,7 +148,8 @@ public class InputManager {
 
 		if (Console.enabled){
 			if (mouse1){
-				if(mouseX > 30 && mouseX < Display.getWidth() - 30 && mouseY < Display.getHeight() - 270 && mouseY > Display.getHeight() - 290)
+				if(mouseX > 30 && mouseX < Display.getWidth() - 30 && mouseY < Display.getHeight() - 270 &&
+						mouseY > Display.getHeight() - 290)
 					Console.focused = true;
 				else
 					Console.focused = false;
@@ -159,7 +160,7 @@ public class InputManager {
 			if (mouse1){
 				if (System.currentTimeMillis() - lastAction >= actionWait){
 					if (Block.selected != null &&
-							!Block.isBlockEmpty((Block.selected.getBlock())) &&
+							Block.isSolid((Block.selected.getBlock())) &&
 							Block.selected.getBlock().getType() != Material.BEDROCK){
 						Block b = Block.getBlock((int)Math.floor(Block.selected.getX()),
 								(int)Math.floor(Block.selected.getY()));
@@ -214,7 +215,8 @@ public class InputManager {
 												if (l.getX() == (float)Math.floor(playerX) &&
 												l.getY() == (float)Math.floor(playerY + 1))
 													pBlock = true;
-											if (!pBlock && l.getY() > 0 && l.getY() < MineFlat.world.getChunkHeight()){
+											if (!pBlock && l.getY() > 0 &&
+													l.getY() < MineFlat.world.getChunkHeight()){
 												Block block = new Block(Material.WOOD, l);
 												block.addToWorld();
 												Event.fireEvent(

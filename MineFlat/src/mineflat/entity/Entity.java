@@ -9,7 +9,6 @@ import org.newdawn.slick.opengl.Texture;
 import mineflat.Block;
 import mineflat.Direction;
 import mineflat.GraphicsHandler;
-import mineflat.Location;
 import mineflat.MineFlat;
 import mineflat.Timing;
 
@@ -18,7 +17,7 @@ public class Entity {
 	/**
 	 * The speed at which entities will fall
 	 */
-	public static final float gravity = .4f;
+	public static final float gravity = .6f;
 
 	/**
 	 * The terminal downwards velocity of entities
@@ -120,7 +119,7 @@ public class Entity {
 		if (newY >= 0 && newY <= MineFlat.world.getChunkHeight() - 1){
 			float pX = getX() >= 0 ? getX() :
 				getX() - 1;
-			if (new Location(pX, (float)Math.floor(newY)).getBlock() != null)
+			if (Block.isSolid(pX, (float)Math.floor(newY)))
 				setYVelocity(
 						gravity * Timing.delta / Timing.timeResolution);
 		}
@@ -132,9 +131,9 @@ public class Entity {
 							getX() - 4f / Block.length : getX() + 4f / Block.length;
 							if (x < 0) x -= 1;
 							Block below = null;
-							if (getY() >= -height) below = new Location((float)x,
-									(float)Math.floor(getY() + height)).getBlock();
-							if (below != null){
+							if (getY() >= -height) below = Block.getBlock((float)x,
+									(float)Math.floor(getY() + height));
+							if (Block.isSolid(below)){
 								if((float)below.getY() - getY() < height){
 									setY(below.getY() - height);
 								}  	   
@@ -150,8 +149,8 @@ public class Entity {
 						x -= 1;
 					Block below = null;
 					if (getY() >= -height)
-						below = new Location((float)x, (float)Math.floor(getY() + height)).getBlock();
-					if (below != null)
+						below = Block.getBlock((float)x, (float)Math.floor(getY() + height));
+					if (Block.isSolid(below))
 						return true;
 					else
 						return false;
@@ -161,12 +160,12 @@ public class Entity {
 	}
 
 	public boolean isXMovementBlocked(){
-		float newX = getX() +
-				(xVelocity * (Timing.delta / Timing.timeResolution));
+		float newX = x >= 0 ? getX() + (xVelocity * (Timing.delta / Timing.timeResolution)) :
+			getX() - 1 + (xVelocity * (Timing.delta / Timing.timeResolution));
 		int minY = (int)Math.floor(y);
 		int maxY = (int)Math.floor(y + height - 1);
 		for (int y = minY; y <= maxY; y++)
-			if (y >= 0 && y < MineFlat.world.getChunkHeight() && Block.getBlock(newX, y) != null)
+			if (Block.isSolid(newX, y))
 				return true;
 		return false;
 	}

@@ -141,9 +141,7 @@ public class Block {
 	}
 
 	public void destroy(){
-		Chunk.getChunk(Chunk.getChunkNum((int)Math.floor(getX())))
-		.setBlock((int)Math.abs(Math.floor(getX() % MineFlat.world.getChunkLength())), 
-				(int)(Math.floor(getY())), null);
+		setType(Material.AIR);
 	}
 
 	public Block clone(){
@@ -152,7 +150,7 @@ public class Block {
 
 	public static int getTop(int x){
 		for (int yy = 0; yy < MineFlat.world.getChunkHeight(); yy++){
-			if (new Location(x, yy).getBlock() != null){
+			if (isSolid(x, yy)){
 				return yy;
 			}
 		}
@@ -160,27 +158,16 @@ public class Block {
 	}
 
 	public static Block getBlock(int x, int y){
-		Chunk c = Chunk.getChunk(new Location(x, y).getChunk());
-		if (c != null)
-			return c.getBlock(Math.abs(x % MineFlat.world.getChunkLength()), y);
-		return null;
-	}
-	
-	public static Block getBlock(float x, float y){
-		int xI = (int)Math.floor(x);
-		int yI = (int)Math.floor(y);
-		Chunk c = Chunk.getChunk(new Location(xI, yI).getChunk());
-		if (c != null)
-			return c.getBlock(Math.abs(xI % MineFlat.world.getChunkLength()), yI);
+		if (y >= 0 && y < MineFlat.world.getChunkHeight()){
+			Chunk c = Chunk.getChunk(new Location(x, y).getChunk());
+			if (c != null)
+				return c.getBlock(Math.abs(x % MineFlat.world.getChunkLength()), y);
+		}
 		return null;
 	}
 
-	public static boolean isBlockEmpty(Block b){
-		if (b == null)
-			return true;
-		else if (b.getType() == Material.AIR)
-			return true;
-		return false;
+	public static Block getBlock(float x, float y){
+		return getBlock((int)x, (int)y);
 	}
 
 	public static void updateSelectedBlock(){
@@ -198,7 +185,7 @@ public class Block {
 			int blockY = (int)Math.floor(MineFlat.player.getY() + yAdd);
 			synchronized (MineFlat.lock){
 				if (blockY >= 0 && blockY <= MineFlat.world.getChunkHeight() - 1){
-					if (Block.getBlock(blockX, blockY) != null){
+					if (!Block.isAir(blockX, blockY)){
 						Block.selected = new Location(blockX, blockY);
 						found = true;
 						break;
@@ -208,5 +195,54 @@ public class Block {
 		}
 		if (!found)
 			Block.selected = null;
+	}
+
+	/**
+	 * Checks whether the block at the given coordinates is air. Please only use this in cases where
+	 * the block might actually be null. Otherwise, just check if it's air. :)
+	 * @param x The x-coordinate of the block
+	 * @param y The y-coordinate of the block
+	 * @return Whether the block is air
+	 */
+	public static boolean isAir(int x, int y){
+		if (Block.getBlock(x, y) != null)
+			if (Block.getBlock(x, y).getType() != Material.AIR)
+				return false;
+		return true;
+	}
+
+	/**
+	 * Checks whether the block at the given coordinates is air. Please only use this in cases where
+	 * the block might actually be null. Otherwise, just check if it's air. :)
+	 * @param x The x-coordinate of the block
+	 * @param y The y-coordinate of the block
+	 * @return Whether the block is air
+	 */
+	public static boolean isAir(float x, float y){
+		return Block.isAir((int)x, (int)y);
+	}
+
+	/**
+	 * Checks whether the given block is air. Please only use this in cases where
+	 * the block might actually be null. Otherwise, just check if it's air. :)
+	 * @param b The block to check
+	 * @return Whether the block is air
+	 */
+	public static boolean isAir(Block b){
+		if (b != null)
+			return Block.isAir(b.getX(), b.getY());
+		return true;
+	}
+
+	public static boolean isSolid(int x, int y){
+		return !isAir(x, y);
+	}
+
+	public static boolean isSolid(float x, float y){
+		return !isAir(x, y);
+	}
+
+	public static boolean isSolid(Block b){
+		return !isAir(b);
 	}
 }

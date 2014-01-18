@@ -40,45 +40,16 @@ public class Chunk {
 
 
 	public void updateLight(){
-		/*if (Block.getTop(this.getX()) == this.getY())
-			this.setLightLevel(16);
-		Block up = null, down = null, left = null, right = null;
-		if (this.getY() > 0)
-			up = Block.getBlock((int)this.getX(), this.getY() - 1);
-		if (this.getY() < MineFlat.world.getChunkHeight() - 1)
-			down = Block.getBlock((int)this.getX(), this.getY() + 1);
-		left = Block.getBlock((int)this.getX() - 1, this.getY());
-		right = Block.getBlock((int)this.getX() + 1, this.getY());
-		Block[] adjacent = new Block[]{up, down, left, right};
-		boolean adj = false;
-		for (Block b : adjacent){
-			if (b != null){
-				if (b.getLightLevel() < this.getLightLevel() - 1){
-					if (getLightLevel() <= minLight + 1)
-						b.setLightLevel(minLight);
-					else
-						b.setLightLevel(this.getLightLevel() - 1);
-					if (b == left || b == up)
-						b.updateLight();
-				}
-				adj = true;
-			}
-		}
-		if (!adj)
-			for (int y = getY(); y >= 0; y--)
-				if (Block.getBlock(getX(), y) != null)
-					light -= 1;*/
 		for (int x = 0; x < MineFlat.world.getChunkLength(); x++)
 			for (int y = 0; y < MineFlat.world.getChunkHeight(); y++)
-				if (this.getBlock(x, y) != null)
-					this.getBlock(x, y).setLightLevel(0);
+				if (Block.isSolid(x, y)) this.getBlock(x, y).setLightLevel(0);
 		for (int i = 0; i < 2; i++){
 			for (int xx = 0; xx < MineFlat.world.getChunkLength(); xx++)
 				for (int yy = 0; yy < MineFlat.world.getChunkHeight(); yy++){
 					int x = i == 0 ? xx : 15 - xx;
 					int y = i == 0 ? yy : MineFlat.world.getChunkHeight() - 1 - yy;
 					Block b = this.getBlock(x, y);
-					if (b != null){
+					if (Block.isSolid(b)){
 						if (Block.getTop(b.getX()) == b.getY())
 							this.getBlock(x, y).setLightLevel(16);
 						else {
@@ -93,7 +64,7 @@ public class Chunk {
 							Block[] adjacent = new Block[]{up, down, left, right};
 							int brightest = 0;
 							for (Block bl : adjacent){
-								if (bl != null && bl.getLightLevel() > brightest)
+								if (Block.isSolid(bl) && bl.getLightLevel() > brightest)
 									brightest = bl.getLightLevel();
 							}
 							if (brightest > Block.minLight)

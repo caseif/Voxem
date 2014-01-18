@@ -59,7 +59,7 @@ public class VboUtil {
 			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
-					if (b != null){
+					if (Block.isSolid(b)){
 						float tX = Float.valueOf(GraphicsUtil.texCoords
 								.get(b.getType())
 								.getX());

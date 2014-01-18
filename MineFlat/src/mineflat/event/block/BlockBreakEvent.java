@@ -13,7 +13,6 @@ public class BlockBreakEvent extends BlockEvent {
 		this.newBlock = null;
 		block.getLocation().getChunk();
 		block.destroy();
-		block = null;
 		Chunk.getChunk(l.getChunk()).updateLight();
 		VboUtil.updateChunkArray(l.getChunk());
 		if (l.getChunk() == 1){
