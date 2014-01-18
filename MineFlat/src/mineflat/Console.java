@@ -12,6 +12,7 @@ import mineflat.event.input.KeyPressEvent;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import org.newdawn.slick.Font;
 
 public class Console implements Listener {
 
@@ -107,8 +108,8 @@ public class Console implements Listener {
 		if (focused && System.currentTimeMillis() % 1000 <= 500){
 			glBegin(GL_LINES);
 			glColor3f(0f, 0f, 0f);
-			glVertex2f(37 + GraphicsHandler.font.getWidth(currentText), 267);
-			glVertex2f(37 + GraphicsHandler.font.getWidth(currentText), 288);
+			glVertex2f(37 + ((Font)(GraphicsHandler.font)).getWidth(currentText), 267);
+			glVertex2f(37 + ((Font)(GraphicsHandler.font)).getWidth(currentText), 288);
 			glEnd();
 		}
 
