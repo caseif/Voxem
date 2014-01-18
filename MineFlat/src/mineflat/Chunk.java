@@ -49,7 +49,7 @@ public class Chunk {
 					int x = i == 0 ? xx : 15 - xx;
 					int y = i == 0 ? yy : MineFlat.world.getChunkHeight() - 1 - yy;
 					Block b = this.getBlock(x, y);
-					if (Block.isSolid(b)){
+					if (b != null){
 						if (Block.getTop(b.getX()) == b.getY())
 							this.getBlock(x, y).setLightLevel(16);
 						else {
@@ -64,7 +64,7 @@ public class Chunk {
 							Block[] adjacent = new Block[]{up, down, left, right};
 							int brightest = 0;
 							for (Block bl : adjacent){
-								if (Block.isSolid(bl) && bl.getLightLevel() > brightest)
+								if (bl != null && bl.getLightLevel() > brightest)
 									brightest = bl.getLightLevel();
 							}
 							if (brightest > Block.minLight)
