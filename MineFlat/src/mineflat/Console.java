@@ -1,32 +1,24 @@
 package mineflat;
 
-import static org.lwjgl.input.Keyboard.getEventCharacter;
-import static org.lwjgl.input.Keyboard.getEventKey;
-import static org.lwjgl.input.Keyboard.getEventKeyState;
-//import static org.lwjgl.input.Keyboard.isRepeatEvent;
-import static org.lwjgl.input.Keyboard.next;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_LINES;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mineflat.event.EventHandler;
+import mineflat.event.EventManager;
+import mineflat.event.Listener;
+import mineflat.event.input.KeyPressEvent;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
-public class Console {
+public class Console implements Listener {
 
 	public static boolean enabled = false;
-	public static boolean focused = false;
+	public static boolean focused = true;
 	public static String currentText = "";
-	
+
 	public static List<Integer> disallowedSymbols = new ArrayList<Integer>();
 
 	@SuppressWarnings("deprecation")
@@ -84,25 +76,7 @@ public class Console {
 		disallowedSymbols.add(Keyboard.KEY_SYSRQ);
 		disallowedSymbols.add(Keyboard.KEY_TAB);
 		disallowedSymbols.add(Keyboard.KEY_UP);
-		
-	}
-	
-	public static void pollTextInput(){
-		if (Console.enabled){
-			while (next()){
-				int key = getEventKey();
-				boolean down = getEventKeyState();
-				//boolean repeat = isRepeatEvent(); // I might need this at some point...
-				char c = getEventCharacter();
-				if (down){
-					if (!disallowedSymbols.contains(key)){
-						currentText += c;
-					}
-					else if (key == Keyboard.KEY_BACK && currentText.length() > 0)
-						currentText = currentText.substring(0, currentText.length() - 1);
-				}
-			}
-		}
+		EventManager.registerEventListener(new Console());
 	}
 
 	public static void draw(){
@@ -141,5 +115,21 @@ public class Console {
 		// string in text box
 		GraphicsHandler.font.drawString(35, 267, currentText);
 
+	}
+
+	@EventHandler
+	public void onKeyPress(KeyPressEvent e){
+		if (e.getKey() == Keyboard.KEY_GRAVE){
+			enabled = !enabled;
+			MineFlat.player.setDirection(Direction.STATIONARY);
+			MineFlat.player.setJumping(false);
+		}
+		else if (focused){
+			if (!disallowedSymbols.contains(e.getKey())){
+				currentText += e.getChar();
+			}
+			else if (e.getKey() == Keyboard.KEY_BACK && currentText.length() > 0)
+				currentText = currentText.substring(0, currentText.length() - 1);
+		}
 	}
 }

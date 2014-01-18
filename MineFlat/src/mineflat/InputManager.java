@@ -10,6 +10,7 @@ import org.lwjgl.opengl.Display;
 import mineflat.event.Event;
 import mineflat.event.block.BlockBreakEvent;
 import mineflat.event.block.BlockPlaceEvent;
+import mineflat.event.input.KeyPressEvent;
 
 public class InputManager {
 
@@ -51,30 +52,16 @@ public class InputManager {
 		InputManager.updateKeys(baseKeysToCheck);
 	}
 
-	public static boolean isKeyPressed(int key){
-		if(keysToCheck.indexOf(key) != -1){
-			return keysPressed.get(keysToCheck.indexOf(key));
-		}
-		return false;
-	}
-
-	public static void addKeyPressListener(int key){
-		keysToCheck.add(key);
-		keysDownLastFrame.add(false);
-		keysPressed.add(false);
-	}
-
 	public static void pollInput(){
-		for(int i = 0; i < keysToCheck.size(); i++){
-			if(!isKeyDown(keysToCheck.get(i)) && keysDownLastFrame.get(i)){
-				keysPressed.set(i, true);
-			}else{
-				keysPressed.set(i, false);
+
+		while (next()){
+			int key = getEventKey();
+			boolean down = getEventKeyState();
+			//boolean repeat = isRepeatEvent(); // I might need this at some point...
+			char c = getEventCharacter();
+			if (down){
+				Event.fireEvent(new KeyPressEvent(key, c));
 			}
-			if(isKeyDown(keysToCheck.get(i)))
-				keysDownLastFrame.set(i, true);
-			else
-				keysDownLastFrame.set(i, false);
 		}
 
 		if (Mouse.isButtonDown(0))
@@ -108,20 +95,6 @@ public class InputManager {
 				f3 = true;
 			else
 				f3 = false;
-
-
-		}
-
-		if (isKeyPressed(console)){
-			Console.enabled = !Console.enabled;
-			if(Console.enabled){
-				InputManager.updateKeys(baseKeysToCheck);
-				Console.focused = true;
-			}
-			else {
-				MineFlat.player.setDirection(Direction.STATIONARY);
-				MineFlat.player.setJumping(false);
-			}
 		}
 
 	}
@@ -154,7 +127,6 @@ public class InputManager {
 				else
 					Console.focused = false;
 			}
-			if (Console.focused) Console.pollTextInput();
 		}
 		else {
 			if (mouse1){

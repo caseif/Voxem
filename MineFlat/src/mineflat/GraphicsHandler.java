@@ -275,7 +275,7 @@ public class GraphicsHandler implements Runnable {
 		specialChars.put(')', 8f);
 	}
 
-	public static void drawString(String text, float x, float y, float height, boolean shadow){
+	public static void drawString(String str, float x, float y, float height, boolean shadow){
 		float wm = 42f + 2f / 3f;
 		float hm = 4f;
 		float width = height * charWHRatio;
@@ -297,7 +297,7 @@ public class GraphicsHandler implements Runnable {
 				glColor3f(1f, 1f, 1f);
 			glBegin(GL_QUADS);
 			float pos = 0f;
-			for (char c : text.toCharArray()){
+			for (char c : str.toCharArray()){
 				float tx = 25f, ty = 3f;
 				if (Character.isLetter(c)){
 					if (Character.isUpperCase(c)){
@@ -342,6 +342,21 @@ public class GraphicsHandler implements Runnable {
 		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
+	}
+	
+	public static int getStringLength(String str, float height){
+		float pos = 0f;
+		for (char c : str.toCharArray()){
+			if (c == ' '){
+				pos += 1;
+				continue;
+			}
+			if (c != '.' && c != ',' && c != ':')
+				pos += 1f + (height / 32f) * interCharSpace;
+			else
+				pos += (1f / 6f) + interCharSpace;
+		}
+		return (int)Math.ceil(pos);
 	}
 	
 	@SuppressWarnings("unchecked")
