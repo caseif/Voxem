@@ -14,8 +14,10 @@ public class BlockBreakEvent extends BlockEvent {
 		block.getLocation().getChunk();
 		block.destroy();
 		Chunk.getChunk(l.getChunk()).updateLight();
-		Chunk.getChunk(l.getChunk() - 1).updateLight();
-		Chunk.getChunk(l.getChunk() + 1).updateLight();
+		if (Chunk.getChunk(l.getChunk() - 1) != null)
+			Chunk.getChunk(l.getChunk() - 1).updateLight();
+		if (Chunk.getChunk(l.getChunk() + 1) != null)
+			Chunk.getChunk(l.getChunk() + 1).updateLight();
 		VboUtil.updateChunkArray(l.getChunk());
 		if (l.getChunk() == 1){
 			if (Chunk.isChunkGenerated(l.getChunk() - 2)){
