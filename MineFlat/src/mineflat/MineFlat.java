@@ -1,7 +1,6 @@
 package mineflat;
 
 import mineflat.entity.Player;
-import mineflat.event.EventManager;
 
 import org.newdawn.slick.opengl.Texture;
 
@@ -52,7 +51,6 @@ public class MineFlat {
 		world = new World("world", 8, 16, 128);
 
 		Terrain.generateTerrain();
-		EventManager.registerEventListener(new EventListener());
 		InputManager.initialize();
 		Console.initialize();
 		Thread t = new Thread(new GraphicsHandler());
