@@ -44,7 +44,7 @@ public class VboUtil {
 	 */
 	public static void updateArray(){
 		for (Chunk c : Chunk.chunks)
-				updateChunkArray(c.getNum());
+			updateChunkArray(c.getNum());
 		recreateArray();
 	}
 
@@ -65,14 +65,65 @@ public class VboUtil {
 								.getX());
 						float tY = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getY());
 
+						// this whole bit takes care of smooth lighting
+						List<Integer> s = new ArrayList<Integer>();
+						// 1
+						if (Block.getBlock(b.getX() - 1, b.getY() - 1) != null)
+							s.add(Block.getBlock(b.getX() - 1, b.getY() - 1).getLightLevel());
+						else
+							s.add(Block.maxLight);
+						// 2
+						if (Block.getBlock(b.getX(), b.getY() - 1) != null)
+							s.add(Block.getBlock(b.getX(), b.getY() - 1).getLightLevel());
+						else
+							s.add(Block.maxLight);
+						// 3
+						if (Block.getBlock(b.getX() + 1, b.getY() - 1) != null)
+							s.add(Block.getBlock(b.getX() + 1, b.getY() - 1).getLightLevel());
+						else
+							s.add(Block.maxLight);
+						// 4
+						if (Block.getBlock(b.getX() - 1, b.getY()) != null)
+							s.add(Block.getBlock(b.getX() - 1, b.getY()).getLightLevel());
+						else
+							s.add(Block.maxLight);
+						// 5
+						if (Block.getBlock(b.getX() + 1, b.getY()) != null)
+							s.add(Block.getBlock(b.getX() + 1, b.getY()).getLightLevel());
+						else
+							s.add(Block.maxLight);
+						// 6
+						if (Block.getBlock(b.getX() - 1, b.getY() + 1) != null)
+							s.add(Block.getBlock(b.getX() - 1, b.getY() + 1).getLightLevel());
+						else
+							s.add(Block.maxLight);
+						// 7
+						if (Block.getBlock(b.getX(), b.getY() + 1) != null)
+							s.add(Block.getBlock(b.getX(), b.getY() + 1).getLightLevel());
+						else
+							s.add(Block.maxLight);
+						// 8
+						if (Block.getBlock(b.getX() + 1, b.getY() + 1) != null)
+							s.add(Block.getBlock(b.getX() + 1, b.getY() + 1).getLightLevel());
+						else
+							s.add(Block.maxLight);
+
+						float l1 = (float)(b.getLightLevel() + s.get(0) + s.get(1) + s.get(3))
+								/ 4 / Block.maxLight;
+						float l2 = (float)(b.getLightLevel() + s.get(1) + s.get(2) + s.get(4))
+								/ 4 / Block.maxLight;
+						float l3 = (float)(b.getLightLevel() + s.get(4) + s.get(6) + s.get(7))
+								/ 4 / Block.maxLight;
+						float l4 = (float)(b.getLightLevel() + s.get(3) + s.get(5) + s.get(6))
+								/ 4 / Block.maxLight;
+
 						// top left
 						// vertex
 						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
 						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
 						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						for (int i = 0; i < 3; i++)
+							cValues.add(l1);
 						// texture
 						cValues.add(tX);
 						cValues.add(tY);
@@ -83,9 +134,8 @@ public class VboUtil {
 								Block.length);
 						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
 						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						for (int i = 0; i < 3; i++)
+							cValues.add(l2);
 						// texture
 						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
 								GraphicsHandler.texSize));
@@ -98,9 +148,8 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) +
 								Block.length);
 						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						for (int i = 0; i < 3; i++)
+							cValues.add(l3);
 						// texture
 						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
 								GraphicsHandler.texSize));
@@ -113,9 +162,8 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) +
 								Block.length);
 						// light
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
-						cValues.add(Float.valueOf((float)b.getLightLevel() / Block.maxLight));
+						for (int i = 0; i < 3; i++)
+							cValues.add(l4);
 						// texture
 						cValues.add(tX);
 						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
