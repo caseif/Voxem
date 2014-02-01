@@ -36,7 +36,7 @@ public class Terrain {
 		System.out.println("Generating chunks...");
 		//TODO: Save chunks to disk after generating so as not to keep them in memory
 		for (int i = MineFlat.world.getChunkCount() / -2; i <= MineFlat.world.getChunkCount() / 2; i++){
-			if (!Chunk.isChunkGenerated(i) && i != 0){
+			if (!MineFlat.world.isChunkGenerated(i) && i != 0){
 				Chunk c = new Chunk(i);
 				for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 					int h = (int)Math.floor((
@@ -77,7 +77,7 @@ public class Terrain {
 
 	public static void smoothTerrain(){
 		System.out.println("Smoothing terrain...");
-		for (Chunk c : Chunk.chunks){
+		for (Chunk c : MineFlat.world.chunks){
 			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 				int h = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x));
 				int leftHeight = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x) - 1);
@@ -135,7 +135,7 @@ public class Terrain {
 		int ironChance = 10;
 		int goldChance = 2;
 		int diamondChance = 1;
-		for (Chunk c : Chunk.chunks){
+		for (Chunk c : MineFlat.world.chunks){
 			for (int xx = 0; xx < MineFlat.world.getChunkLength(); xx++){
 				for (int yy = 0; yy < MineFlat.world.getChunkHeight(); yy++){
 					int x = Chunk.getBlockXFromChunk(c.getNum(), xx);
@@ -205,7 +205,7 @@ public class Terrain {
 
 	public static void generateCaves(){
 		System.out.println("Generating caves...");
-		for (Chunk c : Chunk.chunks){
+		for (Chunk c : MineFlat.world.chunks){
 			if (CaveFactory.r.nextInt(2) == 0){
 				int x = Chunk.getBlockXFromChunk(c.getNum(),
 						CaveFactory.r.nextInt(MineFlat.world.getChunkLength()));
@@ -222,7 +222,7 @@ public class Terrain {
 		CaveFactory.caveFactories.clear();
 		CaveFactory.caveFactories = null;
 		// analyze and improve cave systems
-		for (Chunk c : Chunk.chunks){
+		for (Chunk c : MineFlat.world.chunks){
 			for (int xx = 0; xx < MineFlat.world.getChunkLength(); xx++){
 				int x = Chunk.getBlockXFromChunk(c.getNum(), xx);
 				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
@@ -349,7 +349,7 @@ public class Terrain {
 
 	public static void plantGrass(){
 		System.out.println("Planting grass...");
-		for (Chunk c : Chunk.chunks){
+		for (Chunk c : MineFlat.world.chunks){
 			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 				int y = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x));
 				Block b = Block.getBlock(Chunk.getBlockXFromChunk(c.getNum(), x), y);
@@ -360,7 +360,7 @@ public class Terrain {
 	}
 
 	public static void lightTerrain(){
-		for (Chunk c : Chunk.chunks)
+		for (Chunk c : MineFlat.world.chunks)
 			c.updateLight();
 	}
 

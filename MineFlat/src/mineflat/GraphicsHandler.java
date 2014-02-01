@@ -20,6 +20,8 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.util.BufferedImageUtil;
 
+import mineflat.entity.Entity;
+import mineflat.entity.LivingEntity;
 import mineflat.entity.Player;
 import mineflat.util.BufferUtil;
 import mineflat.util.GraphicsUtil;
@@ -171,7 +173,7 @@ public class GraphicsHandler implements Runnable {
 			System.exit(0);
 		}
 
-		Player.initialize();
+		LivingEntity.initialize();
 
 		VboUtil.initialize();
 		VboUtil.prepareBindArray();
@@ -228,7 +230,8 @@ public class GraphicsHandler implements Runnable {
 			}
 
 			Player.centerPlayer();
-			MineFlat.player.draw();
+			for (Entity e : MineFlat.world.getEntities())
+				e.draw();
 
 			// draw debug menu, if necessary
 			if (MineFlat.debug){

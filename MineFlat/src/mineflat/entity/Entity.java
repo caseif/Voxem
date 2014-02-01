@@ -107,15 +107,21 @@ public class Entity {
 				if (newFallSpeed > terminalVelocity)
 					newFallSpeed = terminalVelocity;
 				setYVelocity(newFallSpeed);
-
 			}
 		}
 
 		if (!isXMovementBlocked())
 			setX(x + xVelocity * (Timing.delta / Timing.timeResolution));
+		else {
+			setXVelocity(0);
+			if (this instanceof Mob){
+				((Mob)this).setPlannedWalkDistance(0);
+				((Mob)this).setActualWalkDistance(0);
+			}
+		}
 
 		float newY = getY() + getYVelocity();
-		
+
 		if (newY >= 0 && newY <= MineFlat.world.getChunkHeight() - 1){
 			float pX = getX() >= 0 ? getX() :
 				getX() - 1;
@@ -175,7 +181,7 @@ public class Entity {
 		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, sprites.get(type).getTextureID());
 		glColor3f(1f, 1f, 1f);
-		glTranslatef(getX() * Block.length + GraphicsHandler.xOffset - (1f / 4f) * Block.length,
+		glTranslatef(getX() * Block.length + GraphicsHandler.xOffset - (width / 2) * Block.length,
 				getY() * Block.length + GraphicsHandler.yOffset, 0);
 		if (this instanceof LivingEntity && ((LivingEntity)this).getFacing() == Direction.RIGHT){
 			glTranslatef(Block.length * width, 0f, 0f);

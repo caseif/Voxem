@@ -1,11 +1,6 @@
 package mineflat;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Chunk {
-
-	public static List<Chunk> chunks = new ArrayList<Chunk>();
 
 	protected int num;
 
@@ -14,7 +9,7 @@ public class Chunk {
 	public Chunk(int num){
 		this.num = num;
 		blocks = new Block[MineFlat.world.getChunkLength()][MineFlat.world.getChunkHeight()];
-		chunks.add(this);
+		MineFlat.world.chunks.add(this);
 	}
 
 	public int getNum(){
@@ -36,8 +31,6 @@ public class Chunk {
 	public void setBlock(int x, int y, Block b){
 		blocks[x][y] = b;
 	}
-
-
 
 	public void updateLight(){
 		for (int x = 0; x < MineFlat.world.getChunkLength(); x++)
@@ -75,18 +68,6 @@ public class Chunk {
 					}
 				}
 		}
-	}
-
-	public static Chunk getChunk(int i){
-		for (Chunk c : Chunk.chunks){
-			if (c.getNum() == i)
-				return c;
-		}
-		return null;
-	}
-
-	public static boolean isChunkGenerated(int i){
-		return getChunk(i) != null;
 	}
 
 	public static int getBlockXFromChunk(int chunk, int block){

@@ -28,7 +28,7 @@ public class Location {
 	}
 
 	public Block getBlock(){
-		Chunk c = Chunk.getChunk(getChunk());
+		Chunk c = MineFlat.world.getChunk(getChunk());
 		if (c != null){
 			int index = (int)Math.floor(Math.abs(x % MineFlat.world.getChunkLength()));
 			return c.getBlock(index, (int)y);

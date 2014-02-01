@@ -43,7 +43,7 @@ public class VboUtil {
 	 * Updates the entire VBO. This method may cause a severe drop in FPS while running.
 	 */
 	public static void updateArray(){
-		for (Chunk c : Chunk.chunks)
+		for (Chunk c : MineFlat.world.chunks)
 			updateChunkArray(c.getNum());
 		recreateArray();
 	}
@@ -53,7 +53,7 @@ public class VboUtil {
 	 * @param chunk The chunk to update in the VBO.
 	 */
 	public static void updateChunkArray(int chunk){
-		Chunk c = Chunk.getChunk(chunk);
+		Chunk c = MineFlat.world.getChunk(chunk);
 		if (c != null){
 			List<Float> cValues = new ArrayList<Float>();
 			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){

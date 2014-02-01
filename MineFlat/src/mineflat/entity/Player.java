@@ -1,18 +1,12 @@
 package mineflat.entity;
 
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
 import mineflat.GraphicsHandler;
 import mineflat.Location;
 import mineflat.MineFlat;
 import mineflat.event.Event;
 import mineflat.event.player.PlayerMoveEvent;
-import mineflat.util.ImageUtil;
 
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.opengl.TextureLoader;
 
 public class Player extends LivingEntity {
 
@@ -50,22 +44,6 @@ public class Player extends LivingEntity {
 	public float getYVelocity(){
 		return yVelocity;
 	}
-
-	public static void initialize(){
-		try {
-			InputStream is = Player.class.getClassLoader().getResourceAsStream(
-					"textures/char_prim.png");
-			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
-					ImageIO.read(is), 64, 64));
-			Entity.sprites.put(EntityType.PLAYER, TextureLoader.getTexture("PNG", newIs));
-		}
-		catch (Exception ex){
-			System.err.println("Exception occurred while preparing texture for player sprite");
-			ex.printStackTrace();
-		}
-	}
-
-
 
 	public static void centerPlayer(){
 		if (MineFlat.player.getLocation().getPixelX() <

@@ -1,5 +1,8 @@
 package mineflat;
 
+import mineflat.entity.Entity;
+import mineflat.entity.LivingEntity;
+import mineflat.entity.Mob;
 import mineflat.entity.Player;
 
 import org.newdawn.slick.opengl.Texture;
@@ -40,26 +43,33 @@ public class MineFlat {
 	public static Texture charTexture;
 
 	public static boolean debug = false;
-	
+
 	/**
 	 * The currently loaded world
 	 */
 	public static World world;
 
 	public static void main(String[] args){
-		
+
 		world = new World("world", 8, 16, 128);
+		world.addEntity(player);
 
 		Terrain.generateTerrain();
 		InputManager.initialize();
 		Console.initialize();
+		Mob.initialize();
 		Thread t = new Thread(new GraphicsHandler());
 		t.start();
 
 		while (!closed){
 			Timing.calculateDelta();
 			InputManager.manage();
-			player.manageMovement();
+			TickManager.checkForTick();
+			for (Entity e : world.getEntities())
+				if (e instanceof LivingEntity)
+					((LivingEntity)e).manageMovement();
+				else
+					e.manageMovement();
 			Block.updateSelectedBlock();
 			Timing.throttleCpu();
 		}

@@ -53,7 +53,7 @@ public class Block {
 	}
 
 	public void addToWorld(){
-		Chunk c = Chunk.getChunk(location.getChunk());
+		Chunk c = MineFlat.world.getChunk(location.getChunk());
 		if (c == null)
 			c = new Chunk(location.getChunk());
 		c.setBlock(Math.abs((int)location.getX() % MineFlat.world.getChunkLength()),
@@ -106,7 +106,7 @@ public class Block {
 	}
 
 	public static void draw(){
-		for (Chunk c : Chunk.chunks){
+		for (Chunk c : MineFlat.world.chunks){
 			// check if player is within range
 			if (Math.abs(MineFlat.player.getLocation().getChunk() - c.getNum()) <=
 					GraphicsHandler.renderDistance){
@@ -159,7 +159,7 @@ public class Block {
 
 	public static Block getBlock(int x, int y){
 		if (y >= 0 && y < MineFlat.world.getChunkHeight()){
-			Chunk c = Chunk.getChunk(new Location(x, y).getChunk());
+			Chunk c = MineFlat.world.getChunk(new Location(x, y).getChunk());
 			if (c != null)
 				return c.getBlock(Math.abs(x % MineFlat.world.getChunkLength()), y);
 		}
