@@ -43,6 +43,11 @@ public class Entity {
 	 * The current velocity on the y axis (e.g. from falling, jumping)
 	 */
 	public static float yVelocity = 0;
+	
+	/**
+	 * The vertical offset in pixels of entities in relation to the block they are standing on.
+	 */
+	public static final int vertOffset = Block.length / Block.horAngle / 2;
 
 	public static HashMap<EntityType, Texture> sprites = new HashMap<EntityType, Texture>();
 
@@ -191,13 +196,14 @@ public class Entity {
 		int hWidth = (int)(Block.length * width);
 		int hHeight = (int)(Block.length * height);
 		glTexCoord2f(0f, 0f);
-		glVertex2f(0, 0);
+		glVertex2f(0f, vertOffset);
+		System.out.println(Block.length / Block.horAngle / 2);
 		glTexCoord2f(1f, 0f);
-		glVertex2f(hWidth, 0);
+		glVertex2f(hWidth, vertOffset);
 		glTexCoord2f(1f, 1f);
-		glVertex2f(hWidth, hHeight);
+		glVertex2f(hWidth, hHeight - vertOffset);
 		glTexCoord2f(0f, 1f);
-		glVertex2f(0, hHeight);
+		glVertex2f(0f, hHeight - vertOffset);
 		glEnd();
 		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);

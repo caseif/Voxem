@@ -13,6 +13,7 @@ import java.util.List;
 import mineflat.Block;
 import mineflat.Chunk;
 import mineflat.GraphicsHandler;
+import mineflat.Material;
 import mineflat.MineFlat;
 
 import org.lwjgl.BufferUtils;
@@ -60,9 +61,7 @@ public class VboUtil {
 				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
 					if (Block.isSolid(b)){
-						float tX = Float.valueOf(GraphicsUtil.texCoords
-								.get(b.getType())
-								.getX());
+						float tX = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getX());
 						float tY = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getY());
 
 						// this whole bit takes care of smooth lighting
@@ -168,6 +167,67 @@ public class VboUtil {
 						cValues.add(tX);
 						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
 								GraphicsHandler.texSize));
+						
+						if (b.getY() == 0 || Block.getBlock(b.getX(), b.getY() - 1).getType() == Material.AIR){
+							
+							if (b.getType() == Material.GRASS){
+								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX());
+								tY = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getY());
+							}
+							
+							// front left
+							// vertex
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
+							// light
+							for (int i = 0; i < 3; i++)
+								cValues.add(l1 - Block.horShadow);
+							// texture
+							cValues.add(tX);
+							cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+									GraphicsHandler.texSize));
+
+							// front right
+							// vertex
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+									Block.length);
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
+							// light
+							for (int i = 0; i < 3; i++)
+								cValues.add(l2 - Block.horShadow);
+							// texture
+							cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+									GraphicsHandler.texSize));
+							cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+									GraphicsHandler.texSize));
+
+							// back right
+							// vertex
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+									Block.length);
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) -
+									Block.length / Block.horAngle);
+							// light
+							for (int i = 0; i < 3; i++)
+								cValues.add(l2 - Block.horShadow);
+							// texture
+							cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+									GraphicsHandler.texSize));
+							cValues.add(tY);
+
+							// back left
+							// vertex
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
+							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) -
+									Block.length / Block.horAngle);
+							// light
+							for (int i = 0; i < 3; i++)
+								cValues.add(l1 - Block.horShadow);
+							// texture
+							cValues.add(tX);
+							cValues.add(tY);
+
+						}
 					}
 				}
 			}

@@ -4,6 +4,7 @@ public enum Material {
 	AIR,
 	DIRT,
 	GRASS,
+	GRASS_TOP,
 	LOG,
 	WOOD,
 	STONE,

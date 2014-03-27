@@ -153,6 +153,7 @@ public class GraphicsHandler implements Runnable {
 
 		GraphicsUtil.addTexture(Material.DIRT);
 		GraphicsUtil.addTexture(Material.GRASS);
+		GraphicsUtil.addTexture(Material.GRASS_TOP);
 		GraphicsUtil.addTexture(Material.STONE);
 		GraphicsUtil.addTexture(Material.LOG);
 		GraphicsUtil.addTexture(Material.WOOD);

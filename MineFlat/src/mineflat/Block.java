@@ -17,8 +17,11 @@ public class Block {
 
 	protected int chunk;
 
-	public static int maxLight = 16;
-	public static int minLight = 1;
+	public static final int maxLight = 16;
+	public static final int minLight = 1;
+	public static final float horShadow = 2f / maxLight;
+	
+	public static final int horAngle = 4;
 
 	/**
 	 * The block which is currently selected.
@@ -31,7 +34,7 @@ public class Block {
 	/**
 	 * The diameter of a block
 	 */
-	public static final int length = 32;
+	public static final int length = 42;
 
 	/**
 	 * The factor by which the light level of a block should decrease from its brightest adjacent
