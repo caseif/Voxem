@@ -46,7 +46,7 @@ public class GraphicsHandler implements Runnable {
 	public static long lastRenderTime = Timing.getTime();
 	public static int fps = 0;
 	public static long lastFpsUpdate = 0;
-	public static final long fpsUpdateTime = (long)(0.5 * Timing.timeResolution);
+	public static final long fpsUpdateTime = (long)(0.25 * Timing.timeResolution);
 
 	public static int texSize = 16;
 
@@ -90,7 +90,7 @@ public class GraphicsHandler implements Runnable {
 					break;
 				}
 			}
-			//Display.setVSyncEnabled(true);
+			Display.setVSyncEnabled(true);
 			Display.setTitle("MineFlat");
 			Display.setResizable(false);
 			ByteBuffer[] icons = null;
@@ -254,7 +254,7 @@ public class GraphicsHandler implements Runnable {
 			if(Console.enabled)
 				Console.draw();
 			
-			Display.sync(60);
+			//Display.sync(60);
 			Display.update();
 		}
 		MineFlat.closed = true;

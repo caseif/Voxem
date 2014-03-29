@@ -197,7 +197,6 @@ public class Entity {
 		int hHeight = (int)(Block.length * height);
 		glTexCoord2f(0f, 0f);
 		glVertex2f(0f, vertOffset);
-		System.out.println(Block.length / Block.horAngle / 2);
 		glTexCoord2f(1f, 0f);
 		glVertex2f(hWidth, vertOffset);
 		glTexCoord2f(1f, 1f);
