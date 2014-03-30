@@ -6,7 +6,6 @@ import static org.lwjgl.opengl.GL15.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,6 +55,7 @@ public class VboUtil {
 	public static void updateChunkArray(int chunk){
 		Chunk c = MineFlat.world.getChunk(chunk);
 		if (c != null){
+			long time = System.currentTimeMillis();
 			List<Float> cValues = new ArrayList<Float>();
 			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
@@ -235,6 +235,7 @@ public class VboUtil {
 			chunkArrays.remove(c.getNum());
 			Float[] cArray = cValues.toArray(new Float[]{});
 			chunkArrays.put(c.getNum(), cArray);
+			System.out.println("updateChunkArray: " + (System.currentTimeMillis() - time));
 
 			recreateArray();
 		}
@@ -244,12 +245,14 @@ public class VboUtil {
 	 * Prepares the data to bind to the primary VBO
 	 */
 	public static void prepareBindArray(){
+		long time = System.currentTimeMillis();
 		vertexData = (FloatBuffer)BufferUtils
 				.createFloatBuffer(vertexArray.length).flip();
 		vertexData.limit(vertexData.capacity());
 		vertexData.put(vertexArray);
 		vertexData.rewind();
 		rebindArray = true;
+		System.out.println("prepareBindArray: " + (System.currentTimeMillis() - time));
 	}
 
 	/**
@@ -268,12 +271,19 @@ public class VboUtil {
 	 * Splices all chunk arrays into a single VBO.
 	 */
 	public static void recreateArray(){
-		List<Float> newList = new ArrayList<Float>();
-		for (int i : chunkArrays.keySet())
-			newList.addAll(Arrays.asList(chunkArrays.get(i)));
-		vertexArray = new float[newList.size()];
-		for (int i = 0; i < newList.size(); i++)
-			vertexArray[i] = newList.get(i) != null ? newList.get(i) : Float.NaN;
+		long timeBefore = System.currentTimeMillis();
+		int length = 0;
+		for (Float[] f : chunkArrays.values())
+			length += f.length;
+		float[] newArray = new float[length];
+		int elements = 0;
+		for (Float[] f : chunkArrays.values()){
+			for (int i = 0; i < f.length; i++)
+				newArray[elements + i] = f[i];
+			elements += f.length;
+		}
+		vertexArray = newArray;
+		System.out.println("recreateArray: " + (System.currentTimeMillis() - timeBefore));
 	}
 
 	/**
