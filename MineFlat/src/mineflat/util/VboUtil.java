@@ -55,7 +55,6 @@ public class VboUtil {
 	public static void updateChunkArray(int chunk){
 		Chunk c = MineFlat.world.getChunk(chunk);
 		if (c != null){
-			long time = System.currentTimeMillis();
 			List<Float> cValues = new ArrayList<Float>();
 			for (int x = 0; x < MineFlat.world.getChunkLength(); x++){
 				for (int y = 0; y < MineFlat.world.getChunkHeight(); y++){
@@ -235,7 +234,6 @@ public class VboUtil {
 			chunkArrays.remove(c.getNum());
 			Float[] cArray = cValues.toArray(new Float[]{});
 			chunkArrays.put(c.getNum(), cArray);
-			System.out.println("updateChunkArray: " + (System.currentTimeMillis() - time));
 
 			recreateArray();
 		}
@@ -245,14 +243,12 @@ public class VboUtil {
 	 * Prepares the data to bind to the primary VBO
 	 */
 	public static void prepareBindArray(){
-		long time = System.currentTimeMillis();
 		vertexData = (FloatBuffer)BufferUtils
 				.createFloatBuffer(vertexArray.length).flip();
 		vertexData.limit(vertexData.capacity());
 		vertexData.put(vertexArray);
 		vertexData.rewind();
 		rebindArray = true;
-		System.out.println("prepareBindArray: " + (System.currentTimeMillis() - time));
 	}
 
 	/**
@@ -271,7 +267,6 @@ public class VboUtil {
 	 * Splices all chunk arrays into a single VBO.
 	 */
 	public static void recreateArray(){
-		long timeBefore = System.currentTimeMillis();
 		int length = 0;
 		for (Float[] f : chunkArrays.values())
 			length += f.length;
@@ -283,7 +278,6 @@ public class VboUtil {
 			elements += f.length;
 		}
 		vertexArray = newArray;
-		System.out.println("recreateArray: " + (System.currentTimeMillis() - timeBefore));
 	}
 
 	/**
