@@ -1,6 +1,6 @@
 package mineflat;
 
-import static org.lwjgl.opengl.GL11.*;
+/*import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,11 @@ import mineflat.event.input.KeyPressEvent;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Font;
+import org.newdawn.slick.Font;*/
 
-public class Console implements Listener {
+public class Console { //implements Listener {
 
-	public static boolean enabled = false;
+	/*public static boolean enabled = false;
 	public static boolean focused = true;
 	public static String currentText = "";
 
@@ -132,5 +132,5 @@ public class Console implements Listener {
 			else if (e.getKey() == Keyboard.KEY_BACK && currentText.length() > 0)
 				currentText = currentText.substring(0, currentText.length() - 1);
 		}
-	}
+	}*/
 }

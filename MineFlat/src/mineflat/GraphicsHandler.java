@@ -16,9 +16,6 @@ import javax.imageio.ImageIO;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.util.BufferedImageUtil;
 
 import mineflat.entity.Entity;
 import mineflat.entity.LivingEntity;
@@ -77,8 +74,6 @@ public class GraphicsHandler implements Runnable {
 
 	public static HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
 
-	public static UnicodeFont font;
-	
 	public void run(){
 		try {
 			DisplayMode[] modes = Display.getAvailableDisplayModes();
@@ -163,15 +158,15 @@ public class GraphicsHandler implements Runnable {
 		GraphicsUtil.addTexture(Material.GOLD_ORE);
 		GraphicsUtil.addTexture(Material.DIAMOND_ORE);
 
-		initializeFont();
-		
+		//initializeFont();
+
 		try {
 			initializeChars();
 		}
 		catch (Exception ex){
 			System.err.println("Exception occurred while preparing texture for characters");
 			ex.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}
 
 		LivingEntity.initialize();
@@ -250,10 +245,10 @@ public class GraphicsHandler implements Runnable {
 						(runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
 						runtime.freeMemory() / mb + "mb free", 10, 150, height, true);
 			}
-			
-			if(Console.enabled)
-				Console.draw();
-			
+
+			/*if(Console.enabled)
+				Console.draw();*/
+
 			//Display.sync(60);
 			Display.update();
 		}
@@ -266,8 +261,9 @@ public class GraphicsHandler implements Runnable {
 		//InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
 		//		ImageIO.read(is), MineFlat.world.getChunkLength(),
 		//		MineFlat.world.getChunkLength())); // in case I decide to resize it later on
-		BufferedImage b = ImageIO.read(is);
-		MineFlat.charTexture = BufferedImageUtil.getTexture("", b, GL_NEAREST);
+
+		MineFlat.charTexture = ImageUtil.createTextureFromStream(is);
+
 		specialChars.put('!', 0f);
 		specialChars.put('?', 1f);
 		specialChars.put('.', 2f);
@@ -285,7 +281,7 @@ public class GraphicsHandler implements Runnable {
 		float width = height * charWHRatio;
 		glPushMatrix();
 		glEnable(GL_BLEND);
-		glBindTexture(GL_TEXTURE_2D, MineFlat.charTexture.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, MineFlat.charTexture);
 		for (int i = 0; i <= (shadow ? 1 : 0); i++){
 			if (i == 0 && shadow) {
 				glColor3f(0f, 0f, 0f);
@@ -347,7 +343,7 @@ public class GraphicsHandler implements Runnable {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
 	}
-	
+
 	public static int getStringLength(String str, float height){
 		float pos = 0f;
 		for (char c : str.toCharArray()){
@@ -362,8 +358,8 @@ public class GraphicsHandler implements Runnable {
 		}
 		return (int)Math.ceil(pos);
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	/*@SuppressWarnings("unchecked")
 	public static void initializeFont(){
 		float size = 16F;
 		Font awtFont = new Font("Courier New", Font.PLAIN, (int)size);
@@ -378,6 +374,6 @@ public class GraphicsHandler implements Runnable {
 		catch (Exception ex){
 			ex.printStackTrace();
 		}
-	}
+	}*/
 
 }

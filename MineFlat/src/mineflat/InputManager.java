@@ -75,7 +75,7 @@ public class InputManager {
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
 
-		if(!Console.enabled){
+		//if(!Console.enabled){
 
 			if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
 				MineFlat.player.setDirection(Direction.STATIONARY);
@@ -95,7 +95,7 @@ public class InputManager {
 				f3 = true;
 			else
 				f3 = false;
-		}
+		//}
 
 	}
 
@@ -119,7 +119,7 @@ public class InputManager {
 			}
 		}*/
 
-		if (Console.enabled){
+		/*if (Console.enabled){
 			if (mouse1){
 				if(mouseX > 30 && mouseX < Display.getWidth() - 30 && mouseY < Display.getHeight() - 270 &&
 						mouseY > Display.getHeight() - 290)
@@ -128,7 +128,7 @@ public class InputManager {
 					Console.focused = false;
 			}
 		}
-		else {
+		else {*/
 			if (mouse1){
 				if (System.currentTimeMillis() - lastAction >= actionWait){
 					if (Block.selected != null &&
@@ -199,7 +199,7 @@ public class InputManager {
 					lastAction = System.currentTimeMillis();
 				}
 			}
-		}
+		//}
 	}
 
 }

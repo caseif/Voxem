@@ -1,13 +1,6 @@
 package mineflat.entity;
 
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
-import org.newdawn.slick.opengl.TextureLoader;
-
 import mineflat.Direction;
-import mineflat.util.ImageUtil;
 
 public class LivingEntity extends Entity {
 
@@ -75,23 +68,5 @@ public class LivingEntity extends Entity {
 
 	public void setSpeed(float speed){
 		this.speed = speed;
-	}
-
-	public static void initialize(){
-		for (EntityType et : EntityType.values()){
-			if (et != EntityType.ITEM_DROP){
-				try {
-					InputStream is = LivingEntity.class.getClassLoader().getResourceAsStream(
-							"textures/" + et.toString().toLowerCase() + ".png");
-					InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
-							ImageIO.read(is), 64, 64));
-					Entity.sprites.put(et, TextureLoader.getTexture("PNG", newIs));
-				}
-				catch (Exception ex){
-					System.err.println("Exception occurred while preparing texture for player sprite");
-					ex.printStackTrace();
-				}
-			}
-		}
 	}
 }

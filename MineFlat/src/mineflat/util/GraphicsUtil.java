@@ -10,13 +10,12 @@ import mineflat.GraphicsHandler;
 import mineflat.Location;
 import mineflat.Material;
 
-import org.newdawn.slick.opengl.Texture;
-
 public class GraphicsUtil {
 	
 	public static HashMap<Material, BufferedImage> textures = new HashMap<Material, BufferedImage>();
 	public static HashMap<Material, Location> texCoords = new HashMap<Material, Location>();
-	public static Texture atlas;
+	public static int atlas;
+	public static int atlasSize;
 
 	public static void addTexture(Material m){
 		try {

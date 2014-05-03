@@ -135,7 +135,7 @@ public class VboUtil {
 						for (int i = 0; i < 3; i++)
 							cValues.add(l2);
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
 								GraphicsHandler.texSize));
 						cValues.add(tY);
 
@@ -149,9 +149,9 @@ public class VboUtil {
 						for (int i = 0; i < 3; i++)
 							cValues.add(l3);
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
 								GraphicsHandler.texSize));
-						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
 								GraphicsHandler.texSize));
 
 						// bottom left
@@ -164,7 +164,7 @@ public class VboUtil {
 							cValues.add(l4);
 						// texture
 						cValues.add(tX);
-						cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
 								GraphicsHandler.texSize));
 						
 						if (b.getY() == 0 || Block.getBlock(b.getX(), b.getY() - 1).getType() == Material.AIR){
@@ -183,7 +183,7 @@ public class VboUtil {
 								cValues.add(l1 - Block.horShadow);
 							// texture
 							cValues.add(tX);
-							cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+							cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
 									GraphicsHandler.texSize));
 
 							// front right
@@ -195,9 +195,9 @@ public class VboUtil {
 							for (int i = 0; i < 3; i++)
 								cValues.add(l2 - Block.horShadow);
 							// texture
-							cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
 									GraphicsHandler.texSize));
-							cValues.add(tY + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+							cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
 									GraphicsHandler.texSize));
 
 							// back right
@@ -210,7 +210,7 @@ public class VboUtil {
 							for (int i = 0; i < 3; i++)
 								cValues.add(l2 - Block.horShadow);
 							// texture
-							cValues.add(tX + 1 / ((float)GraphicsUtil.atlas.getImageWidth() /
+							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
 									GraphicsHandler.texSize));
 							cValues.add(tY);
 
@@ -287,7 +287,7 @@ public class VboUtil {
 	public static void render(){
 		glPushMatrix();
 		glTranslatef(GraphicsHandler.xOffset, GraphicsHandler.yOffset, 0);
-		glBindTexture(GL_TEXTURE_2D, GraphicsUtil.atlas.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, GraphicsUtil.atlas);
 		glVertexPointer(2, GL_FLOAT, 28, 0);
 		glColorPointer(3, GL_FLOAT, 28, 8);
 		glTexCoordPointer(2, GL_FLOAT, 28, 20);

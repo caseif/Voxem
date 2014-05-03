@@ -5,8 +5,6 @@ import mineflat.entity.LivingEntity;
 import mineflat.entity.Mob;
 import mineflat.entity.Player;
 
-import org.newdawn.slick.opengl.Texture;
-
 /**
  * @author Maxim Roncacé
  * 
@@ -40,7 +38,7 @@ public class MineFlat {
 
 	public static GameState state = GameState.MAIN_MENU;
 
-	public static Texture charTexture;
+	public static int charTexture;
 
 	public static boolean debug = false;
 
@@ -56,7 +54,7 @@ public class MineFlat {
 
 		Terrain.generateTerrain();
 		InputManager.initialize();
-		Console.initialize();
+		//Console.initialize();
 		Mob.initialize();
 		Thread t = new Thread(new GraphicsHandler());
 		t.start();

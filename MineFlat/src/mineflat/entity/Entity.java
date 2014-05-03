@@ -4,13 +4,12 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.HashMap;
 
-import org.newdawn.slick.opengl.Texture;
-
 import mineflat.Block;
 import mineflat.Direction;
 import mineflat.GraphicsHandler;
 import mineflat.MineFlat;
 import mineflat.Timing;
+import mineflat.util.ImageUtil;
 
 public class Entity {
 
@@ -43,13 +42,13 @@ public class Entity {
 	 * The current velocity on the y axis (e.g. from falling, jumping)
 	 */
 	public static float yVelocity = 0;
-	
+
 	/**
 	 * The vertical offset in pixels of entities in relation to the block they are standing on.
 	 */
 	public static final int vertOffset = Block.length / Block.horAngle / 2;
 
-	public static HashMap<EntityType, Texture> sprites = new HashMap<EntityType, Texture>();
+	public static HashMap<EntityType, Integer> sprites = new HashMap<EntityType, Integer>();
 
 	protected float x;
 	protected float y;
@@ -184,7 +183,7 @@ public class Entity {
 	public void draw(){
 		glPushMatrix();
 		glEnable(GL_BLEND);
-		glBindTexture(GL_TEXTURE_2D, sprites.get(type).getTextureID());
+		glBindTexture(GL_TEXTURE_2D, sprites.get(type));
 		glColor3f(1f, 1f, 1f);
 		glTranslatef(getX() * Block.length + GraphicsHandler.xOffset - (width / 2) * Block.length,
 				getY() * Block.length + GraphicsHandler.yOffset, 0);
@@ -207,6 +206,30 @@ public class Entity {
 		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
+	}
+
+	public static void initialize(){
+		for (EntityType et : EntityType.values()){
+			if (et != EntityType.ITEM_DROP){
+				try {
+					Entity.sprites.put(et, ImageUtil.createTextureFromStream(
+							//(InputStream)ImageIO.createImageInputStream(
+							//		ImageUtil.scaleImage(
+							//				ImageIO.read(
+													LivingEntity.class.getClassLoader().getResourceAsStream(
+															"textures/" + et.toString().toLowerCase() + ".png"
+															)
+							//						), 64, 64
+							//				)
+							//		)
+							));
+				}
+				catch (Exception ex){
+					System.err.println("Exception occurred while preparing texture for player sprite");
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 
 }
