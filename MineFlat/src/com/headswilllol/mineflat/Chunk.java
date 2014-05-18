@@ -17,7 +17,9 @@ public class Chunk {
 	}
 
 	public Block getBlock(int x, int y){
-		return blocks[x][y];
+		if (x >= 0 && x < 16 && y >= 0 && y < 128)
+			return blocks[x][y];
+		return null;
 	}
 
 	public Block[][] getBlocks(){
@@ -43,7 +45,7 @@ public class Chunk {
 					int y = i == 0 ? yy : Main.world.getChunkHeight() - 1 - yy;
 					Block b = this.getBlock(x, y);
 					if (b != null){
-						if (Block.getTop(b.getX()) == b.getY())
+						if (b.getY() <= Block.getTop(b.getX()))
 							this.getBlock(x, y).setLightLevel(16);
 						else {
 							Block up = null, down = null, left = null, right = null;
@@ -55,13 +57,17 @@ public class Chunk {
 							left = Block.getBlock((int)b.getX() - 1, b.getY());
 							right = Block.getBlock((int)b.getX() + 1, b.getY());
 							Block[] adjacent = new Block[]{up, down, left, right};
-							int brightest = 0;
+							float average = 0;
+							int total = 0;
 							for (Block bl : adjacent){
-								if (bl != null && bl.getLightLevel() > brightest)
-									brightest = bl.getLightLevel();
+								if (bl != null){
+									average += bl.getLightLevel();
+									total += 1;
+								}
 							}
-							if (brightest > Block.minLight)
-								b.setLightLevel(brightest - Block.lightDistance);
+							average /= total;
+							if (average > Block.minLight)
+								b.setLightLevel((int)Math.floor(average) - Block.lightDistance);
 							else
 								b.setLightLevel(Block.minLight);
 						}

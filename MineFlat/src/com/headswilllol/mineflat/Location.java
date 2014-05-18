@@ -26,6 +26,22 @@ public class Location {
 	public void setY(float y){
 		this.y = y;
 	}
+	
+	public Location add(Location location){
+		return add(location.getX(), location.getY());
+	}
+	
+	public Location add(float x, float y){
+		return new Location(this.x + x, this.y + y);
+	}
+	
+	public Location subtract(Location location){
+		return subtract(location.getX(), location.getY());
+	}
+	
+	public Location subtract(float x, float y){
+		return new Location(this.x + x, this.y + y);
+	}
 
 	public Block getBlock(){
 		Chunk c = Main.world.getChunk(getChunk());

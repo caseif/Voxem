@@ -18,7 +18,7 @@ public class Block {
 	protected int chunk;
 
 	public static final int maxLight = 16;
-	public static final int minLight = 1;
+	public static final int minLight = 0;
 	public static final float horShadow = 2f / maxLight;
 	
 	public static final int horAngle = 4;

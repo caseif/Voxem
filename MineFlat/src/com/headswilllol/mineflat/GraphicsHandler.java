@@ -3,8 +3,6 @@ package com.headswilllol.mineflat;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -146,6 +144,7 @@ public class GraphicsHandler implements Runnable {
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		GraphicsUtil.addTexture(Material.AIR);
 		GraphicsUtil.addTexture(Material.DIRT);
 		GraphicsUtil.addTexture(Material.GRASS);
 		GraphicsUtil.addTexture(Material.GRASS_TOP);
@@ -186,7 +185,24 @@ public class GraphicsHandler implements Runnable {
 			renderDelta = Timing.getTime() - lastRenderTime;
 			lastRenderTime = Timing.getTime();
 
-
+			float finalLight = 1f;
+			Block top = Main.player.getLocation().subtract(0, 2).getBlock();
+			Block bottom = Main.player.getLocation().subtract(0, 2).getBlock();
+			if (top != null && bottom != null){
+				float topLight = top.getLightLevel() / (float)Block.maxLight;
+				float bottomLight = bottom.getLightLevel() / (float)Block.maxLight;
+				float topMult = ((Main.player.getY()) % 1);
+				float bottomMult = 1 - topMult;
+				finalLight = (topLight * topMult + bottomLight * bottomMult);
+			}
+			else if (Main.player.getY() > 127)
+				finalLight = 0f;
+			
+			if (finalLight <= 0f)
+				finalLight = 1f / (float)Block.maxLight;
+			
+			glClearColor(0.3f * finalLight, 0.3f * finalLight, 0.8f * finalLight, 1f);
+			
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			InputManager.pollInput();

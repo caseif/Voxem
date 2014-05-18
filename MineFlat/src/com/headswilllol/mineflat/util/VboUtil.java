@@ -180,7 +180,8 @@ public class VboUtil {
 							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
 							// light
 							for (int i = 0; i < 3; i++)
-								cValues.add(l1 - Block.horShadow);
+								cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight);
 							// texture
 							cValues.add(tX);
 							cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
@@ -193,7 +194,8 @@ public class VboUtil {
 							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
 							// light
 							for (int i = 0; i < 3; i++)
-								cValues.add(l2 - Block.horShadow);
+								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight);
 							// texture
 							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
 									GraphicsHandler.texSize));
@@ -208,7 +210,8 @@ public class VboUtil {
 									Block.length / Block.horAngle);
 							// light
 							for (int i = 0; i < 3; i++)
-								cValues.add(l2 - Block.horShadow);
+								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight);
 							// texture
 							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
 									GraphicsHandler.texSize));
@@ -221,7 +224,8 @@ public class VboUtil {
 									Block.length / Block.horAngle);
 							// light
 							for (int i = 0; i < 3; i++)
-								cValues.add(l1 - Block.horShadow);
+								cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight);
 							// texture
 							cValues.add(tX);
 							cValues.add(tY);
