@@ -185,15 +185,30 @@ public class GraphicsHandler implements Runnable {
 			renderDelta = Timing.getTime() - lastRenderTime;
 			lastRenderTime = Timing.getTime();
 
+			float firstLight = 1f;
+			float secondLight = 1f;
 			float finalLight = 1f;
-			Block top = Main.player.getLocation().subtract(0, 2).getBlock();
-			Block bottom = Main.player.getLocation().subtract(0, 2).getBlock();
+			Block top = Main.player.getLocation().subtract(0, 1).getBlock();
+			Block bottom = Main.player.getLocation().getBlock();
 			if (top != null && bottom != null){
 				float topLight = top.getLightLevel() / (float)Block.maxLight;
 				float bottomLight = bottom.getLightLevel() / (float)Block.maxLight;
-				float topMult = ((Main.player.getY()) % 1);
-				float bottomMult = 1 - topMult;
-				finalLight = (topLight * topMult + bottomLight * bottomMult);
+				float topBias = ((Main.player.getY()) % 1);
+				float bottomBias = 1 - topBias;
+				firstLight = (topLight * topBias + bottomLight * bottomBias);
+				int beside = Main.player.getX() % 1 < 0.5f ? -1 : 1;
+				Block top2 = Main.player.getLocation().subtract(beside, 1).getBlock();
+				Block bottom2 = Main.player.getLocation().subtract(beside, 0).getBlock();
+				if (top2 != null && bottom2 != null && top2.getType() == Material.AIR && top2.getType() == Material.AIR){
+					float topLight2 = top2.getLightLevel() / (float)Block.maxLight;
+					float bottomLight2 = bottom2.getLightLevel() / (float)Block.maxLight;
+					secondLight = (topLight2 * topBias + bottomLight2 * bottomBias);
+					float sideBias = Math.abs(0.5f - Main.player.getX() % 1);
+					float centerBias = 1 - sideBias;
+					finalLight = firstLight * centerBias + secondLight * sideBias;
+				}
+				else
+					finalLight = firstLight;
 			}
 			else if (Main.player.getY() > 127)
 				finalLight = 0f;

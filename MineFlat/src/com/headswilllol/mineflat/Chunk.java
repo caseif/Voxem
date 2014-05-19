@@ -46,7 +46,7 @@ public class Chunk {
 					Block b = this.getBlock(x, y);
 					if (b != null){
 						if (b.getY() <= Block.getTop(b.getX()))
-							this.getBlock(x, y).setLightLevel(16);
+							this.getBlock(x, y).setLightLevel(Block.maxLight);
 						else {
 							Block up = null, down = null, left = null, right = null;
 							if (b.getY() > 0)
@@ -66,7 +66,7 @@ public class Chunk {
 								}
 							}
 							average /= total;
-							if (average > Block.minLight)
+							if ((int)Math.floor(average) - Block.lightDistance >= Block.minLight)
 								b.setLightLevel((int)Math.floor(average) - Block.lightDistance);
 							else
 								b.setLightLevel(Block.minLight);

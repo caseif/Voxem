@@ -167,7 +167,7 @@ public class VboUtil {
 						cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
 								GraphicsHandler.texSize));
 						
-						if (b.getY() == 0 || Block.getBlock(b.getX(), b.getY() - 1).getType() == Material.AIR){
+						if (Block.isSolid(b) && (b.getY() == 0 || Block.getBlock(b.getX(), b.getY() - 1).getType() == Material.AIR)){
 							
 							if (b.getType() == Material.GRASS){
 								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX());
