@@ -43,8 +43,8 @@ public class VboUtil {
 	 * Updates the entire VBO. This method may cause a severe drop in FPS while running.
 	 */
 	public static void updateArray(){
-		for (Chunk c : Main.world.chunks)
-			updateChunkArray(c.getNum());
+		for (int c : Main.world.chunks.keySet())
+			updateChunkArray(c);
 		recreateArray();
 	}
 

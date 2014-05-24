@@ -109,7 +109,7 @@ public class Block {
 	}
 
 	public static void draw(){
-		for (Chunk c : Main.world.chunks){
+		for (Chunk c : Main.world.chunks.values()){
 			// check if player is within range
 			if (Math.abs(Main.player.getLocation().getChunk() - c.getNum()) <=
 					GraphicsHandler.renderDistance){

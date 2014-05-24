@@ -77,7 +77,7 @@ public class Terrain {
 
 	public static void smoothTerrain(){
 		System.out.println("Smoothing terrain...");
-		for (Chunk c : Main.world.chunks){
+		for (Chunk c : Main.world.chunks.values()){
 			for (int x = 0; x < Main.world.getChunkLength(); x++){
 				int h = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x));
 				int leftHeight = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x) - 1);
@@ -135,7 +135,7 @@ public class Terrain {
 		int ironChance = 10;
 		int goldChance = 2;
 		int diamondChance = 1;
-		for (Chunk c : Main.world.chunks){
+		for (Chunk c : Main.world.chunks.values()){
 			for (int xx = 0; xx < Main.world.getChunkLength(); xx++){
 				for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
 					int x = Chunk.getBlockXFromChunk(c.getNum(), xx);
@@ -205,7 +205,7 @@ public class Terrain {
 
 	public static void generateCaves(){
 		System.out.println("Generating caves...");
-		for (Chunk c : Main.world.chunks){
+		for (Chunk c : Main.world.chunks.values()){
 			if (CaveFactory.r.nextInt(2) == 0){
 				int x = Chunk.getBlockXFromChunk(c.getNum(),
 						CaveFactory.r.nextInt(Main.world.getChunkLength()));
@@ -222,7 +222,7 @@ public class Terrain {
 		CaveFactory.caveFactories.clear();
 		CaveFactory.caveFactories = null;
 		// analyze and improve cave systems
-		for (Chunk c : Main.world.chunks){
+		for (Chunk c : Main.world.chunks.values()){
 			for (int xx = 0; xx < Main.world.getChunkLength(); xx++){
 				int x = Chunk.getBlockXFromChunk(c.getNum(), xx);
 				for (int y = 0; y < Main.world.getChunkHeight(); y++){
@@ -349,7 +349,7 @@ public class Terrain {
 
 	public static void plantGrass(){
 		System.out.println("Planting grass...");
-		for (Chunk c : Main.world.chunks){
+		for (Chunk c : Main.world.chunks.values()){
 			for (int x = 0; x < Main.world.getChunkLength(); x++){
 				int y = Block.getTop(Chunk.getBlockXFromChunk(c.getNum(), x));
 				Block b = Block.getBlock(Chunk.getBlockXFromChunk(c.getNum(), x), y);
@@ -360,7 +360,7 @@ public class Terrain {
 	}
 
 	public static void lightTerrain(){
-		for (Chunk c : Main.world.chunks)
+		for (Chunk c : Main.world.chunks.values())
 			c.updateLight();
 	}
 

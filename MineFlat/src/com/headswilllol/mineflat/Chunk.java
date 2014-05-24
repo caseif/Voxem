@@ -9,7 +9,7 @@ public class Chunk {
 	public Chunk(int num){
 		this.num = num;
 		blocks = new Block[Main.world.getChunkLength()][Main.world.getChunkHeight()];
-		Main.world.chunks.add(this);
+		Main.world.chunks.put(num, this);
 	}
 
 	public int getNum(){

@@ -1,6 +1,7 @@
 package com.headswilllol.mineflat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.headswilllol.mineflat.entity.Entity;
@@ -9,7 +10,7 @@ import com.headswilllol.mineflat.entity.Mob;
 
 public class World {
 
-	public List<Chunk> chunks = new ArrayList<Chunk>();
+	public HashMap<Integer, Chunk> chunks = new HashMap<Integer, Chunk>();
 
 	private String name;
 	private int chunkCount;
@@ -151,11 +152,7 @@ public class World {
 	}
 
 	public Chunk getChunk(int i){
-		for (Chunk c : Main.world.chunks){
-			if (c.getNum() == i)
-				return c;
-		}
-		return null;
+		return chunks.get(i);
 	}
 
 	public boolean isChunkGenerated(int i){
