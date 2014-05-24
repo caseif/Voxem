@@ -143,6 +143,10 @@ public class GraphicsHandler implements Runnable {
 		glClearColor(0.3f, 0.3f, 0.8f, 1f);
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_COLOR_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		GraphicsUtil.addTexture(Material.AIR);
 		GraphicsUtil.addTexture(Material.DIRT);
@@ -184,39 +188,8 @@ public class GraphicsHandler implements Runnable {
 
 			renderDelta = Timing.getTime() - lastRenderTime;
 			lastRenderTime = Timing.getTime();
-
-			float firstLight = 1f;
-			float secondLight = 1f;
-			float finalLight = 1f;
-			Block top = Main.player.getLocation().subtract(0, 1).getBlock();
-			Block bottom = Main.player.getLocation().getBlock();
-			if (top != null && bottom != null){
-				float topLight = top.getLightLevel() / (float)Block.maxLight;
-				float bottomLight = bottom.getLightLevel() / (float)Block.maxLight;
-				float topBias = ((Main.player.getY()) % 1);
-				float bottomBias = 1 - topBias;
-				firstLight = (topLight * topBias + bottomLight * bottomBias);
-				int beside = Main.player.getX() % 1 < 0.5f ? -1 : 1;
-				Block top2 = Main.player.getLocation().subtract(beside, 1).getBlock();
-				Block bottom2 = Main.player.getLocation().subtract(beside, 0).getBlock();
-				if (top2 != null && bottom2 != null && top2.getType() == Material.AIR && top2.getType() == Material.AIR){
-					float topLight2 = top2.getLightLevel() / (float)Block.maxLight;
-					float bottomLight2 = bottom2.getLightLevel() / (float)Block.maxLight;
-					secondLight = (topLight2 * topBias + bottomLight2 * bottomBias);
-					float sideBias = Math.abs(0.5f - Main.player.getX() % 1);
-					float centerBias = 1 - sideBias;
-					finalLight = firstLight * centerBias + secondLight * sideBias;
-				}
-				else
-					finalLight = firstLight;
-			}
-			else if (Main.player.getY() > 127)
-				finalLight = 0f;
 			
-			if (finalLight <= 0f)
-				finalLight = 1f / (float)Block.maxLight;
-			
-			glClearColor(0.3f * finalLight, 0.3f * finalLight, 0.8f * finalLight, 1f);
+			glClearColor(0.3f * Player.light, 0.3f * Player.light, 0.8f * Player.light, 1f);
 			
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -265,16 +238,18 @@ public class GraphicsHandler implements Runnable {
 				float height = 16f;
 				drawString("fps: " + fps, 10, 10, height, true);
 				drawString("delta (ms): " +
-						String.format("%.3f", Timing.displayDelta / 1000000), 10, 45, height, true);
+						String.format("%.3f", Timing.displayDelta / 1000000), 10, 40, height, true);
 				drawString("x: " +
-						String.format("%.3f", Main.player.getX()), 10, 80, height, true);
+						String.format("%.3f", Main.player.getX()), 10, 70, height, true);
 				drawString("y: " +
-						String.format("%.3f", Main.player.getY()), 10, 115, height, true);
+						String.format("%.3f", Main.player.getY()), 10, 100, height, true);
+				drawString("light level: " + String.format("%.3f", Player.light * Block.maxLight), 10, 130, height, true);
+				drawString("ticks: " + TickManager.getTicks(), 10, 160, height, true);
 				int mb = 1024 * 1024;
 				Runtime runtime = Runtime.getRuntime();
 				drawString(runtime.totalMemory() / mb + "mb allocated memory: " +
 						(runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
-						runtime.freeMemory() / mb + "mb free", 10, 150, height, true);
+						runtime.freeMemory() / mb + "mb free", 10, 190, height, true);
 			}
 
 			/*if(Console.enabled)
@@ -304,6 +279,7 @@ public class GraphicsHandler implements Runnable {
 		specialChars.put('+', 6f);
 		specialChars.put('(', 7f);
 		specialChars.put(')', 8f);
+		specialChars.put('µ', 9f);
 	}
 
 	public static void drawString(String str, float x, float y, float height, boolean shadow){

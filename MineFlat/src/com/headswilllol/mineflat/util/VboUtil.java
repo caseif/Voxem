@@ -29,14 +29,15 @@ public class VboUtil {
 	 * Initializes VBO support in the OpenGL instance.
 	 */
 	public static void initialize(){
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_COLOR_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		ImageUtil.createAtlas();
 		IntBuffer buffer = BufferUtils.createIntBuffer(1);
 		glGenBuffers(buffer);
 		bufferHandle = buffer.get(0);
 		updateArray();
+		prepareBindArray();
+		for (int i = 0; i < 15; i++){
+			bindArray();
+		}
 	}
 
 	/**
@@ -261,7 +262,7 @@ public class VboUtil {
 	public static void bindArray(){
 		if (vertexData != null){
 			glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
-			glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vertexData, GL_DYNAMIC_DRAW);
 			vertexData = null;
 		}
 		rebindArray = false;

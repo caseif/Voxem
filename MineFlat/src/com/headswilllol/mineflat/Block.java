@@ -41,6 +41,8 @@ public class Block {
 	 * block
 	 */
 	public static final int lightDistance = 1;
+	
+	public int lastLightUpdate = -1;
 
 	public Block(Material m, Location location){
 		this.type = m;
@@ -106,6 +108,45 @@ public class Block {
 
 	public void setLightLevel(int light){
 		this.light = light; 
+	}
+	
+	public boolean updateLight(){
+		int newLight = 0;
+		Block up = null, down = null, left = null, right = null;
+		if (getY() > 0)
+			up = Block.getBlock((int)getX(), getY() - 1);
+		if (getY() < Main.world.getChunkHeight() - 1)
+			down = Block.getBlock((int)getX(), getY() +
+					1);
+		left = Block.getBlock((int)getX() - 1, getY());
+		right = Block.getBlock((int)getX() + 1, getY());
+		Block[] adjacent = new Block[]{up, down, left, right};
+		if (getY() <= Block.getTop(getX()))
+			newLight = Block.maxLight;
+		else {
+			float average = 0;
+			int total = 0;
+			for (Block bl : adjacent){
+				if (bl != null){
+					average += bl.getLightLevel();
+					total += 1;
+				}
+			}
+			average /= total;
+			if ((int)Math.floor(average) - Block.lightDistance >= Block.minLight)
+				newLight = (int)Math.floor(average) - Block.lightDistance;
+			else
+				newLight = Block.minLight;
+		}
+		boolean changed = newLight != getLightLevel();
+		if (changed){
+			lastLightUpdate = TickManager.getTicks();
+			setLightLevel(newLight);
+			for (Block bl : adjacent)
+				if (bl != null && bl.lastLightUpdate != TickManager.getTicks())
+					bl.updateLight();
+		}
+		return changed;
 	}
 
 	public static void draw(){

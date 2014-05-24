@@ -20,7 +20,7 @@ public class TickManager {
 	/**
 	 * The number of ticks in a second
 	 */
-	private static int ticksPerSecond = 20;
+	private static int ticksPerSecond = 30;
 
 	/**
 	 * The number of ticks per in-game day
@@ -41,9 +41,17 @@ public class TickManager {
 	 * Chance that an entity will spawn in a given tick if the world is at half-mob capacity
 	 */
 	public static int spawnChance = 600;
+	
+	/**
+	 * Retrieves the current tick count of the game.
+	 * @return the current tick count of the game.
+	 */
+	public static int getTicks(){
+		return ticks;
+	}
 
 	/**
-	 * Generates RTEs (Random Tick Events) and basically controls every action that happens in the world
+	 * Generates RTEs (Random Tick Events) and basically controls every non-player action that happens in the world
 	 */
 	public static void handleTick(){
 		Random r = new Random();

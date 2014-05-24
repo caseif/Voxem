@@ -62,6 +62,7 @@ public class Main {
 		while (!closed){
 			Timing.calculateDelta();
 			InputManager.manage();
+			Player.calculateLight();
 			TickManager.checkForTick();
 			for (Entity e : world.getEntities())
 				if (e instanceof LivingEntity)

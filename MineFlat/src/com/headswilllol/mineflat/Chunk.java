@@ -46,7 +46,7 @@ public class Chunk {
 					Block b = this.getBlock(x, y);
 					if (b != null){
 						if (b.getY() <= Block.getTop(b.getX()))
-							this.getBlock(x, y).setLightLevel(Block.maxLight);
+							b.setLightLevel(Block.maxLight);
 						else {
 							Block up = null, down = null, left = null, right = null;
 							if (b.getY() > 0)

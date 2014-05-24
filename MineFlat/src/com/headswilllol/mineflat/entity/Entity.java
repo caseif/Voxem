@@ -130,8 +130,7 @@ public class Entity {
 			float pX = getX() >= 0 ? getX() :
 				getX() - 1;
 			if (Block.isSolid(pX, (float)Math.floor(newY)))
-				setYVelocity(
-						gravity * Timing.delta / Timing.timeResolution);
+				setYVelocity(gravity);
 		}
 
 		setY(getY() + getYVelocity());
@@ -141,8 +140,8 @@ public class Entity {
 							getX() - 4f / Block.length : getX() + 4f / Block.length;
 							if (x < 0) x -= 1;
 							Block below = null;
-							if (getY() >= -height) below = Block.getBlock((float)x,
-									(float)Math.floor(getY() + height));
+							if (getY() >= -height)
+								below = Block.getBlock((float)x, (float)Math.floor(getY() + height));
 							if (Block.isSolid(below)){
 								if((float)below.getY() - getY() < height){
 									setY(below.getY() - height);
