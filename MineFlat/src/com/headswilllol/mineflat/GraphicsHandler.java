@@ -279,7 +279,6 @@ public class GraphicsHandler implements Runnable {
 		specialChars.put('+', 6f);
 		specialChars.put('(', 7f);
 		specialChars.put(')', 8f);
-		specialChars.put('µ', 9f);
 	}
 
 	public static void drawString(String str, float x, float y, float height, boolean shadow){
