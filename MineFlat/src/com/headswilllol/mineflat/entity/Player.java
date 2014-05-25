@@ -71,7 +71,6 @@ public class Player extends LivingEntity {
 				float sideBias = Math.abs(0.5f - Math.abs(Main.player.getX() % 1));
 				float centerBias = 1 - sideBias;
 				light = firstLight * centerBias + secondLight * sideBias;
-				System.out.println(sideBias + ", " + centerBias + ", " + firstLight + ", " + secondLight + ", " + Main.player.getX() % 1);
 			}
 			else
 				light = firstLight;

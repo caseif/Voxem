@@ -111,9 +111,6 @@ public class Block {
 	}
 	
 	public boolean updateLight(){
-		int top = Block.getTop(getX());
-		if (top == getY() + 1)
-			Block.getBlock(getX(), top).updateLight();
 		int newLight = 0;
 		Block up = null, down = null, left = null, right = null;
 		if (getY() > 0)
@@ -142,12 +139,20 @@ public class Block {
 				newLight = Block.minLight;
 		}
 		boolean changed = newLight != getLightLevel();
+		lastLightUpdate = TickManager.getTicks();
 		if (changed){
-			lastLightUpdate = TickManager.getTicks();
 			setLightLevel(newLight);
 			for (Block bl : adjacent)
 				if (bl != null && bl.lastLightUpdate != TickManager.getTicks())
 					bl.updateLight();
+		}
+		for (int y = getY() + 1; y < 128; y++){
+			Block b = Block.getBlock(getX(), y);
+			if (b.lastLightUpdate != TickManager.getTicks())
+				if (!b.updateLight())
+					break;
+			else
+				break;
 		}
 		return changed;
 	}
