@@ -30,7 +30,7 @@ public class Main {
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
-	public static Player player = new Player(32, 0);
+	public static Player player = new Player(0, 0);
 
 	public static boolean closed = false;
 
@@ -39,6 +39,7 @@ public class Main {
 	public static GameState state = GameState.MAIN_MENU;
 
 	public static int charTexture;
+	public static int charArmTexture;
 
 	public static boolean debug = false;
 

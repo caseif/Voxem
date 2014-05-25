@@ -208,7 +208,7 @@ public class Entity {
 							//		ImageUtil.scaleImage(
 							//				ImageIO.read(
 							LivingEntity.class.getClassLoader().getResourceAsStream(
-									"textures/" + et.toString().toLowerCase() + ".png"
+									"textures/entity/" + et.toString().toLowerCase() + ".png"
 									)
 									//						), 64, 64
 									//				)

@@ -20,7 +20,7 @@ public class GraphicsUtil {
 	public static void addTexture(Material m){
 		try {
 			InputStream is = GraphicsUtil.class.getClassLoader().getResourceAsStream(
-					"textures/" + m.toString().toLowerCase() + ".png");
+					"textures/block/" + m.toString().toLowerCase() + ".png");
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
 					ImageIO.read(is), Block.length, Block.length));
 			BufferedImage b = ImageIO.read(newIs);

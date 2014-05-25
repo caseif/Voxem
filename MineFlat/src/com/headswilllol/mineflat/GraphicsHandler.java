@@ -16,7 +16,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import com.headswilllol.mineflat.entity.Entity;
-import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Player;
 import com.headswilllol.mineflat.util.BufferUtil;
 import com.headswilllol.mineflat.util.GraphicsUtil;
@@ -171,7 +170,7 @@ public class GraphicsHandler implements Runnable {
 			System.exit(-1);
 		}
 
-		LivingEntity.initialize();
+		Entity.initialize();
 
 		VboUtil.initialize();
 		VboUtil.prepareBindArray();

@@ -34,7 +34,7 @@ public class Block {
 	/**
 	 * The diameter of a block
 	 */
-	public static final int length = 46;
+	public static final int length = 44;
 
 	/**
 	 * The factor by which the light level of a block should decrease from its brightest adjacent
@@ -111,6 +111,9 @@ public class Block {
 	}
 	
 	public boolean updateLight(){
+		int top = Block.getTop(getX());
+		if (top == getY() + 1)
+			Block.getBlock(getX(), top).updateLight();
 		int newLight = 0;
 		Block up = null, down = null, left = null, right = null;
 		if (getY() > 0)
