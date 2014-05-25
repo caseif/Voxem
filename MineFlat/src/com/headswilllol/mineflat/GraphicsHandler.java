@@ -43,7 +43,7 @@ public class GraphicsHandler implements Runnable {
 	public static long lastFpsUpdate = 0;
 	public static final long fpsUpdateTime = (long)(0.25 * Timing.timeResolution);
 
-	public static int texSize = 16;
+	//public static int texSize = 16;
 
 	/**
 	 * The number of horizontal pixels visual elements will be shifted before being rendered
@@ -91,8 +91,7 @@ public class GraphicsHandler implements Runnable {
 				icons = new ByteBuffer[2];
 				BufferedImage icon1 = ImageUtil.scaleImage(
 						ImageIO.read(Main.class.getClassLoader()
-								.getResourceAsStream("images/icon.png")), GraphicsHandler.texSize,
-								GraphicsHandler.texSize);
+								.getResourceAsStream("images/icon.png")), Block.length, Block.length);
 				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
 						.getResourceAsStream("images/icon.png")), 32, 32);;

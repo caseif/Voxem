@@ -34,13 +34,13 @@ public class Block {
 	/**
 	 * The diameter of a block
 	 */
-	public static final int length = 42;
+	public static final int length = 46;
 
 	/**
 	 * The factor by which the light level of a block should decrease from its brightest adjacent
 	 * block
 	 */
-	public static final int lightDistance = 1;
+	public static final int lightDistance = 1; // I'm pretty sure this now does literally nothing
 	
 	public int lastLightUpdate = -1;
 

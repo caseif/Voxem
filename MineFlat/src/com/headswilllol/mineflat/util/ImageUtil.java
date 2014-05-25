@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 
-import com.headswilllol.mineflat.GraphicsHandler;
+import com.headswilllol.mineflat.Block;
 import com.headswilllol.mineflat.Location;
 import com.headswilllol.mineflat.Material;
 
@@ -42,17 +42,17 @@ public class ImageUtil {
 	public static void createAtlas(){
 		//TODO: Rewrite to use something other than BufferedImage
 		int finalSize = NumUtil.nextPowerOfTwo((int)Math.sqrt(GraphicsUtil.textures.size() *
-				Math.pow(GraphicsHandler.texSize, 2)));
+				Math.pow(Block.length, 2)));
 		BufferedImage atlas = new BufferedImage(finalSize, finalSize, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = atlas.createGraphics();
 		int width = atlas.getWidth();
 		int height = atlas.getHeight();
 		int y = 0;
 		for (int i = 0; i < GraphicsUtil.textures.size(); i++){
-			int x = i * GraphicsHandler.texSize - (height * (y / GraphicsHandler.texSize));
+			int x = i * Block.length - (height * (y / Block.length));
 			if (x >= width){
 				x = 0;
-				y += GraphicsHandler.texSize;
+				y += Block.length;
 			}
 			g.drawImage(GraphicsUtil.textures.get(GraphicsUtil.textures.keySet().toArray()[i]), x, y, null);
 			GraphicsUtil.texCoords.put((Material)(GraphicsUtil.textures.keySet().toArray()[i]),

@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-import com.headswilllol.mineflat.GraphicsHandler;
+import com.headswilllol.mineflat.Block;
 import com.headswilllol.mineflat.Location;
 import com.headswilllol.mineflat.Material;
 
@@ -22,7 +22,7 @@ public class GraphicsUtil {
 			InputStream is = GraphicsUtil.class.getClassLoader().getResourceAsStream(
 					"textures/" + m.toString().toLowerCase() + ".png");
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
-					ImageIO.read(is), GraphicsHandler.texSize, GraphicsHandler.texSize));
+					ImageIO.read(is), Block.length, Block.length));
 			BufferedImage b = ImageIO.read(newIs);
 			textures.put(m, b);
 		}

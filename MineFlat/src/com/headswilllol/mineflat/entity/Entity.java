@@ -134,38 +134,30 @@ public class Entity {
 		}
 
 		setY(getY() + getYVelocity());
-		if (Math.floor(getY() + height) < Main.world.getChunkHeight()){
-			float x = (Math.abs(getX()) % 1 >= 0.5 && getX() > 0) ||
-					(Math.abs(getX()) % 1 <= 0.5 && getX() < 0) ?
-							getX() - 4f / Block.length : getX() + 4f / Block.length;
-							if (x < 0) x -= 1;
-							Block below = null;
-							if (getY() >= -height)
-								below = Block.getBlock((float)x, (float)Math.floor(getY() + height));
-							if (Block.isSolid(below)){
-								if((float)below.getY() - getY() < height){
-									setY(below.getY() - height);
-								}  	   
-							}
-		}
+		Block below = getBlockBelow();
+		if (below != null && Block.isSolid(below) && (float)below.getY() - getY() < height)
+			setY(below.getY() - height);
 	}
 
 	public boolean isOnGround(){
+		Block below = getBlockBelow();
+		if (below != null && Block.isSolid(below))
+			return true;
+		else
+			return false;
+	}
+
+	public Block getBlockBelow(){
+		Block below = null;
 		if (Math.floor(getY() + height) < Main.world.getChunkHeight()){
 			float x = (Math.abs(getX()) % 1 >= width / 2 && getX() > 0) || (Math.abs(getX()) % 1 <= width / 2 &&
 					getX() < 0) ? getX() - width / 4 : getX() + width / 4;
 					if (x < 0)
 						x -= 1;
-					Block below = null;
 					if (getY() >= -height)
 						below = Block.getBlock((float)x, (float)Math.floor(getY() + height));
-					if (Block.isSolid(below))
-						return true;
-					else
-						return false;
 		}
-
-		else return true;
+		return below;
 	}
 
 	public boolean isXMovementBlocked(){
@@ -215,12 +207,12 @@ public class Entity {
 							//(InputStream)ImageIO.createImageInputStream(
 							//		ImageUtil.scaleImage(
 							//				ImageIO.read(
-													LivingEntity.class.getClassLoader().getResourceAsStream(
-															"textures/" + et.toString().toLowerCase() + ".png"
-															)
-							//						), 64, 64
-							//				)
-							//		)
+							LivingEntity.class.getClassLoader().getResourceAsStream(
+									"textures/" + et.toString().toLowerCase() + ".png"
+									)
+									//						), 64, 64
+									//				)
+									//		)
 							));
 				}
 				catch (Exception ex){

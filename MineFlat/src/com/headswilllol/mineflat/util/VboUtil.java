@@ -136,8 +136,7 @@ public class VboUtil {
 						for (int i = 0; i < 3; i++)
 							cValues.add(l2);
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
-								GraphicsHandler.texSize));
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 						cValues.add(tY);
 
 						// bottom right
@@ -150,10 +149,8 @@ public class VboUtil {
 						for (int i = 0; i < 3; i++)
 							cValues.add(l3);
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
-								GraphicsHandler.texSize));
-						cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
-								GraphicsHandler.texSize));
+						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 
 						// bottom left
 						// vertex
@@ -165,8 +162,7 @@ public class VboUtil {
 							cValues.add(l4);
 						// texture
 						cValues.add(tX);
-						cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
-								GraphicsHandler.texSize));
+						cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 						
 						if (Block.isSolid(b) && (b.getY() == 0 || Block.getBlock(b.getX(), b.getY() - 1).getType() == Material.AIR)){
 							
@@ -185,8 +181,7 @@ public class VboUtil {
 										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight);
 							// texture
 							cValues.add(tX);
-							cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
-									GraphicsHandler.texSize));
+							cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 
 							// front right
 							// vertex
@@ -198,10 +193,8 @@ public class VboUtil {
 								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
 										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight);
 							// texture
-							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
-									GraphicsHandler.texSize));
-							cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize /
-									GraphicsHandler.texSize));
+							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+							cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 
 							// back right
 							// vertex
@@ -214,8 +207,7 @@ public class VboUtil {
 								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
 										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight);
 							// texture
-							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize /
-									GraphicsHandler.texSize));
+							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 							cValues.add(tY);
 
 							// back left
