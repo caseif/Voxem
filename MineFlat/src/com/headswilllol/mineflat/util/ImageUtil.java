@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -41,32 +42,34 @@ public class ImageUtil {
 
 	public static void createAtlas(){
 		//TODO: Rewrite to use something other than BufferedImage
-		int finalSize = NumUtil.nextPowerOfTwo((int)Math.sqrt(GraphicsUtil.textures.size() *
-				Math.pow(Block.length, 2)));
-		BufferedImage atlas = new BufferedImage(finalSize, finalSize, BufferedImage.TYPE_INT_ARGB);
+		//int finalSize = NumUtil.nextPowerOfTwo((int)Math.sqrt(GraphicsUtil.textures.size() *
+		//		Math.pow(Block.length, 2)));
+		int width = GraphicsUtil.textures.size() * Block.length;
+		int height = Block.length;
+		BufferedImage atlas = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = atlas.createGraphics();
-		int width = atlas.getWidth();
-		int height = atlas.getHeight();
 		int y = 0;
 		for (int i = 0; i < GraphicsUtil.textures.size(); i++){
-			int x = i * Block.length - (height * (y / Block.length));
-			if (x >= width){
+			//int x = (i * Block.length - (height * (y / Block.length))) / Block.length * Block.length;
+			int x = i * Block.length;
+			/*if (width - x < Block.length){
 				x = 0;
 				y += Block.length;
-			}
+			}*/
 			g.drawImage(GraphicsUtil.textures.get(GraphicsUtil.textures.keySet().toArray()[i]), x, y, null);
 			GraphicsUtil.texCoords.put((Material)(GraphicsUtil.textures.keySet().toArray()[i]),
 					new Location((float)x / width, (float)y / height));
 		}
-		GraphicsUtil.atlasSize = finalSize;
+		//GraphicsUtil.atlasSize = finalSize;
+		GraphicsUtil.atlasSize = width;
 
-		/*try {
+		try {
 			File outputfile = new File("atlas.png");
 			ImageIO.write(atlas, "png", outputfile);
 		}
 		catch (IOException ex){
 			ex.printStackTrace();
-		}*/
+		}
 
 		try {
 			GraphicsUtil.atlas = ImageUtil.createTextureFromStream(ImageUtil.asInputStream(atlas));

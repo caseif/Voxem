@@ -15,7 +15,7 @@ public class GraphicsUtil {
 	public static HashMap<Material, BufferedImage> textures = new HashMap<Material, BufferedImage>();
 	public static HashMap<Material, Location> texCoords = new HashMap<Material, Location>();
 	public static int atlas;
-	public static int atlasSize;
+	public static float atlasSize;
 
 	public static void addTexture(Material m){
 		try {
