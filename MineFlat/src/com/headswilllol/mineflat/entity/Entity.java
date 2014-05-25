@@ -16,12 +16,12 @@ public class Entity {
 	/**
 	 * The speed at which entities will fall
 	 */
-	public static final float gravity = .6f;
+	public static final float gravity = 10f;
 
 	/**
 	 * The terminal downwards velocity of entities
 	 */
-	public static final float terminalVelocity = 1f;
+	public static final float terminalVelocity = 40f;
 
 	/**
 	 * The width of the entity relative to a block's width
@@ -106,8 +106,7 @@ public class Entity {
 
 		if (!isOnGround()){
 			if (getYVelocity() < terminalVelocity){
-				float newFallSpeed = getYVelocity() +
-						(gravity * Timing.delta / Timing.timeResolution);
+				float newFallSpeed = getYVelocity() + gravity * Timing.delta / Timing.timeResolution * 2.5f;
 				if (newFallSpeed > terminalVelocity)
 					newFallSpeed = terminalVelocity;
 				setYVelocity(newFallSpeed);
@@ -115,7 +114,7 @@ public class Entity {
 		}
 
 		if (!isXMovementBlocked())
-			setX(x + xVelocity * (Timing.delta / Timing.timeResolution));
+			setX(x + getXVelocity() * (Timing.delta / Timing.timeResolution));
 		else {
 			setXVelocity(0);
 			if (this instanceof Mob){
@@ -133,7 +132,7 @@ public class Entity {
 				setYVelocity(gravity);
 		}
 
-		setY(getY() + getYVelocity());
+		setY(getY() + getYVelocity() * (Timing.delta / Timing.timeResolution));
 		Block below = getBlockBelow();
 		if (below != null && Block.isSolid(below) && (float)below.getY() - getY() < height)
 			setY(below.getY() - height);

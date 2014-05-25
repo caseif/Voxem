@@ -7,7 +7,7 @@ public class LivingEntity extends Entity {
 	/**
 	 * The speed at which entities will jump
 	 */
-	public static final float jumpPower = .2f;
+	public static final float jumpPower = 13f;
 
 	/**
 	 * The speed at which this particular entity will move
