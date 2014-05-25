@@ -3,7 +3,9 @@ package com.headswilllol.mineflat;
 import java.util.Random;
 
 import com.headswilllol.mineflat.entity.Entity;
+import com.headswilllol.mineflat.entity.EntityType;
 import com.headswilllol.mineflat.entity.Mob;
+import com.headswilllol.mineflat.entity.Zombie;
 
 public class TickManager {
 
@@ -54,25 +56,26 @@ public class TickManager {
 	 * Generates RTEs (Random Tick Events) and basically controls every non-player action that happens in the world
 	 */
 	public static void handleTick(){
-		Random r = new Random();
-		/*if (MineFlat.world.getMobCount() < Mob.mobCapacity){ // check that world isn't full
-			int actualChance = (int)((float)MineFlat.world.getMobCount()
+		/*Random r = new Random();
+		if (Main.world.getMobCount() < Mob.mobCapacity){ // check that world isn't full
+			int actualChance = (int)((float)Main.world.getMobCount()
 					/ (float)Mob.mobCapacity * 2f * (float)spawnChance) + 1;
 			if (r.nextInt(actualChance) == 0){
 				System.out.println("spawn");
 				EntityType type = Mob.mobTypes.get(r.nextInt(Mob.mobTypes.size()));
-				Chunk c = MineFlat.world.chunks.get(r.nextInt(MineFlat.world.getChunkCount()));
+				Chunk c = Main.world.chunks.values().toArray(new Chunk[]{})[r.nextInt(Main.world.getChunkCount())];
 				double x = Double.POSITIVE_INFINITY;
 				double y = Double.POSITIVE_INFINITY;
 				while (x == Double.POSITIVE_INFINITY && y == Double.POSITIVE_INFINITY){
-					for (int xx = 0; xx < MineFlat.world.getChunkLength(); xx++){
-						for (int yy = 0; yy < MineFlat.world.getChunkHeight(); yy++){
-							if (c.getBlock(xx, yy).getLightLevel() <= Mob.getMaximumLightLevel(type) &&
-									c.getBlock(xx, yy).getType() == Material.AIR &&
+					for (int xx = 0; xx < Main.world.getChunkLength(); xx++){
+						for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
+							Block b = c.getBlock(xx, yy);
+							if (b != null && b.getLightLevel() <= Mob.getMaximumLightLevel(type) &&
+									b.getType() == Material.AIR &&
 									(yy > 0 && c.getBlock(xx, yy - 1).getType() == Material.AIR) || yy == 0 &&
-									(yy < MineFlat.world.getChunkHeight() - 1 &&
+									(yy < Main.world.getChunkHeight() - 1 &&
 											c.getBlock(xx, yy + 1).getType() != Material.AIR) ||
-											yy == MineFlat.world.getChunkHeight() - 1){
+											yy == Main.world.getChunkHeight() - 1){
 								if (r.nextInt(200) == 0){
 									x = xx;
 									y = yy;
@@ -88,11 +91,11 @@ public class TickManager {
 				}
 				switch (type){
 				case ZOMBIE:
-					MineFlat.world.addEntity(new Zombie(Chunk.getBlockXFromChunk(c.getNum(), (int)x), (float)y));
+					Main.world.addEntity(new Zombie(Chunk.getBlockXFromChunk(c.getNum(), (int)x), (float)y));
 				default:
 				}
 			}
-		}*/
+		}
 		for (Entity e : Main.world.getEntities()){
 			if (e instanceof Mob){ // make sure it's not just an item drop or something
 				Mob m = (Mob)e;
@@ -120,7 +123,7 @@ public class TickManager {
 								Math.abs(m.getX() - m.getLastX())); // update
 				}
 			}
-		}
+		}*/
 		if (ticks < ticksPerDay)
 			ticks += 1;
 		else

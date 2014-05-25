@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.headswilllol.mineflat.Block;
 import com.headswilllol.mineflat.Direction;
 import com.headswilllol.mineflat.GraphicsHandler;
+import com.headswilllol.mineflat.Location;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Timing;
 import com.headswilllol.mineflat.util.ImageUtil;
@@ -123,13 +124,15 @@ public class Entity {
 			}
 		}
 
-		float newY = getY() + getYVelocity();
+		float newY = getY() + getYVelocity() * (Timing.delta / Timing.timeResolution);
 
-		if (newY >= 0 && newY <= Main.world.getChunkHeight() - 1){
+		if (newY >= 0 && newY < Main.world.getChunkHeight()){
 			float pX = getX() >= 0 ? getX() :
 				getX() - 1;
-			if (Block.isSolid(pX, (float)Math.floor(newY)))
+			if (Block.isSolid(pX, (float)Math.floor(newY + vertOffset / (float)Block.length))){
 				setYVelocity(gravity);
+			}
+			System.out.println(newY + ", " + vertOffset);
 		}
 
 		setY(getY() + getYVelocity() * (Timing.delta / Timing.timeResolution));
@@ -167,6 +170,8 @@ public class Entity {
 		for (int y = minY; y <= maxY; y++)
 			if (Block.isSolid(newX, y))
 				return true;
+		if (!Main.world.isChunkGenerated(new Location(newX, minY).getChunk()))
+			return true;
 		return false;
 	}
 
