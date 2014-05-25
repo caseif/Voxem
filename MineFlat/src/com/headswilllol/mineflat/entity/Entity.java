@@ -126,19 +126,31 @@ public class Entity {
 
 		float newY = getY() + getYVelocity() * (Timing.delta / Timing.timeResolution);
 
+		float pX = getX() >= 0 ? getX() :
+			getX() - 1;
+		
 		if (newY >= 0 && newY < Main.world.getChunkHeight()){
-			float pX = getX() >= 0 ? getX() :
-				getX() - 1;
-			if (Block.isSolid(pX, (float)Math.floor(newY + vertOffset / (float)Block.length))){
+			if (Block.isSolid(pX, (float)Math.floor(newY + vertOffset / (float)Block.length)))
 				setYVelocity(gravity);
-			}
-			System.out.println(newY + ", " + vertOffset);
 		}
 
-		setY(getY() + getYVelocity() * (Timing.delta / Timing.timeResolution));
 		Block below = getBlockBelow();
-		if (below != null && Block.isSolid(below) && (float)below.getY() - getY() < height)
-			setY(below.getY() - height);
+		if (newY - getY() < 1){
+			if (below != null && Block.isSolid(below) && (float)below.getY() - getY() < height){
+				setYVelocity(0);
+				setY(below.getY() - height);
+			}
+		}
+		else {
+			for (int y = (int)Math.floor(getY()); y <= newY + height; y++){
+				if (Block.isSolid(pX, y)){
+					setYVelocity(0);
+					setY(y - height);
+					break;
+				}
+			}
+		}
+		setY(getY() + getYVelocity() * (Timing.delta / Timing.timeResolution));
 	}
 
 	public boolean isOnGround(){
