@@ -37,7 +37,7 @@ public class Timing {
 	}
 	
 	public static void throttleCpu(){
-		starttime += (1000.0 / 120); 
+		starttime += (1000.0 / 120);
 		LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
 	}
 

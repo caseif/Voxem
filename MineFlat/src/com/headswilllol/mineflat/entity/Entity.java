@@ -163,7 +163,7 @@ public class Entity {
 		float newX = x >= 0 ? getX() + (xVelocity * (Timing.delta / Timing.timeResolution)) :
 			getX() - 1 + (xVelocity * (Timing.delta / Timing.timeResolution));
 		int minY = (int)Math.floor(y);
-		int maxY = (int)Math.floor(y + height - 1);
+		int maxY = (int)Math.ceil(y + height - 1);
 		for (int y = minY; y <= maxY; y++)
 			if (Block.isSolid(newX, y))
 				return true;
