@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -63,13 +62,13 @@ public class ImageUtil {
 		//GraphicsUtil.atlasSize = finalSize;
 		GraphicsUtil.atlasSize = width;
 
-		try {
+		/*try {
 			File outputfile = new File("atlas.png");
 			ImageIO.write(atlas, "png", outputfile);
 		}
 		catch (IOException ex){
 			ex.printStackTrace();
-		}
+		}*/
 
 		try {
 			GraphicsUtil.atlas = ImageUtil.createTextureFromStream(ImageUtil.asInputStream(atlas));
