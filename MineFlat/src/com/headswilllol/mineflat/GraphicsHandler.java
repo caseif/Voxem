@@ -141,7 +141,7 @@ public class GraphicsHandler implements Runnable {
 		glClearColor(0.3f, 0.3f, 0.8f, 1f);
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
+
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -186,9 +186,9 @@ public class GraphicsHandler implements Runnable {
 
 			renderDelta = Timing.getTime() - lastRenderTime;
 			lastRenderTime = Timing.getTime();
-			
+
 			glClearColor(0.3f * Player.light, 0.3f * Player.light, 0.8f * Player.light, 1f);
-			
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			InputManager.pollInput();
@@ -208,22 +208,22 @@ public class GraphicsHandler implements Runnable {
 			if (Block.isSelected){
 				glColor3f(0f, 0f, 0f);
 				glBegin(GL_LINES);
-				glVertex2f(Block.selectedX,
-						Block.selectedY);
-				glVertex2f(Block.selectedX + Block.length,
-						Block.selectedY);
-				glVertex2f(Block.selectedX + Block.length,
-						Block.selectedY);
-				glVertex2f(Block.selectedX + Block.length,
-						Block.selectedY + Block.length);
-				glVertex2f(Block.selectedX + Block.length,
-						Block.selectedY + Block.length);
-				glVertex2f(Block.selectedX,
-						Block.selectedY + Block.length);
-				glVertex2f(Block.selectedX,
-						Block.selectedY + Block.length);
-				glVertex2f(Block.selectedX,
-						Block.selectedY);
+				glVertex2f(Block.selectedX, Block.selectedY);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX, Block.selectedY);
+				if (Block.selected.getY() < 0 || (Block.selected.getX() < 128 && Block.isAir(Block.selected.getX(), Block.selected.getY() - 1))){
+					glVertex2f(Block.selectedX, Block.selectedY);
+					glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX + Block.length, Block.selectedY);
+				}
 				glEnd();
 			}
 
