@@ -55,6 +55,17 @@
 				<version>2.3.2</version>
 				<configuration>
 					<finalName>mineflat</finalName>
+					<archive>
+						<index>true</index>
+						<compress>true</compress>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.headswilllol.mineflat.Main</mainClass>
+						</manifest>
+						<manifestEntries>
+							<built-by>Jenkins</built-by>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
