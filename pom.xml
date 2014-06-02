@@ -56,14 +56,13 @@
 				<configuration>
 					<finalName>mineflat</finalName>
 					<archive>
-						<index>true</index>
 						<compress>true</compress>
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>com.headswilllol.mineflat.Main</mainClass>
 						</manifest>
 						<manifestEntries>
-							<built-by>Jenkins</built-by>
+							<Built-By>Jenkins</Built-By>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -75,7 +74,7 @@
 				<filtering>true</filtering>
 				<directory>${basedir}/src/main/resources</directory>
 				<includes>
-					<include>*</include>
+					<include>**/*</include>
 				</includes>
 			</resource>
 			<resource>
