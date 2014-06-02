@@ -1,4 +1,6 @@
-*.class
-.project
-*.prefs
-bin/
+/.classpath
+/.settings
+/bin
+/target
+/.project
+/MineFlat
