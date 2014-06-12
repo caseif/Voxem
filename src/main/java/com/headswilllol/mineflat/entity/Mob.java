@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.headswilllol.mineflat.Location;
+
 public abstract class Mob extends LivingEntity {
 
 	protected float walkDistance;
@@ -13,8 +15,8 @@ public abstract class Mob extends LivingEntity {
 	public static List<EntityType> mobTypes = new ArrayList<EntityType>();
 	public static HashMap<EntityType, Integer> light = new HashMap<EntityType, Integer>();
 	
-	public Mob(EntityType type, float x, float y, float width, float height){
-		super(type, x, y, width, height);
+	public Mob(EntityType type, Location location, float width, float height){
+		super(type, location, width, height);
 	}
 	
 	public static void initialize(){

@@ -167,13 +167,13 @@ public class InputManager {
 												m * x + b <= Block.selected.getY() + 1){
 											if (x == Block.selected.getX())
 												x -= 1;
-											l = new Location(x, Block.selected.getY());
+											l = new Location(Main.player.getLevel(), x, Block.selected.getY());
 										}
 										else if ((y - b) / m >= Block.selected.getX() &&
 												(y - b) / m <= Block.selected.getX() + 1){
 											if (y == Block.selected.getY())
 												y -= 1;
-											l = new Location(Block.selected.getX(), y);
+											l = new Location(Main.player.getLevel(), Block.selected.getX(), y);
 										}
 										if (l != null){
 											if ((int)playerY == y)

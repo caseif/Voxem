@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.headswilllol.mineflat.Block;
 import com.headswilllol.mineflat.Direction;
 import com.headswilllol.mineflat.GraphicsHandler;
+import com.headswilllol.mineflat.Level;
 import com.headswilllol.mineflat.Location;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Timing;
@@ -51,36 +52,42 @@ public class Entity {
 
 	public static HashMap<EntityType, Integer> sprites = new HashMap<EntityType, Integer>();
 
-	protected float x;
-	protected float y;
+	protected Location location;
 	protected EntityType type;
 
-	public Entity(EntityType type, float x, float y, float width, float height){
+	public Entity(EntityType type, Location location, float width, float height){
 		this.type = type;
-		this.x = x;
-		this.y = y;
+		this.location = location;
 		this.width = width;
 		this.height = height;
 	}
+	
+	public Level getLevel(){
+		return location.getLevel();
+	}
 
 	public float getX(){
-		return x;
+		return location.getX();
 	}
 
 	public float getY(){
-		return y;
+		return location.getY();
 	}
 
 	public EntityType getType(){
 		return type;
 	}
+	
+	public void setLevel(Level level){
+		location.setLevel(level);
+	}
 
 	public void setX(float x){
-		this.x = x;
+		location.setX(x);
 	}
 
 	public void setY(float y){
-		this.y = y;
+		location.setY(y);
 	}
 
 	public void setType(EntityType type){
@@ -115,7 +122,7 @@ public class Entity {
 		}
 
 		if (!isXMovementBlocked())
-			setX(x + getXVelocity() * (Timing.delta / Timing.TIME_RESOLUTION));
+			setX(getX() + getXVelocity() * (Timing.delta / Timing.TIME_RESOLUTION));
 		else {
 			setXVelocity(0);
 			if (this instanceof Mob){
@@ -175,14 +182,14 @@ public class Entity {
 	}
 
 	public boolean isXMovementBlocked(){
-		float newX = x >= 0 ? getX() + (xVelocity * (Timing.delta / Timing.TIME_RESOLUTION)) :
+		float newX = getX() >= 0 ? getX() + (xVelocity * (Timing.delta / Timing.TIME_RESOLUTION)) :
 			getX() - 1 + (xVelocity * (Timing.delta / Timing.TIME_RESOLUTION));
-		int minY = (int)Math.floor(y);
-		int maxY = (int)Math.ceil(y + height - 1);
+		int minY = (int)Math.floor(getY());
+		int maxY = (int)Math.ceil(getY() + height - 1);
 		for (int y = minY; y <= maxY; y++)
 			if (Block.isSolid(newX, y))
 				return true;
-		if (!Main.world.isChunkGenerated(new Location(newX, minY).getChunk()))
+		if (!getLevel().isChunkGenerated(new Location(getLevel(), newX, minY).getChunk()))
 			return true;
 		return false;
 	}

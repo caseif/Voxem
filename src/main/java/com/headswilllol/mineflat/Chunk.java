@@ -2,14 +2,20 @@ package com.headswilllol.mineflat;
 
 public class Chunk {
 
+	protected Level level;
 	protected int num;
 
 	private Block[][] blocks;
 
-	public Chunk(int num){
+	public Chunk(Level level, int num){
+		this.level = level;
 		this.num = num;
 		blocks = new Block[Main.world.getChunkLength()][Main.world.getChunkHeight()];
-		Main.world.chunks.put(num, this);
+		level.chunks.put(num, this);
+	}
+	
+	public Level getLevel(){
+		return level;
 	}
 
 	public int getNum(){

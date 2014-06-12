@@ -26,11 +26,17 @@ import com.headswilllol.mineflat.entity.Player;
  */
 
 public class Main {
+	
+	public static World world = new World("world", 8, 16, 128);
+	
+	{
+		world.addLevel(0);
+	}
 
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
-	public static Player player = new Player(0, 0);
+	public static Player player = new Player(new Location(world.getLevel(0), 0, 0));
 
 	public static boolean closed = false;
 
@@ -43,15 +49,9 @@ public class Main {
 
 	public static boolean debug = false;
 
-	/**
-	 * The currently loaded world
-	 */
-	public static World world;
-
 	public static void main(String[] args){
 
-		world = new World("world", 8, 16, 128);
-		world.addEntity(player);
+		world.getLevel(0).addEntity(player);
 
 		Terrain.generateTerrain();
 		InputManager.initialize();
@@ -65,7 +65,7 @@ public class Main {
 			InputManager.manage();
 			Player.calculateLight();
 			TickManager.checkForTick();
-			for (Entity e : world.getEntities())
+			for (Entity e : world.getLevel(0).getEntities())
 				if (e instanceof LivingEntity)
 					((LivingEntity)e).manageMovement();
 				else

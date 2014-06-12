@@ -57,7 +57,7 @@ public class ImageUtil {
 			}*/
 			g.drawImage(GraphicsUtil.textures.get(GraphicsUtil.textures.keySet().toArray()[i]), x, y, null);
 			GraphicsUtil.texCoords.put((Material)(GraphicsUtil.textures.keySet().toArray()[i]),
-					new Location((float)x / width, (float)y / height));
+					new Location(null, (float)x / width, (float)y / height));
 		}
 		//GraphicsUtil.atlasSize = finalSize;
 		GraphicsUtil.atlasSize = width;

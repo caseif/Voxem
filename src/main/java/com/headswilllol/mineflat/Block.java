@@ -1,7 +1,5 @@
 package com.headswilllol.mineflat;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -58,9 +56,9 @@ public class Block {
 	}
 
 	public void addToWorld(){
-		Chunk c = Main.world.getChunk(location.getChunk());
+		Chunk c = location.getLevel().getChunk(location.getChunk());
 		if (c == null)
-			c = new Chunk(location.getChunk());
+			c = new Chunk(location.getLevel(), location.getChunk());
 		c.setBlock(Math.abs((int)location.getX() % Main.world.getChunkLength()),
 				(int)location.getY(), this);
 	}
@@ -157,41 +155,6 @@ public class Block {
 		return changed;
 	}
 
-	public static void draw(){
-		for (Chunk c : Main.world.chunks.values()){
-			// check if player is within range
-			if (Math.abs(Main.player.getLocation().getChunk() - c.getNum()) <=
-					GraphicsHandler.renderDistance){
-				for (int x = 0; x < Main.world.getChunkLength(); x++){
-					for (int y = 0; y < Main.world.getChunkHeight(); y++){
-						Block b = c.getBlock(x, y);
-						if (b != null){
-							glPushMatrix();
-							//glBindTexture(GL_TEXTURE_2D,
-							//		BlockUtil.textures.get(b.getType()).getTextureID());
-							float fracLight = (float)(b.getLightLevel()) / maxLight;
-							glColor3f(fracLight, fracLight, fracLight);
-							int drawX = b.getX() * length + GraphicsHandler.xOffset;
-							int drawY = b.getY() * length + GraphicsHandler.yOffset;
-							glBegin(GL_QUADS);
-							glTexCoord2f(0, 0);
-							glVertex2f(drawX, drawY); // top left
-							glTexCoord2f(1, 0);
-							glVertex2f(drawX + length, drawY); // top right
-							glTexCoord2f(1, 1);
-							glVertex2f(drawX + length, drawY + length); // bottom right
-							glTexCoord2f(0, 1);
-							glVertex2f(drawX, drawY + length); // bottom left
-							glEnd();
-							glBindTexture(GL_TEXTURE_2D, 0);
-							glPopMatrix();
-						}
-					}
-				}
-			}
-		}
-	}
-
 	public void destroy(){
 		setType(Material.AIR);
 	}
@@ -209,9 +172,9 @@ public class Block {
 		return -1;
 	}
 
-	public static Block getBlock(int x, int y){
+	public static Block getBlock(Level level, int x, int y){
 		if (y >= 0 && y < Main.world.getChunkHeight()){
-			Chunk c = Main.world.getChunk(new Location(x, y).getChunk());
+			Chunk c = level.getChunk(new Location(level, x, y).getChunk());
 			if (c != null)
 				return c.getBlock(Math.abs(x % Main.world.getChunkLength()), y);
 		}
@@ -238,7 +201,7 @@ public class Block {
 			synchronized (Main.lock){
 				if (blockY >= 0 && blockY <= Main.world.getChunkHeight() - 1){
 					if (!Block.isAir(blockX, blockY)){
-						Block.selected = new Location(blockX, blockY);
+						Block.selected = new Location(Main.player.getLevel(), blockX, blockY);
 						found = true;
 						break;
 					}

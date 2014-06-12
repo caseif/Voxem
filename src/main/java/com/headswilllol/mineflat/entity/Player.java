@@ -19,12 +19,12 @@ public class Player extends LivingEntity {
 	
 	public static float light = 1f;
 
-	public Player(float x, float y){
-		super(EntityType.PLAYER, x, y, 0.5f, 2f);
+	public Player(Location location){
+		super(EntityType.PLAYER, location, 0.5f, 2f);
 	}
 
 	public Location getLocation(){
-		return new Location(x, y);
+		return location;
 	}
 
 	@Override

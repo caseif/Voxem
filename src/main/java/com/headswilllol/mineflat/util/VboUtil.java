@@ -14,6 +14,7 @@ import org.lwjgl.BufferUtils;
 import com.headswilllol.mineflat.Block;
 import com.headswilllol.mineflat.Chunk;
 import com.headswilllol.mineflat.GraphicsHandler;
+import com.headswilllol.mineflat.Level;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
 
@@ -44,17 +45,20 @@ public class VboUtil {
 	 * Updates the entire VBO. This method may cause a severe drop in FPS while running.
 	 */
 	public static void updateArray(){
-		for (int c : Main.world.chunks.keySet())
-			updateChunkArray(c);
+		for (Level l : Main.world.getLevels()){
+			for (int c : Main.player.getLevel().chunks.keySet())
+				updateChunkArray(l, c);
+		}
 		recreateArray();
 	}
 
 	/**
 	 * Updates the portion of the vertex array containing data for the specified chunk.
+	 * @param level the level containing the chunk.
 	 * @param chunk The chunk to update in the VBO.
 	 */
-	public static void updateChunkArray(int chunk){
-		Chunk c = Main.world.getChunk(chunk);
+	public static void updateChunkArray(Level level, int chunk){
+		Chunk c = level.getChunk(chunk);
 		if (c != null){
 			List<Float> cValues = new ArrayList<Float>();
 			for (int x = 0; x < Main.world.getChunkLength(); x++){
@@ -165,14 +169,14 @@ public class VboUtil {
 						cValues.add(tX);
 						//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 						cValues.add(1f);
-						
+
 						if (Block.isSolid(b) && (b.getY() == 0 || Block.getBlock(b.getX(), b.getY() - 1).getType() == Material.AIR)){
-							
+
 							if (b.getType() == Material.GRASS){
 								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX());
 								tY = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getY());
 							}
-							
+
 							// front left
 							// vertex
 							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));

@@ -2,13 +2,18 @@ package com.headswilllol.mineflat;
 
 public class Location {
 
+	protected Level level;
 	protected float x;
-
 	protected float y;
 
-	public Location(float x, float y){
+	public Location(Level level, float x, float y){
+		this.level = level;
 		this.x = x;
 		this.y = y;
+	}
+	
+	public Level getLevel(){
+		return level;
 	}
 
 	public float getX(){
@@ -17,6 +22,10 @@ public class Location {
 
 	public float getY(){
 		return y;
+	}
+	
+	public void setLevel(Level level){
+		this.level = level;
 	}
 
 	public void setX(float x){
@@ -32,7 +41,7 @@ public class Location {
 	}
 	
 	public Location add(float x, float y){
-		return new Location(this.x + x, this.y + y);
+		return new Location(this.level, this.x + x, this.y + y);
 	}
 	
 	public Location subtract(Location location){
@@ -40,11 +49,11 @@ public class Location {
 	}
 	
 	public Location subtract(float x, float y){
-		return new Location(this.x + x, this.y + y);
+		return new Location(this.level, this.x + x, this.y + y);
 	}
 
 	public Block getBlock(){
-		Chunk c = Main.world.getChunk(getChunk());
+		Chunk c = Main.world.getLevel(0).getChunk(getChunk());
 		if (c != null){
 			int index = (int)Math.floor(Math.abs(x % Main.world.getChunkLength()));
 			return c.getBlock(index, (int)y);

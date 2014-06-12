@@ -227,7 +227,7 @@ public class GraphicsHandler implements Runnable {
 			}
 
 			Player.centerPlayer();
-			for (Entity e : Main.world.getEntities())
+			for (Entity e : Main.player.getLevel().getEntities())
 				e.draw();
 
 			// draw debug menu, if necessary
