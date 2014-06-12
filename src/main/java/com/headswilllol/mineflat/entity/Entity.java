@@ -107,7 +107,7 @@ public class Entity {
 
 		if (!isOnGround()){
 			if (getYVelocity() < terminalVelocity){
-				float newFallSpeed = getYVelocity() + gravity * Timing.delta / Timing.timeResolution * 2.5f;
+				float newFallSpeed = getYVelocity() + gravity * Timing.delta / Timing.TIME_RESOLUTION * 2.5f;
 				if (newFallSpeed > terminalVelocity)
 					newFallSpeed = terminalVelocity;
 				setYVelocity(newFallSpeed);
@@ -115,7 +115,7 @@ public class Entity {
 		}
 
 		if (!isXMovementBlocked())
-			setX(x + getXVelocity() * (Timing.delta / Timing.timeResolution));
+			setX(x + getXVelocity() * (Timing.delta / Timing.TIME_RESOLUTION));
 		else {
 			setXVelocity(0);
 			if (this instanceof Mob){
@@ -124,7 +124,7 @@ public class Entity {
 			}
 		}
 
-		float newY = getY() + getYVelocity() * (Timing.delta / Timing.timeResolution);
+		float newY = getY() + getYVelocity() * (Timing.delta / Timing.TIME_RESOLUTION);
 
 		float pX = getX() >= 0 ? getX() :
 			getX() - 1;
@@ -150,7 +150,7 @@ public class Entity {
 				}
 			}
 		}
-		setY(getY() + getYVelocity() * (Timing.delta / Timing.timeResolution));
+		setY(getY() + getYVelocity() * (Timing.delta / Timing.TIME_RESOLUTION));
 	}
 
 	public boolean isOnGround(){
@@ -175,8 +175,8 @@ public class Entity {
 	}
 
 	public boolean isXMovementBlocked(){
-		float newX = x >= 0 ? getX() + (xVelocity * (Timing.delta / Timing.timeResolution)) :
-			getX() - 1 + (xVelocity * (Timing.delta / Timing.timeResolution));
+		float newX = x >= 0 ? getX() + (xVelocity * (Timing.delta / Timing.TIME_RESOLUTION)) :
+			getX() - 1 + (xVelocity * (Timing.delta / Timing.TIME_RESOLUTION));
 		int minY = (int)Math.floor(y);
 		int maxY = (int)Math.ceil(y + height - 1);
 		for (int y = minY; y <= maxY; y++)

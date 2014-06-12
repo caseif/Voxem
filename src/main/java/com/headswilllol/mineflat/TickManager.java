@@ -137,7 +137,7 @@ public class TickManager {
 	 * @return The number of ticks which have elapsed since the last check
 	 */
 	public static int checkForTick(){
-		int elapsed = (int)((Timing.getTime() - lastTick) / (Timing.timeResolution / 1000)) /
+		int elapsed = (int)((Timing.getTime() - lastTick) / (Timing.TIME_RESOLUTION / 1000)) /
 				(1000 / ticksPerSecond); // elapsed ticks since last tick
 		for (int i = 0; i < elapsed; i++)
 			handleTick(); // handle each tick separately

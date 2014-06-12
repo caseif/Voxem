@@ -4,7 +4,7 @@ import java.util.concurrent.locks.LockSupport;
 
 public class Timing {
 	
-	public static long timeResolution = 1000000000L;
+	public static long TIME_RESOLUTION = 1000000000L;
 
 	/**
 	 * The variable used to determine the duration of each iteration so as to move ingame objects
@@ -23,7 +23,7 @@ public class Timing {
 	 */
 	public static long lastTime = getTime();
 
-	private static long starttime = System.currentTimeMillis();
+	private static long starttime = getTime();
 
 	// why the hell did I think it was a good idea to have this return a long?
 	public static long getTime(){
@@ -37,9 +37,8 @@ public class Timing {
 	}
 	
 	public static void throttleCpu(){
-		starttime += (1000.0 / 120);
-		System.out.println(starttime + ", " + System.currentTimeMillis());
-		LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
+		starttime += ((1000 / 60) * TIME_RESOLUTION);
+		LockSupport.parkNanos((long)(Math.max(0, starttime - getTime() + 1)));
 	}
 
 }

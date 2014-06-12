@@ -40,7 +40,7 @@ public class GraphicsHandler implements Runnable {
 	public static long lastRenderTime = Timing.getTime();
 	public static int fps = 0;
 	public static long lastFpsUpdate = 0;
-	public static final long fpsUpdateTime = (long)(0.25 * Timing.timeResolution);
+	public static final long fpsUpdateTime = (long)(0.25 * Timing.TIME_RESOLUTION);
 
 	//public static int texSize = 16;
 
@@ -178,8 +178,7 @@ public class GraphicsHandler implements Runnable {
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			if (Timing.getTime() - lastFpsUpdate >= fpsUpdateTime){
-				//TODO: This goes wonky every once in a while. Someone (I) should probably get on that.
-				fps = (int)Math.floor(Timing.timeResolution / renderDelta);
+				fps = (int)Math.floor(Timing.TIME_RESOLUTION / renderDelta);
 				Timing.displayDelta = (int)Timing.delta;
 				lastFpsUpdate = Timing.getTime();
 			}

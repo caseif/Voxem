@@ -4,7 +4,7 @@
 	<groupId>com.headswilllol.mineflat</groupId>
 	<artifactId>mineflat</artifactId>
 	<packaging>jar</packaging>
-	<version>0.8.5f-SNAPSHOT</version>
+	<version>0.8.6-SNAPSHOT</version>
 	<name>MineFlat</name>
 	<url>http://amigocraft.net/mineflat</url>
 	<description>A 2D voxel-based game not unlike Terraria.</description>
@@ -45,7 +45,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					<complianceLevel>1.5</complianceLevel>
+					<complianceLevel>1.6</complianceLevel>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>

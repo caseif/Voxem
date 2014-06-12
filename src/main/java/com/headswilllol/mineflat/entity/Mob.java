@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Mob extends LivingEntity {
+public abstract class Mob extends LivingEntity {
 
 	protected float walkDistance;
 	protected float distance;
