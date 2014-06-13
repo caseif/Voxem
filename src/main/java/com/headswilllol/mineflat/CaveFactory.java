@@ -10,47 +10,45 @@ public class CaveFactory {
 	public static List<CaveFactory> caveFactories = new ArrayList<CaveFactory>();
 	public static List<CaveFactory> deactivate = new ArrayList<CaveFactory>(); // dem CMEs :P
 
-	private int x;
-	private int y;
+	private Location l;
 
-	public CaveFactory(int x, int y){
-		this.x = x;
-		this.y = y;
+	public CaveFactory(Location location){
+		this.l = location;
 		CaveFactory.caveFactories.add(this);
 	}
 
 	public void dig(){
 		List<Block> surrounding = new ArrayList<Block>();
-		if (y > 0 &&
-				Block.isSolid(x + 1, y)){
-			surrounding.add(Block.getBlock(x, y - 1));
+		if (l.getY() > 0 &&
+				Block.isSolid(l.getLevel(), l.getX(), l.getY())){
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX(), l.getY() - 1));
 		}
-		if (y < Main.world.getChunkHeight() - 2 &&
-				Block.isSolid(x, y + 1)){
-			surrounding.add(Block.getBlock(x, y + 1));
-			surrounding.add(Block.getBlock(x, y + 1));
-			surrounding.add(Block.getBlock(x, y + 1));
+		if (l.getY() < Main.world.getChunkHeight() - 2 &&
+				Block.isSolid(l.getLevel(), l.getX(), l.getY() + 1)){
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX(), l.getY() + 1));
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX(), l.getY() + 1));
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX(), l.getY() + 1));
 		}
-		if (x > Main.world.getChunkCount() / 2 * -Main.world.getChunkLength() &&
-				Block.isSolid(x - 1, y)){
-			surrounding.add(Block.getBlock(x - 1, y));
-			surrounding.add(Block.getBlock(x - 1, y));
+		if (l.getX() > Main.world.getChunkCount() / 2 * -Main.world.getChunkLength() &&
+				Block.isSolid(l.getLevel(), l.getX() - 1, l.getY())){
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX() - 1, l.getY()));
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX() - 1, l.getY()));
 		}
-		if (x < (Main.world.getChunkCount() / 2 + 1) * Main.world.getChunkLength() - 1 &&
-				Block.isSolid(x + 1, y)){
-			surrounding.add(Block.getBlock(x + 1, y));
-			surrounding.add(Block.getBlock(x + 1, y));
+		if (l.getX() < (Main.world.getChunkCount() / 2 + 1) * Main.world.getChunkLength() - 1 &&
+				Block.isSolid(l.getLevel(), l.getX() + 1, l.getY())){
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX() + 1, l.getY()));
+			surrounding.add(Block.getBlock(l.getLevel(), l.getX() + 1, l.getY()));
 		}
 		if (surrounding.size() == 0)
 			this.deactivate();
 		else {
 			Block destroy = surrounding.get(r.nextInt(surrounding.size()));
-			this.x = destroy.getX();
-			this.y = destroy.getY();
-			destroy.destroy(); // destroy *overdrive intensifies*
-			int chance = (170 - y) / 2;
+			l.setX(destroy.getX());
+			l.setY(destroy.getY());
+			destroy.destroy(); // destrol.getY() *overdrive intensifies*
+			int chance = (int)((170 - l.getY()) / 2);
 			if (r.nextInt(chance) == 0)
-				new CaveFactory(x, y);
+				new CaveFactory(l);
 		}
 
 	}

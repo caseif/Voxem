@@ -71,43 +71,43 @@ public class VboUtil {
 						// this whole bit takes care of smooth lighting
 						List<Integer> s = new ArrayList<Integer>();
 						// 1
-						if (Block.getBlock(b.getX() - 1, b.getY() - 1) != null)
-							s.add(Block.getBlock(b.getX() - 1, b.getY() - 1).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1).getLightLevel());
 						else
 							s.add(Block.maxLight);
 						// 2
-						if (Block.getBlock(b.getX(), b.getY() - 1) != null)
-							s.add(Block.getBlock(b.getX(), b.getY() - 1).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getLightLevel());
 						else
 							s.add(Block.maxLight);
 						// 3
-						if (Block.getBlock(b.getX() + 1, b.getY() - 1) != null)
-							s.add(Block.getBlock(b.getX() + 1, b.getY() - 1).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1).getLightLevel());
 						else
 							s.add(Block.maxLight);
 						// 4
-						if (Block.getBlock(b.getX() - 1, b.getY()) != null)
-							s.add(Block.getBlock(b.getX() - 1, b.getY()).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()).getLightLevel());
 						else
 							s.add(Block.maxLight);
 						// 5
-						if (Block.getBlock(b.getX() + 1, b.getY()) != null)
-							s.add(Block.getBlock(b.getX() + 1, b.getY()).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()).getLightLevel());
 						else
 							s.add(Block.maxLight);
 						// 6
-						if (Block.getBlock(b.getX() - 1, b.getY() + 1) != null)
-							s.add(Block.getBlock(b.getX() - 1, b.getY() + 1).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1).getLightLevel());
 						else
 							s.add(Block.maxLight);
 						// 7
-						if (Block.getBlock(b.getX(), b.getY() + 1) != null)
-							s.add(Block.getBlock(b.getX(), b.getY() + 1).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1).getLightLevel());
 						else
 							s.add(Block.maxLight);
 						// 8
-						if (Block.getBlock(b.getX() + 1, b.getY() + 1) != null)
-							s.add(Block.getBlock(b.getX() + 1, b.getY() + 1).getLightLevel());
+						if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1) != null)
+							s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1).getLightLevel());
 						else
 							s.add(Block.maxLight);
 
@@ -170,7 +170,7 @@ public class VboUtil {
 						//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 						cValues.add(1f);
 
-						if (Block.isSolid(b) && (b.getY() == 0 || Block.getBlock(b.getX(), b.getY() - 1).getType() == Material.AIR)){
+						if (Block.isSolid(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
 
 							if (b.getType() == Material.GRASS){
 								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX());

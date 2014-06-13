@@ -43,7 +43,7 @@ public class Chunk {
 	public void updateLight(){
 		for (int x = 0; x < Main.world.getChunkLength(); x++)
 			for (int y = 0; y < Main.world.getChunkHeight(); y++)
-				if (Block.isSolid(x, y)) this.getBlock(x, y).setLightLevel(0);
+				if (Block.isSolid(level, x, y)) this.getBlock(x, y).setLightLevel(0);
 		for (int i = 0; i < 2; i++){
 			for (int xx = 0; xx < Main.world.getChunkLength(); xx++)
 				for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
@@ -51,17 +51,17 @@ public class Chunk {
 					int y = i == 0 ? yy : Main.world.getChunkHeight() - 1 - yy;
 					Block b = this.getBlock(x, y);
 					if (b != null){
-						if (b.getY() <= Block.getTop(b.getX()))
+						if (b.getY() <= Block.getTop(new Location(level, b.getX(), 0)))
 							b.setLightLevel(Block.maxLight);
 						else {
 							Block up = null, down = null, left = null, right = null;
 							if (b.getY() > 0)
-								up = Block.getBlock((int)b.getX(), b.getY() - 1);
+								up = Block.getBlock(level, (int)b.getX(), b.getY() - 1);
 							if (b.getY() < Main.world.getChunkHeight() - 1)
-								down = Block.getBlock((int)b.getX(), b.getY() +
+								down = Block.getBlock(level, (int)b.getX(), b.getY() +
 										1);
-							left = Block.getBlock((int)b.getX() - 1, b.getY());
-							right = Block.getBlock((int)b.getX() + 1, b.getY());
+							left = Block.getBlock(level, (int)b.getX() - 1, b.getY());
+							right = Block.getBlock(level, (int)b.getX() + 1, b.getY());
 							Block[] adjacent = new Block[]{up, down, left, right};
 							float average = 0;
 							int total = 0;

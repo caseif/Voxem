@@ -28,15 +28,11 @@ import com.headswilllol.mineflat.entity.Player;
 public class Main {
 	
 	public static World world = new World("world", 8, 16, 128);
-	
-	{
-		world.addLevel(0);
-	}
 
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
-	public static Player player = new Player(new Location(world.getLevel(0), 0, 0));
+	public static Player player;
 
 	public static boolean closed = false;
 
@@ -50,7 +46,11 @@ public class Main {
 	public static boolean debug = false;
 
 	public static void main(String[] args){
-
+		
+		world.addLevel(0);
+		
+		player = new Player(new Location(world.getLevel(0), 0, 0));
+		
 		world.getLevel(0).addEntity(player);
 
 		Terrain.generateTerrain();

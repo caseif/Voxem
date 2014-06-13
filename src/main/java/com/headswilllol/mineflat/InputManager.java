@@ -134,7 +134,7 @@ public class InputManager {
 					if (Block.selected != null &&
 							Block.isSolid((Block.selected.getBlock())) &&
 							Block.selected.getBlock().getType() != Material.BEDROCK){
-						Block b = Block.getBlock((int)Math.floor(Block.selected.getX()),
+						Block b = Block.getBlock(Main.player.getLevel(), (int)Math.floor(Block.selected.getX()),
 								(int)Math.floor(Block.selected.getY()));
 						Event.fireEvent(new BlockBreakEvent(Block.selected, b));
 					}

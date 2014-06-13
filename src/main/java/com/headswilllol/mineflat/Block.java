@@ -46,7 +46,7 @@ public class Block {
 		this.type = m;
 		this.location = location;
 		for (int i = (int)location.getY() - 1; i >= 0; i--){
-			Block b = Block.getBlock((int)location.getX(), i);
+			Block b = Block.getBlock(getLevel(), (int)location.getX(), i);
 			if (b != null){
 				light = b.getLightLevel() - lightDistance;
 				break;
@@ -61,6 +61,10 @@ public class Block {
 			c = new Chunk(location.getLevel(), location.getChunk());
 		c.setBlock(Math.abs((int)location.getX() % Main.world.getChunkLength()),
 				(int)location.getY(), this);
+	}
+	
+	public Level getLevel(){
+		return location.getLevel();
 	}
 
 	public int getX(){
@@ -112,14 +116,14 @@ public class Block {
 		int newLight = 0;
 		Block up = null, down = null, left = null, right = null;
 		if (getY() > 0)
-			up = Block.getBlock((int)getX(), getY() - 1);
+			up = Block.getBlock(getLevel(), (int)getX(), getY() - 1);
 		if (getY() < Main.world.getChunkHeight() - 1)
-			down = Block.getBlock((int)getX(), getY() +
+			down = Block.getBlock(getLevel(), (int)getX(), getY() +
 					1);
-		left = Block.getBlock((int)getX() - 1, getY());
-		right = Block.getBlock((int)getX() + 1, getY());
+		left = Block.getBlock(getLevel(), (int)getX() - 1, getY());
+		right = Block.getBlock(getLevel(), (int)getX() + 1, getY());
 		Block[] adjacent = new Block[]{up, down, left, right};
-		if (getY() <= Block.getTop(getX()))
+		if (getY() <= Block.getTop(location))
 			newLight = Block.maxLight;
 		else {
 			float average = 0;
@@ -145,7 +149,7 @@ public class Block {
 					bl.updateLight();
 		}
 		for (int y = getY() + 1; y < 128; y++){
-			Block b = Block.getBlock(getX(), y);
+			Block b = Block.getBlock(getLevel(), getX(), y);
 			if (b.lastLightUpdate != TickManager.getTicks())
 				if (!b.updateLight())
 					break;
@@ -163,9 +167,9 @@ public class Block {
 		return new Block(type, location);
 	}
 
-	public static int getTop(int x){
+	public static int getTop(Location location){
 		for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
-			if (isSolid(x, yy)){
+			if (isSolid(location.getLevel(), location.getX(), yy)){
 				return yy;
 			}
 		}
@@ -181,8 +185,8 @@ public class Block {
 		return null;
 	}
 
-	public static Block getBlock(float x, float y){
-		return getBlock((int)x, (int)y);
+	public static Block getBlock(Level level, float x, float y){
+		return new Location(level, x, y).getBlock();
 	}
 
 	public static void updateSelectedBlock(){
@@ -200,7 +204,7 @@ public class Block {
 			int blockY = (int)Math.floor(Main.player.getY() + yAdd);
 			synchronized (Main.lock){
 				if (blockY >= 0 && blockY <= Main.world.getChunkHeight() - 1){
-					if (!Block.isAir(blockX, blockY)){
+					if (!Block.isAir(Main.player.getLevel(), blockX, blockY)){
 						Block.selected = new Location(Main.player.getLevel(), blockX, blockY);
 						found = true;
 						break;
@@ -215,13 +219,14 @@ public class Block {
 	/**
 	 * Checks whether the block at the given coordinates is air. Please only use this in cases where
 	 * the block might actually be null. Otherwise, just check if it's air. :)
+	 * @param level the level containing the block.
 	 * @param x The x-coordinate of the block
 	 * @param y The y-coordinate of the block
 	 * @return Whether the block is air
 	 */
-	public static boolean isAir(int x, int y){
-		if (Block.getBlock(x, y) != null)
-			if (Block.getBlock(x, y).getType() != Material.AIR)
+	public static boolean isAir(Level level, int x, int y){
+		if (Block.getBlock(level, x, y) != null)
+			if (Block.getBlock(level, x, y).getType() != Material.AIR)
 				return false;
 		return true;
 	}
@@ -229,12 +234,13 @@ public class Block {
 	/**
 	 * Checks whether the block at the given coordinates is air. Please only use this in cases where
 	 * the block might actually be null. Otherwise, just check if it's air. :)
+	 * @param level the level containing the block.
 	 * @param x The x-coordinate of the block
 	 * @param y The y-coordinate of the block
 	 * @return Whether the block is air
 	 */
-	public static boolean isAir(float x, float y){
-		return Block.isAir((int)x, (int)y);
+	public static boolean isAir(Level level, float x, float y){
+		return Block.isAir(level, (int)x, (int)y);
 	}
 
 	/**
@@ -245,16 +251,16 @@ public class Block {
 	 */
 	public static boolean isAir(Block b){
 		if (b != null)
-			return Block.isAir(b.getX(), b.getY());
+			return Block.isAir(b.getLevel(), b.getX(), b.getY());
 		return true;
 	}
 
-	public static boolean isSolid(int x, int y){
-		return !isAir(x, y);
+	public static boolean isSolid(Level level, int x, int y){
+		return !isAir(level, x, y);
 	}
 
-	public static boolean isSolid(float x, float y){
-		return !isAir(x, y);
+	public static boolean isSolid(Level level, float x, float y){
+		return !isAir(level, x, y);
 	}
 
 	public static boolean isSolid(Block b){

@@ -1,5 +1,6 @@
 package com.headswilllol.mineflat;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class World {
 	}
 	
 	public List<Level> getLevels(){
-		return (List<Level>)levels.values();
+		return Arrays.asList(levels.values().toArray(new Level[]{}));
 	}
 	
 	public void addLevel(int index){

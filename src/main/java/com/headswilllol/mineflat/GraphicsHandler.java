@@ -167,7 +167,7 @@ public class GraphicsHandler implements Runnable {
 		catch (Exception ex){
 			System.err.println("Exception occurred while preparing texture for characters");
 			ex.printStackTrace();
-			System.exit(-1);
+			System.exit(1);
 		}
 
 		Entity.initialize();
@@ -215,7 +215,8 @@ public class GraphicsHandler implements Runnable {
 				glVertex2f(Block.selectedX, Block.selectedY + Block.length);
 				glVertex2f(Block.selectedX, Block.selectedY + Block.length);
 				glVertex2f(Block.selectedX, Block.selectedY);
-				if (Block.selected.getY() < 0 || (Block.selected.getX() < 128 && Block.isAir(Block.selected.getX(), Block.selected.getY() - 1))){
+				if (Block.selected.getY() < 0 || (Block.selected.getX() < 128 && Block.isAir(Block.selected.getLevel(),
+						Block.selected.getX(), Block.selected.getY() - 1))){
 					glVertex2f(Block.selectedX, Block.selectedY);
 					glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
 					glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);

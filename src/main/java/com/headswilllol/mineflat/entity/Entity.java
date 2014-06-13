@@ -137,7 +137,7 @@ public class Entity {
 			getX() - 1;
 		
 		if (newY >= 0 && newY < Main.world.getChunkHeight()){
-			if (Block.isSolid(pX, (float)Math.floor(newY + vertOffset / (float)Block.length)))
+			if (Block.isSolid(getLevel(), pX, (float)Math.floor(newY + vertOffset / (float)Block.length)))
 				setYVelocity(gravity);
 		}
 
@@ -150,7 +150,7 @@ public class Entity {
 		}
 		else {
 			for (int y = (int)Math.floor(getY()); y <= newY + height; y++){
-				if (Block.isSolid(pX, y)){
+				if (Block.isSolid(getLevel(), pX, y)){
 					setYVelocity(0);
 					setY(y - height);
 					break;
@@ -176,7 +176,7 @@ public class Entity {
 					if (x < 0)
 						x -= 1;
 					if (getY() >= -height)
-						below = Block.getBlock((float)x, (float)Math.floor(getY() + height));
+						below = Block.getBlock(getLevel(), (float)x, (float)Math.floor(getY() + height));
 		}
 		return below;
 	}
@@ -187,7 +187,7 @@ public class Entity {
 		int minY = (int)Math.floor(getY());
 		int maxY = (int)Math.ceil(getY() + height - 1);
 		for (int y = minY; y <= maxY; y++)
-			if (Block.isSolid(newX, y))
+			if (Block.isSolid(getLevel(), newX, y))
 				return true;
 		if (!getLevel().isChunkGenerated(new Location(getLevel(), newX, minY).getChunk()))
 			return true;
