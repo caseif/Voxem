@@ -2,6 +2,7 @@ package com.headswilllol.mineflat;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -24,8 +25,11 @@ public class SoundManager {
 		soundSystem = new SoundSystem();
 
 		try {
-			soundSystem.backgroundMusic("Infinity", new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath() +
-				"audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
+			System.out.println(new File(new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath() +
+					"/audio/soundtrack/infinity.ogg").toURI().toURL());
+			soundSystem.backgroundMusic("Infinity",
+					new File(new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath() +
+							"/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
 			// for when running from Eclipse workspace
 			//soundSystem.backgroundMusic("Infinity",
 			//new File("C:/Users/Maxim/AppData/Roaming/.mineflat/resources/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
