@@ -59,6 +59,7 @@ public class Main {
 		InputManager.initialize();
 		//Console.initialize();
 		Mob.initialize();
+		SoundManager.initialize();
 		Thread t = new Thread(new GraphicsHandler());
 		t.start();
 
@@ -75,6 +76,7 @@ public class Main {
 			Block.updateSelectedBlock();
 			Timing.throttleCpu();
 		}
+		SoundManager.soundSystem.cleanup();
 		//SaveManager.saveWorld();
 
 	}
