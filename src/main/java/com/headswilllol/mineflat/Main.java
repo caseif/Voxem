@@ -52,6 +52,8 @@ public class Main {
 		player = new Player(new Location(world.getLevel(0), 0, 0));
 		
 		world.getLevel(0).addEntity(player);
+		
+		//SaveManager.loadWorld("world");
 
 		Terrain.generateTerrain();
 		InputManager.initialize();
@@ -73,7 +75,7 @@ public class Main {
 			Block.updateSelectedBlock();
 			Timing.throttleCpu();
 		}
-		SaveManager.saveWorld();
+		//SaveManager.saveWorld();
 
 	}
 

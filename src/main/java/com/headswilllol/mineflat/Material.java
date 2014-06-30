@@ -6,6 +6,7 @@ public enum Material {
 	GRASS,
 	GRASS_TOP,
 	LOG,
+	LOG_TOP,
 	WOOD,
 	STONE,
 	BEDROCK,

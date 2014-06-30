@@ -90,10 +90,10 @@ public class GraphicsHandler implements Runnable {
 				icons = new ByteBuffer[2];
 				BufferedImage icon1 = ImageUtil.scaleImage(
 						ImageIO.read(Main.class.getClassLoader()
-								.getResourceAsStream("images/icon.png")), Block.length, Block.length);
+								.getResourceAsStream("textures/block/grass.png")), Block.length, Block.length);
 				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
-						.getResourceAsStream("images/icon.png")), 32, 32);;
+						.getResourceAsStream("textures/block/grass.png")), 32, 32);;
 						icons[0] = BufferUtil.asByteBuffer(icon1);
 						icons[1] = BufferUtil.asByteBuffer(icon2);
 			}
@@ -101,14 +101,14 @@ public class GraphicsHandler implements Runnable {
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
-						.getResourceAsStream("images/icon.png")), Main.world.getChunkHeight(), Main.world.getChunkHeight());
+						.getResourceAsStream("textures/block/grass.png")), Main.world.getChunkHeight(), Main.world.getChunkHeight());
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			else {
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
-						.getResourceAsStream("images/icon.png")), 32, 32);
+						.getResourceAsStream("textures/block/grass.png")), 32, 32);
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			Display.setIcon(icons);
