@@ -24,11 +24,11 @@ public class SoundManager {
 		soundSystem = new SoundSystem();
 
 		try {
-			//soundSystem.backgroundMusic("Infinity", new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath() +
-			//	"audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
+			soundSystem.backgroundMusic("Infinity", new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath() +
+				"audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
 			// for when running from Eclipse workspace
-			soundSystem.backgroundMusic("Infinity",
-			new File("C:/Users/Maxim/AppData/Roaming/.mineflat/resources/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
+			//soundSystem.backgroundMusic("Infinity",
+			//new File("C:/Users/Maxim/AppData/Roaming/.mineflat/resources/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
 		}
 		catch (MalformedURLException ex){
 			ex.printStackTrace();
