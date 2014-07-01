@@ -126,7 +126,8 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
 						// light
 						for (int i = 0; i < 3; i++)
-							cValues.add(l1);
+							cValues.add(l1); // rgb
+						cValues.add(1f); // alpha
 						// texture
 						cValues.add(tX);
 						cValues.add(tY);
@@ -138,7 +139,8 @@ public class VboUtil {
 						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
 						// light
 						for (int i = 0; i < 3; i++)
-							cValues.add(l2);
+							cValues.add(l2); // rgb
+						cValues.add(1f); // alpha
 						// texture
 						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 						cValues.add(tY);
@@ -151,7 +153,8 @@ public class VboUtil {
 								Block.length);
 						// light
 						for (int i = 0; i < 3; i++)
-							cValues.add(l3);
+							cValues.add(l3); // rgb
+						cValues.add(1f); // alpha
 						// texture
 						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 						//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
@@ -164,7 +167,8 @@ public class VboUtil {
 								Block.length);
 						// light
 						for (int i = 0; i < 3; i++)
-							cValues.add(l4);
+							cValues.add(l4); // rgb
+						cValues.add(1f); // alpha
 						// texture
 						cValues.add(tX);
 						//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
@@ -176,6 +180,10 @@ public class VboUtil {
 								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX());
 								tY = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getY());
 							}
+							else if (b.getType() == Material.LOG){
+								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.LOG_TOP).getX());
+								tY = Float.valueOf(GraphicsUtil.texCoords.get(Material.LOG_TOP).getY());
+							}
 
 							// front left
 							// vertex
@@ -184,7 +192,8 @@ public class VboUtil {
 							// light
 							for (int i = 0; i < 3; i++)
 								cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight);
+										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX);
 							//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
@@ -198,7 +207,8 @@ public class VboUtil {
 							// light
 							for (int i = 0; i < 3; i++)
 								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight);
+										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 							//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
@@ -213,7 +223,8 @@ public class VboUtil {
 							// light
 							for (int i = 0; i < 3; i++)
 								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight);
+										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 							cValues.add(tY);
@@ -226,7 +237,8 @@ public class VboUtil {
 							// light
 							for (int i = 0; i < 3; i++)
 								cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight);
+										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX);
 							cValues.add(tY);
@@ -293,10 +305,10 @@ public class VboUtil {
 		glPushMatrix();
 		glTranslatef(GraphicsHandler.xOffset, GraphicsHandler.yOffset, 0);
 		glBindTexture(GL_TEXTURE_2D, GraphicsUtil.atlas);
-		glVertexPointer(2, GL_FLOAT, 28, 0);
-		glColorPointer(3, GL_FLOAT, 28, 8);
-		glTexCoordPointer(2, GL_FLOAT, 28, 20);
-		glDrawArrays(GL_QUADS, 0, vertexArray.length / 7);
+		glVertexPointer(2, GL_FLOAT, 32, 0);
+		glColorPointer(4, GL_FLOAT, 32, 8);
+		glTexCoordPointer(2, GL_FLOAT, 32, 24);
+		glDrawArrays(GL_QUADS, 0, vertexArray.length / 8);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
 	}

@@ -139,7 +139,7 @@ public class Entity {
 
 		if (newY >= 0 && newY < Main.world.getChunkHeight()){
 			if (Block.isSolid(getLevel(), pX, (float)Math.floor(newY + vertOffset / (float)Block.length)))
-				setYVelocity(gravity);
+				setYVelocity(0);
 		}
 
 		Block below = getBlockBelow();

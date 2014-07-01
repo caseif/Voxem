@@ -209,6 +209,7 @@ public class Block {
 			synchronized (Main.lock){
 				if (blockY >= 0 && blockY <= Main.world.getChunkHeight() - 1){
 					if (!Block.isAir(Main.player.getLevel(), blockX, blockY)){
+						//TODO: verfiy that player isn't peeking through blocks
 						Block.selected = new Location(Main.player.getLevel(), blockX, blockY);
 						found = true;
 						break;
@@ -259,6 +260,10 @@ public class Block {
 		return true;
 	}
 
+	public static boolean isAir(Location l){
+		return Block.isAir(l.getLevel(), l.getX(), l.getY());
+	}
+
 	public static boolean isSolid(Level level, int x, int y){
 		return isSolid(level, (float)x, (float)y);
 	}
@@ -270,6 +275,10 @@ public class Block {
 
 	public static boolean isSolid(Block b){
 		return isSolid(b.getLevel(), b.getX(), b.getY());
+	}
+
+	public static boolean isSolid(Location l){
+		return isSolid(l.getLevel(), l.getX(), l.getY());
 	}
 
 	public Object getMetadata(String key){

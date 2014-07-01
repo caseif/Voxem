@@ -146,19 +146,8 @@ public class GraphicsHandler implements Runnable {
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-		GraphicsUtil.addTexture(Material.AIR);
-		GraphicsUtil.addTexture(Material.DIRT);
-		GraphicsUtil.addTexture(Material.GRASS);
-		GraphicsUtil.addTexture(Material.GRASS_TOP);
-		GraphicsUtil.addTexture(Material.STONE);
-		GraphicsUtil.addTexture(Material.LOG);
-		GraphicsUtil.addTexture(Material.LEAVES);
-		GraphicsUtil.addTexture(Material.WOOD);
-		GraphicsUtil.addTexture(Material.BEDROCK);
-		GraphicsUtil.addTexture(Material.COAL_ORE);
-		GraphicsUtil.addTexture(Material.IRON_ORE);
-		GraphicsUtil.addTexture(Material.GOLD_ORE);
-		GraphicsUtil.addTexture(Material.DIAMOND_ORE);
+		for (Material m : Material.values())
+			GraphicsUtil.addTexture(m);
 
 		//initializeFont();
 
@@ -205,7 +194,7 @@ public class GraphicsHandler implements Runnable {
 				else
 					Block.isSelected = false;
 			}
-			if (Block.isSelected){
+			if (Block.isSelected && Block.selected != null){
 				glColor3f(0f, 0f, 0f);
 				glBegin(GL_LINES);
 				glVertex2f(Block.selectedX, Block.selectedY);

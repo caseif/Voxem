@@ -175,7 +175,7 @@ public class InputManager {
 												y -= 1;
 											l = new Location(Main.player.getLevel(), Block.selected.getX(), y);
 										}
-										if (l != null){
+										if (l != null && Block.isAir(l)){
 											if ((int)playerY == y)
 												playerY -= 1;
 											boolean pBlock = false;
