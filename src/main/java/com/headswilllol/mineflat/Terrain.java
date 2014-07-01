@@ -370,7 +370,6 @@ public class Terrain {
 		Random r = new Random(Main.world.seed);
 		for (Level l : Main.world.getLevels()){
 			for (Chunk c : l.chunks.values()){
-				System.out.println(c.getNum());
 				for (int x = 0; x < Main.world.getChunkLength(); x++){
 					if (r.nextInt(12) == 0){ // plant a tree
 						l.plantTree(Chunk.getBlockXFromChunk(c.getNum(), x),

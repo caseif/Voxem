@@ -72,7 +72,7 @@ public class Chunk {
 								}
 							}
 							average /= total;
-							if (Block.isSolid(b)){
+							if (!Block.isSolid(b)){
 								b.setLightLevel((int)Math.floor(average));
 							}
 							else if ((int)Math.floor(average) - Block.lightDistance >= Block.minLight)

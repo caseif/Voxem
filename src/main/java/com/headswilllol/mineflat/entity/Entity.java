@@ -163,10 +163,6 @@ public class Entity {
 
 	public boolean isOnGround(){
 		Block below = getBlockBelow();
-		if (below != null && Block.isSolid(below))
-			System.out.println(below.getMetadata("solid") + ", " + below.getType() + ", " + Block.isSolid(below));
-		else if (below != null)
-			System.out.println(below.getType());
 		if (below != null && Block.isSolid(below)){
 			ground = true;
 			return true;
