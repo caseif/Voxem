@@ -152,6 +152,7 @@ public class GraphicsHandler implements Runnable {
 		GraphicsUtil.addTexture(Material.GRASS_TOP);
 		GraphicsUtil.addTexture(Material.STONE);
 		GraphicsUtil.addTexture(Material.LOG);
+		GraphicsUtil.addTexture(Material.LEAVES);
 		GraphicsUtil.addTexture(Material.WOOD);
 		GraphicsUtil.addTexture(Material.BEDROCK);
 		GraphicsUtil.addTexture(Material.COAL_ORE);
@@ -241,13 +242,15 @@ public class GraphicsHandler implements Runnable {
 						String.format("%.3f", Main.player.getX()), 10, 70, height, true);
 				drawString("y: " +
 						String.format("%.3f", Main.player.getY()), 10, 100, height, true);
-				drawString("light level: " + String.format("%.3f", Player.light * Block.maxLight), 10, 130, height, true);
-				drawString("ticks: " + TickManager.getTicks(), 10, 160, height, true);
+				drawString("g: " +
+						Main.player.ground, 10, 130, height, true);
+				drawString("light level: " + String.format("%.3f", Player.light * Block.maxLight), 10, 160, height, true);
+				drawString("ticks: " + TickManager.getTicks(), 10, 190, height, true);
 				int mb = 1024 * 1024;
 				Runtime runtime = Runtime.getRuntime();
 				drawString(runtime.totalMemory() / mb + "mb allocated memory: " +
 						(runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
-						runtime.freeMemory() / mb + "mb free", 10, 190, height, true);
+						runtime.freeMemory() / mb + "mb free", 10, 220, height, true);
 			}
 
 			/*if(Console.enabled)

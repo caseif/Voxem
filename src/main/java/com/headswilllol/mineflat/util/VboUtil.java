@@ -64,7 +64,7 @@ public class VboUtil {
 			for (int x = 0; x < Main.world.getChunkLength(); x++){
 				for (int y = 0; y < Main.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
-					if (Block.isSolid(b)){
+					if (!Block.isAir(b)){
 						float tX = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getX());
 						float tY = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getY());
 
@@ -170,7 +170,7 @@ public class VboUtil {
 						//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
 						cValues.add(1f);
 
-						if (Block.isSolid(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
+						if (!Block.isAir(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
 
 							if (b.getType() == Material.GRASS){
 								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX());

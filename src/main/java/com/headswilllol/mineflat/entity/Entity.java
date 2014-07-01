@@ -54,6 +54,7 @@ public class Entity {
 
 	protected Location location;
 	protected EntityType type;
+	public boolean ground = false;
 
 	public Entity(EntityType type, Location location, float width, float height){
 		this.type = type;
@@ -61,7 +62,7 @@ public class Entity {
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	public Level getLevel(){
 		return location.getLevel();
 	}
@@ -77,7 +78,7 @@ public class Entity {
 	public EntityType getType(){
 		return type;
 	}
-	
+
 	public void setLevel(Level level){
 		location.setLevel(level);
 	}
@@ -135,7 +136,7 @@ public class Entity {
 
 		float pX = getX() >= 0 ? getX() :
 			getX() - 1;
-		
+
 		if (newY >= 0 && newY < Main.world.getChunkHeight()){
 			if (Block.isSolid(getLevel(), pX, (float)Math.floor(newY + vertOffset / (float)Block.length)))
 				setYVelocity(gravity);
@@ -163,9 +164,17 @@ public class Entity {
 	public boolean isOnGround(){
 		Block below = getBlockBelow();
 		if (below != null && Block.isSolid(below))
+			System.out.println(below.getMetadata("solid") + ", " + below.getType() + ", " + Block.isSolid(below));
+		else if (below != null)
+			System.out.println(below.getType());
+		if (below != null && Block.isSolid(below)){
+			ground = true;
 			return true;
-		else
+		}
+		else {
+			ground = false;
 			return false;
+		}
 	}
 
 	public Block getBlockBelow(){

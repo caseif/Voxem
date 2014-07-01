@@ -9,14 +9,9 @@ import com.headswilllol.mineflat.noise.SimplexNoiseGenerator;
 public class Terrain {
 
 	/**
-	 * The seed to be used for terrain generation
-	 */
-	public static long seed = System.currentTimeMillis() * 1337337331 % 1337;
-
-	/**
 	 * The game's noise generator for use in terrain generation
 	 */
-	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(seed);
+	public static SimplexNoiseGenerator noise = new SimplexNoiseGenerator(Main.world.seed);
 
 	/**
 	 * The level of variation the terrain should have
@@ -29,6 +24,7 @@ public class Terrain {
 		generateOres();
 		generateCaves();
 		plantGrass();
+		plantTrees();
 		lightTerrain();
 	}
 
@@ -134,7 +130,7 @@ public class Terrain {
 
 	public static void generateOres(){
 		System.out.println("Generating ores...");
-		Random r = new Random(seed);
+		Random r = new Random(Main.world.seed);
 		int coalChance = 15;
 		int ironChance = 10;
 		int goldChance = 2;
@@ -364,6 +360,22 @@ public class Terrain {
 					Block b = Block.getBlock(l, Chunk.getBlockXFromChunk(c.getNum(), x), y);
 					if (b.getType() == Material.DIRT)
 						b.setType(Material.GRASS);
+				}
+			}
+		}
+	}
+	
+	public static void plantTrees(){
+		System.out.println("Planting trees...");
+		Random r = new Random(Main.world.seed);
+		for (Level l : Main.world.getLevels()){
+			for (Chunk c : l.chunks.values()){
+				System.out.println(c.getNum());
+				for (int x = 0; x < Main.world.getChunkLength(); x++){
+					if (r.nextInt(12) == 0){ // plant a tree
+						l.plantTree(Chunk.getBlockXFromChunk(c.getNum(), x),
+								Block.getTop(new Location(l, Chunk.getBlockXFromChunk(c.getNum(), x), 0)));
+					}
 				}
 			}
 		}

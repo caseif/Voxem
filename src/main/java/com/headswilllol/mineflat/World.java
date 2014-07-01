@@ -6,6 +6,8 @@ import java.util.List;
 
 public class World {
 
+	public long seed;
+
 	private HashMap<Integer, Level> levels = new HashMap<Integer, Level>();
 	
 	private String name;
@@ -14,10 +16,15 @@ public class World {
 	private int chunkHeight;
 	
 	public World(String name, int chunkCount, int chunkLength, int chunkHeight){
+		this.seed = System.currentTimeMillis() * 1337337331;
 		this.name = name;
 		this.chunkCount = chunkCount;
 		this.chunkLength = chunkLength;
 		this.chunkHeight = chunkHeight;
+	}
+	
+	public long getSeed(){
+		return seed;
 	}
 	
 	public String getName(){

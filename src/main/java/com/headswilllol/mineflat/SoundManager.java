@@ -25,14 +25,13 @@ public class SoundManager {
 		soundSystem = new SoundSystem();
 
 		try {
-			System.out.println(new File(new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath() +
-					"/audio/soundtrack/infinity.ogg").toURI().toURL());
-			soundSystem.backgroundMusic("Infinity",
-					new File(new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath() +
-							"/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
-			// for when running from Eclipse workspace
-			//soundSystem.backgroundMusic("Infinity",
-			//new File("C:/Users/Maxim/AppData/Roaming/.mineflat/resources/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
+			if (!Main.class.getProtectionDomain().getCodeSource().getLocation().getPath().contains("git"))
+				soundSystem.backgroundMusic("Infinity",
+						new File(new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath() +
+								"/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
+			else
+				soundSystem.backgroundMusic("Infinity",
+						new File("C:/Users/Maxim/AppData/Roaming/.mineflat/resources/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);
 		}
 		catch (MalformedURLException ex){
 			ex.printStackTrace();

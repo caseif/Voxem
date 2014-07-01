@@ -1,5 +1,7 @@
 package com.headswilllol.mineflat;
 
+import java.util.HashMap;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -18,7 +20,7 @@ public class Block {
 	public static final int maxLight = 16;
 	public static final int minLight = 0;
 	public static final float horShadow = 2f / maxLight;
-	
+
 	public static final int horAngle = 4;
 
 	/**
@@ -39,8 +41,10 @@ public class Block {
 	 * block
 	 */
 	public static final int lightDistance = 1; // I'm pretty sure this now does literally nothing
-	
+
 	public int lastLightUpdate = -1;
+
+	public HashMap<String, Object> metadata = new HashMap<String, Object>();
 
 	public Block(Material m, Location location){
 		this.type = m;
@@ -62,7 +66,7 @@ public class Block {
 		c.setBlock(Math.abs((int)location.getX() % Main.world.getChunkLength()),
 				(int)location.getY(), this);
 	}
-	
+
 	public Level getLevel(){
 		return location.getLevel();
 	}
@@ -111,7 +115,7 @@ public class Block {
 	public void setLightLevel(int light){
 		this.light = light; 
 	}
-	
+
 	public boolean updateLight(){
 		int newLight = 0;
 		Block up = null, down = null, left = null, right = null;
@@ -153,8 +157,8 @@ public class Block {
 			if (b.lastLightUpdate != TickManager.getTicks())
 				if (!b.updateLight())
 					break;
-			else
-				break;
+				else
+					break;
 		}
 		return changed;
 	}
@@ -256,14 +260,27 @@ public class Block {
 	}
 
 	public static boolean isSolid(Level level, int x, int y){
-		return !isAir(level, x, y);
+		return isSolid(level, (float)x, (float)y);
 	}
 
 	public static boolean isSolid(Level level, float x, float y){
-		return !isAir(level, x, y);
+		return !isAir(level, x, y) &&
+				!(new Location(level, x, y).getBlock().hasMetadata("solid") && !(boolean)new Location(level, x, y).getBlock().getMetadata("solid"));
 	}
 
 	public static boolean isSolid(Block b){
-		return !isAir(b);
+		return isSolid(b.getLevel(), b.getX(), b.getY());
+	}
+
+	public Object getMetadata(String key){
+		return metadata.get(key);
+	}
+
+	public boolean hasMetadata(String key){
+		return metadata.containsKey(key);
+	}
+
+	public void setMetadata(String key, Object value){
+		metadata.put(key, value);
 	}
 }
