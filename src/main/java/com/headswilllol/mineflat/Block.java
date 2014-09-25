@@ -1,6 +1,8 @@
 package com.headswilllol.mineflat;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -59,12 +61,20 @@ public class Block {
 		chunk = location.getChunk();
 	}
 
+	/*public void addToWorld(){
+		Chunk c = location.getLevel().getChunk(location.getChunk());
+		if (c == null)
+			c = new Chunk(location.getLevel(), location.getChunk());
+		System.out.println("add: " + c.getNum() + ", " + Chunk.getIndexInChunk((int)location.getX()) + ", " + location.getX());
+		c.setBlock(Chunk.getIndexInChunk((int)location.getX()), (int)location.getY(), this);
+	}*/
+	
 	public void addToWorld(){
 		Chunk c = location.getLevel().getChunk(location.getChunk());
 		if (c == null)
 			c = new Chunk(location.getLevel(), location.getChunk());
-		c.setBlock(Math.abs((int)location.getX() % Main.world.getChunkLength()),
-				(int)location.getY(), this);
+		c.setBlock(Chunk.getIndexInChunk((int)getLocation().getX()),
+				(int)getLocation().getY(), this);
 	}
 
 	public Level getLevel(){
@@ -184,13 +194,13 @@ public class Block {
 		if (y >= 0 && y < Main.world.getChunkHeight()){
 			Chunk c = level.getChunk(new Location(level, x, y).getChunk());
 			if (c != null)
-				return c.getBlock(Math.abs(x % Main.world.getChunkLength()), y);
+				return c.getBlock(Chunk.getIndexInChunk(x), y);
 		}
 		return null;
 	}
 
 	public static Block getBlock(Level level, float x, float y){
-		return new Location(level, x, y).getBlock();
+		return Block.getBlock(level, (int)x, (int)y);
 	}
 
 	public static void updateSelectedBlock(){
@@ -269,8 +279,8 @@ public class Block {
 	}
 
 	public static boolean isSolid(Level level, float x, float y){
-		return !isAir(level, x, y) &&
-				!(new Location(level, x, y).getBlock().hasMetadata("solid") && !(boolean)new Location(level, x, y).getBlock().getMetadata("solid"));
+		return new Location(level, x, y).getBlock() != null && !isAir(level, x, y) &&
+				!(new Location(level, x, y).getBlock().hasMetadata("solid") && !(Boolean)new Location(level, x, y).getBlock().getMetadata("solid"));
 	}
 
 	public static boolean isSolid(Block b){
@@ -279,6 +289,10 @@ public class Block {
 
 	public static boolean isSolid(Location l){
 		return isSolid(l.getLevel(), l.getX(), l.getY());
+	}
+	
+	public Set<String> getAllMetadata(){
+		return metadata.keySet();
 	}
 
 	public Object getMetadata(String key){

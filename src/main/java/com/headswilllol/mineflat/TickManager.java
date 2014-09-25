@@ -51,6 +51,14 @@ public class TickManager {
 	public static int getTicks(){
 		return ticks;
 	}
+	
+	/**
+	 * Sets the current tick count of the game.
+	 * @return the current tick count of the game.
+	 */
+	public static void setTicks(int ticks){
+		TickManager.ticks = ticks;
+	}
 
 	/**
 	 * Generates RTEs (Random Tick Events) and basically controls every non-player action that happens in the world

@@ -55,8 +55,7 @@ public class Location {
 	public Block getBlock(){
 		Chunk c = Main.world.getLevel(0).getChunk(getChunk());
 		if (c != null){
-			int index = (int)Math.floor(Math.abs(x % Main.world.getChunkLength()));
-			return c.getBlock(index, (int)y);
+			return c.getBlock(Chunk.getIndexInChunk((int)x), (int)y);
 		}
 		return null;
 	}

@@ -181,7 +181,7 @@ public class Entity {
 					if (x < 0)
 						x -= 1;
 					if (getY() >= -height)
-						below = Block.getBlock(getLevel(), (float)x, (float)Math.floor(getY() + height));
+						below = Block.getBlock(getLevel(), x, (float)Math.floor(getY() + height));
 		}
 		return below;
 	}
@@ -194,9 +194,7 @@ public class Entity {
 		for (int y = minY; y <= maxY; y++)
 			if (Block.isSolid(getLevel(), newX, y))
 				return true;
-		if (!getLevel().isChunkGenerated(new Location(getLevel(), newX, minY).getChunk()))
-			return true;
-		return false;
+		return !getLevel().isChunkGenerated(new Location(getLevel(), newX, minY).getChunk());
 	}
 
 	public void draw(){

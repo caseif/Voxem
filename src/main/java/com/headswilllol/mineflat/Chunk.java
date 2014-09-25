@@ -23,7 +23,7 @@ public class Chunk {
 	}
 
 	public Block getBlock(int x, int y){
-		if (x >= 0 && x < 16 && y >= 0 && y < 128)
+		if (x >= 0 && x < Main.world.getChunkLength() && y >= 0 && y < Main.world.getChunkHeight())
 			return blocks[x][y];
 		return null;
 	}
@@ -43,7 +43,7 @@ public class Chunk {
 	public void updateLight(){
 		for (int x = 0; x < Main.world.getChunkLength(); x++)
 			for (int y = 0; y < Main.world.getChunkHeight(); y++)
-				if (Block.isSolid(level, x, y)) this.getBlock(x, y).setLightLevel(0);
+				if (this.getBlock(x, y) != null && Block.isSolid(level, x, y)) this.getBlock(x, y).setLightLevel(0);
 		for (int i = 0; i < 2; i++){
 			for (int xx = 0; xx < Main.world.getChunkLength(); xx++)
 				for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
@@ -95,5 +95,12 @@ public class Chunk {
 		if (x < 0)
 			add = -1;
 		return x / Main.world.getChunkLength() + add;
+	}
+	
+	public static int getIndexInChunk(int x){
+		return Math.abs(x < 0 ? (x % Main.world.getChunkLength() == 0 ? 0 :
+			Main.world.getChunkLength() - Math.abs(x % Main.world.getChunkLength())) :
+			x % Main.world.getChunkLength());
+		//return Math.abs(x % Main.world.getChunkLength());
 	}
 }

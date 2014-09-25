@@ -1,7 +1,7 @@
-/.classpath
-/.settings
-/bin
-/target
-/.project
-/MineFlat
-/mineflat.iml
+.idea/
+.settings/
+bin/
+target/
+.classpath
+mineflat.iml
+.project

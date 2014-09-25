@@ -21,10 +21,14 @@ public class GraphicsUtil {
 		try {
 			InputStream is = GraphicsUtil.class.getClassLoader().getResourceAsStream(
 					"textures/block/" + m.toString().toLowerCase() + ".png");
+			if (is == null)
+				is = GraphicsUtil.class.getClassLoader().getResourceAsStream(
+						"textures/block/missing_texture.png");
 			InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
 					ImageIO.read(is), Block.length, Block.length));
 			BufferedImage b = ImageIO.read(newIs);
 			textures.put(m, b);
+
 		}
 		catch (Exception ex){
 			System.err.println("Exception occurred while preparing texture for material " + m.toString());

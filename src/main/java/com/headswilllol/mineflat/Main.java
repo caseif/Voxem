@@ -10,7 +10,7 @@ import com.headswilllol.mineflat.entity.Player;
  * 
  * @License
  *
- * Copyright (c) 2013 Maxim Roncacé
+ * Copyright (c) 2014 Maxim Roncacé
  *
  * THE WORK IS PROVIDED UNDER THE TERMS OF THIS CREATIVE COMMONS PUBLIC LICENSE
  * ("CCPL" OR "LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER APPLICABLE LAW. ANY USE
@@ -26,8 +26,8 @@ import com.headswilllol.mineflat.entity.Player;
  */
 
 public class Main {
-	
-	public static World world = new World("world", 8, 16, 128);
+
+	public static World world;
 
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
@@ -46,16 +46,24 @@ public class Main {
 	public static boolean debug = false;
 
 	public static void main(String[] args){
+
+		SaveManager.loadWorld("world");
+
+		if (world == null){
+			world = new World("world", 8, 16, 128);
+			world.addLevel(0);
+			player = new Player(new Location(world.getLevel(0), 0, 0));
+			world.getLevel(0).addEntity(player);
+			Terrain.generateTerrain();
+		}
+		else {
+			player = new Player(new Location(world.getLevel(0), 0, 0));
+			world.getLevel(0).addEntity(player);
+		}
 		
-		world.addLevel(0);
-		
-		player = new Player(new Location(world.getLevel(0), 0, 0));
-		
-		world.getLevel(0).addEntity(player);
 		
 		//SaveManager.loadWorld("world");
-
-		Terrain.generateTerrain();
+		
 		InputManager.initialize();
 		//Console.initialize();
 		Mob.initialize();
@@ -77,7 +85,7 @@ public class Main {
 			Timing.throttleCpu();
 		}
 		SoundManager.soundSystem.cleanup();
-		//SaveManager.saveWorld();
+		SaveManager.saveWorld();
 
 	}
 

@@ -65,8 +65,9 @@ public class VboUtil {
 				for (int y = 0; y < Main.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
 					if (!Block.isAir(b)){
-						float tX = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getX());
-						float tY = Float.valueOf(GraphicsUtil.texCoords.get(b.getType()).getY());
+						System.out.println(b.getLocation().getChunk() + ", " + Chunk.getIndexInChunk((int)b.getLocation().getX()) + ", " + b.getLocation().getX());
+						float tX = GraphicsUtil.texCoords.get(b.getType()).getX();
+						float tY = GraphicsUtil.texCoords.get(b.getType()).getY();
 
 						// this whole bit takes care of smooth lighting
 						List<Integer> s = new ArrayList<Integer>();
@@ -122,8 +123,8 @@ public class VboUtil {
 
 						// top left
 						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
+						cValues.add((float)b.getLocation().getPixelX());
+						cValues.add((float)b.getLocation().getPixelY());
 						// light
 						for (int i = 0; i < 3; i++)
 							cValues.add(l1); // rgb
@@ -134,9 +135,9 @@ public class VboUtil {
 
 						// top right
 						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+						cValues.add((float)b.getLocation().getPixelX() +
 								Block.length);
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
+						cValues.add((float)b.getLocation().getPixelY());
 						// light
 						for (int i = 0; i < 3; i++)
 							cValues.add(l2); // rgb
@@ -147,9 +148,9 @@ public class VboUtil {
 
 						// bottom right
 						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+						cValues.add((float)b.getLocation().getPixelX() +
 								Block.length);
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) +
+						cValues.add((float)b.getLocation().getPixelY() +
 								Block.length);
 						// light
 						for (int i = 0; i < 3; i++)
@@ -162,8 +163,8 @@ public class VboUtil {
 
 						// bottom left
 						// vertex
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
-						cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) +
+						cValues.add((float)b.getLocation().getPixelX());
+						cValues.add((float)b.getLocation().getPixelY() +
 								Block.length);
 						// light
 						for (int i = 0; i < 3; i++)
@@ -177,18 +178,18 @@ public class VboUtil {
 						if (!Block.isAir(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
 
 							if (b.getType() == Material.GRASS){
-								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX());
-								tY = Float.valueOf(GraphicsUtil.texCoords.get(Material.GRASS_TOP).getY());
+								tX = GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX();
+								tY = GraphicsUtil.texCoords.get(Material.GRASS_TOP).getY();
 							}
 							else if (b.getType() == Material.LOG){
-								tX = Float.valueOf(GraphicsUtil.texCoords.get(Material.LOG_TOP).getX());
-								tY = Float.valueOf(GraphicsUtil.texCoords.get(Material.LOG_TOP).getY());
+								tX = GraphicsUtil.texCoords.get(Material.LOG_TOP).getX();
+								tY = GraphicsUtil.texCoords.get(Material.LOG_TOP).getY();
 							}
 
 							// front left
 							// vertex
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
+							cValues.add((float)b.getLocation().getPixelX());
+							cValues.add((float)b.getLocation().getPixelY());
 							// light
 							for (int i = 0; i < 3; i++)
 								cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
@@ -201,9 +202,9 @@ public class VboUtil {
 
 							// front right
 							// vertex
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+							cValues.add((float)b.getLocation().getPixelX() +
 									Block.length);
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()));
+							cValues.add((float)b.getLocation().getPixelY());
 							// light
 							for (int i = 0; i < 3; i++)
 								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
@@ -216,9 +217,9 @@ public class VboUtil {
 
 							// back right
 							// vertex
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()) +
+							cValues.add((float)b.getLocation().getPixelX() +
 									Block.length);
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) -
+							cValues.add((float)b.getLocation().getPixelY() -
 									Block.length / Block.horAngle);
 							// light
 							for (int i = 0; i < 3; i++)
@@ -231,8 +232,8 @@ public class VboUtil {
 
 							// back left
 							// vertex
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelX()));
-							cValues.add(Float.valueOf((float)b.getLocation().getPixelY()) -
+							cValues.add((float)b.getLocation().getPixelX());
+							cValues.add((float)b.getLocation().getPixelY() -
 									Block.length / Block.horAngle);
 							// light
 							for (int i = 0; i < 3; i++)
