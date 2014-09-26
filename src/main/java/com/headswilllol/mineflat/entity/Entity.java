@@ -237,12 +237,15 @@ public class Entity {
 		for (EntityType et : EntityType.values()){
 			if (et != EntityType.ITEM_DROP){
 				try {
+					String fileName = et.toString().toLowerCase();
+					if (et == EntityType.PLAYER)
+						fileName = "human";
 					Entity.sprites.put(et, ImageUtil.createTextureFromStream(
 							//(InputStream)ImageIO.createImageInputStream(
 							//		ImageUtil.scaleImage(
 							//				ImageIO.read(
 							LivingEntity.class.getClassLoader().getResourceAsStream(
-									"textures/entity/" + et.toString().toLowerCase() + ".png"
+									"textures/entity/" + fileName + ".png"
 									)
 									//						), 64, 64
 									//				)
@@ -250,7 +253,7 @@ public class Entity {
 							));
 				}
 				catch (Exception ex){
-					System.err.println("Exception occurred while preparing texture for player sprite");
+					System.err.println("Exception occurred while preparing texture for " + et.toString().toLowerCase().replace("_", " ") + " sprite");
 					ex.printStackTrace();
 				}
 			}

@@ -1,5 +1,8 @@
 package com.headswilllol.mineflat.entity;
 
+import com.headswilllol.mineflat.event.Event;
+import com.headswilllol.mineflat.event.human.HumanMoveEvent;
+import com.headswilllol.mineflat.event.player.PlayerMoveEvent;
 import org.lwjgl.opengl.Display;
 
 import com.headswilllol.mineflat.Block;
@@ -7,10 +10,11 @@ import com.headswilllol.mineflat.GraphicsHandler;
 import com.headswilllol.mineflat.Location;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
-import com.headswilllol.mineflat.event.Event;
-import com.headswilllol.mineflat.event.player.PlayerMoveEvent;
 
-public class Player extends LivingEntity {
+/**
+ * Represents a human in the world which the current instance of the game is in control of.
+ */
+public class Player extends Human {
 
 	/**
 	 * Distance from center of screen at which the screen will begin scrolling when the player reaches it
@@ -19,22 +23,9 @@ public class Player extends LivingEntity {
 	
 	public static float light = 1f;
 
-	private boolean primary = false;
-
 	public Player(Location location){
-		super(EntityType.PLAYER, location, 0.5f, 2f);
-	}
-
-	public boolean isPrimary(){
-		return primary;
-	}
-
-	public void setPrimary(boolean primary){
-		this.primary = primary;
-	}
-
-	public Location getLocation(){
-		return location;
+		super(location);
+		this.setType(EntityType.PLAYER);
 	}
 
 	@Override
@@ -49,14 +40,6 @@ public class Player extends LivingEntity {
 		Location old = getLocation();
 		super.setY(y);
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
-	}
-
-	public void setYVelocity(float v){
-		yVelocity = v;
-	}
-
-	public float getYVelocity(){
-		return yVelocity;
 	}
 	
 	public static void calculateLight(){

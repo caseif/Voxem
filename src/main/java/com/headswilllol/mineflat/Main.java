@@ -80,7 +80,6 @@ public class Main {
 			world.creationTime = System.currentTimeMillis() / 1000L;
 			world.addLevel(0);
 			player = new Player(new Location(world.getLevel(0), 0, 0));
-			player.setPrimary(true);
 			world.getLevel(0).addEntity(player);
 			Terrain.generateTerrain();
 		}

@@ -149,17 +149,24 @@ public class SaveManager {
 							break;
 						default:
 							e = new LivingEntity(type, new Location(level, x, y), w, h);
+							break;
 					}
 					((Mob)e).setPlannedWalkDistance((Float)entity.get("pwd"));
 					((Mob)e).setActualWalkDistance((Float)entity.get("awd"));
 					((Mob)e).setLastX((Float)entity.get("lx"));
 				}
-				else if (entity.containsKey("primary")){
-					e = new Player(new Location(level, x, y));
-					((Player)e).setPrimary(true);
+				else {
+					switch (type) {
+						case PLAYER:
+							e = new Player(new Location(level, x, y));
+							break;
+						case HUMAN:
+							e = new Human(new Location(level, x, y));
+							break;
+						default:
+							e = new LivingEntity(type, new Location(level, x, y), w, h);
+					}
 				}
-				else
-					e = new LivingEntity(type, new Location(level, x, y), w, h);
 				((LivingEntity)e).setFacingDirection(Direction.valueOf((String)entity.get("fd")));
 				((LivingEntity)e).setMovementDirection(Direction.valueOf((String)entity.get("md")));
 				((LivingEntity)e).setJumping((Boolean)entity.get("j"));
@@ -169,7 +176,7 @@ public class SaveManager {
 			e.setXVelocity(Float.valueOf(Double.toString((Double)entity.get("xv"))));
 			e.setYVelocity(Float.valueOf(Double.toString((Double)entity.get("yv"))));
 			level.addEntity(e);
-			if (e instanceof Player && ((Player)e).isPrimary())
+			if (type == EntityType.PLAYER)
 				Main.player = (Player)e;
 		}
 		return null;
@@ -187,7 +194,7 @@ public class SaveManager {
 	}
 
 	/**
-	 * Saves a chunk to a JSON object. <strong>This method does not save the JSON to disk.</strong>
+	 * Saves a chunk to a JSON object. <strong>This method does not save the JSON to memory or to disk.</strong>
 	 * @param chunk the chunk to save.
 	 * @return the created JSON object.
 	 */
@@ -235,10 +242,6 @@ public class SaveManager {
 					e.put("awd", m.getActualWalkDistance());
 					e.put("lx", m.getLastX());
 				}
-				else if (le instanceof Player){
-					if (((Player)le).isPrimary())
-						e.put("primary", true);
-				}
 			}
 			entities.add(e);
 		}
@@ -247,7 +250,7 @@ public class SaveManager {
 	}
 
 	/**
-	 * Saves a level to a JSON object. <strong>This method does not save the JSON to disk.</strong>
+	 * Saves a level to a JSON object. <strong>This method does not save the JSON to memory or to disk.</strong>
 	 * @param level the chunk to save.
 	 * @return the created JSON object.
 	 */
@@ -259,6 +262,42 @@ public class SaveManager {
 		}
 		l.put("chunks", chunks);
 		return l;
+	}
+
+	/**
+	 * Saves a chunk to its world's {@link JSONObject JSON object}
+	 * @param chunk the chunk to save.
+	 */
+	public static void saveChunkToMemory(Chunk chunk){
+		JSONObject world = chunk.getLevel().getWorld().getJSON();
+		JSONObject levels = (JSONObject)world.get("levels");
+		if (levels == null)
+			levels = new JSONObject();
+		JSONObject level = (JSONObject)levels.get(chunk.getLevel().getIndex());
+		if (level == null)
+			level = new JSONObject();
+		JSONObject chunks = (JSONObject)level.get("chunks");
+		if (chunks == null)
+			chunks = new JSONObject();
+		JSONObject jChunk = saveChunk(chunk);
+		chunks.put(Integer.toString(chunk.getIndex()), jChunk);
+		level.put("chunks", chunks);
+		levels.put(Integer.toString(chunk.getLevel().getIndex()), level);
+		world.put("levels", levels);
+	}
+
+	/**
+	 * Saves a level to its world's {@link JSONObject JSON object}
+	 * @param level the chunk to save.
+	 */
+	public static void saveLevelToMemory(Level level){
+		JSONObject world = level.getWorld().getJSON();
+		JSONObject levels = (JSONObject)world.get("levels");
+		if (levels == null)
+			levels = new JSONObject();
+		JSONObject jLevel = saveLevel(level);
+		levels.put(Integer.toString(level.getIndex()), level);
+		world.put("levels", levels);
 	}
 
 	private static int longToInt(long number){
