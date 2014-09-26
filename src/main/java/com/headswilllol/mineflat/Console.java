@@ -122,7 +122,7 @@ public class Console { //implements Listener {
 	public void onKeyPress(KeyPressEvent e){
 		if (e.getKey() == Keyboard.KEY_GRAVE){
 			enabled = !enabled;
-			MineFlat.player.setDirection(Direction.STATIONARY);
+			MineFlat.player.setMovementDirection(Direction.STATIONARY);
 			MineFlat.player.setJumping(false);
 		}
 		else if (focused){

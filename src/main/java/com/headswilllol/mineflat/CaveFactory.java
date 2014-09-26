@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class CaveFactory {
 
-	public static Random r = new Random(Main.world.seed);
+	public static final Random r = new Random(Main.world.seed);
 	public static List<CaveFactory> caveFactories = new ArrayList<CaveFactory>();
-	public static List<CaveFactory> deactivate = new ArrayList<CaveFactory>(); // dem CMEs :P
+	public static final List<CaveFactory> deactivate = new ArrayList<CaveFactory>(); // dem CMEs :P
 
 	private Location l;
 

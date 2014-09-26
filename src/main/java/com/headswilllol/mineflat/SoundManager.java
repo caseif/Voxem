@@ -2,7 +2,6 @@ package com.headswilllol.mineflat;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;

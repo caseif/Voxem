@@ -8,14 +8,14 @@ import java.util.List;
 public class Button {
 
 	private static int nextHandle = 0;
-	private static List<Button> buttons = new ArrayList<Button>();
+	private static final List<Button> buttons = new ArrayList<Button>();
 	
 	private int x;
 	private int y;
 	private int width;
 	private int height;
 	private String text;
-	private int handle;
+	private final int handle;
 	private boolean active = true;
 
 	public Button(int x, int y, int width, int height, String text){

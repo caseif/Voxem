@@ -35,8 +35,7 @@ public class ImageUtil {
 	public static InputStream asInputStream(BufferedImage bi) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(bi, "png", baos);
-		InputStream is = new ByteArrayInputStream(baos.toByteArray());
-		return is;
+		return new ByteArrayInputStream(baos.toByteArray());
 	}
 
 	public static void createAtlas(){

@@ -5,7 +5,7 @@ import com.headswilllol.mineflat.event.Event;
 
 public class ButtonClickEvent extends Event {
 	
-	private int handle;
+	private final int handle;
 	
 	public ButtonClickEvent(int handle){
 		this.handle = handle;

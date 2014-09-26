@@ -1,9 +1,15 @@
 package com.headswilllol.mineflat;
 
+import com.headswilllol.mineflat.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class Chunk {
 
-	protected Level level;
-	protected int num;
+	protected final Level level;
+	protected final int num;
 
 	private Block[][] blocks;
 
@@ -32,10 +38,6 @@ public class Chunk {
 		return blocks;
 	}
 
-	public void setNum(int num){
-		this.num = num;
-	}
-
 	public void setBlock(int x, int y, Block b){
 		blocks[x][y] = b;
 	}
@@ -54,14 +56,14 @@ public class Chunk {
 						if (b.getY() <= Block.getTop(new Location(level, b.getX(), 0)))
 							b.setLightLevel(Block.maxLight);
 						else {
-							Block up = null, down = null, left = null, right = null;
+							Block up = null, down = null, left, right;
 							if (b.getY() > 0)
-								up = Block.getBlock(level, (int)b.getX(), b.getY() - 1);
+								up = Block.getBlock(level, b.getX(), b.getY() - 1);
 							if (b.getY() < Main.world.getChunkHeight() - 1)
-								down = Block.getBlock(level, (int)b.getX(), b.getY() +
+								down = Block.getBlock(level, b.getX(), b.getY() +
 										1);
-							left = Block.getBlock(level, (int)b.getX() - 1, b.getY());
-							right = Block.getBlock(level, (int)b.getX() + 1, b.getY());
+							left = Block.getBlock(level, b.getX() - 1, b.getY());
+							right = Block.getBlock(level, b.getX() + 1, b.getY());
 							Block[] adjacent = new Block[]{up, down, left, right};
 							float average = 0;
 							int total = 0;
@@ -85,7 +87,7 @@ public class Chunk {
 		}
 	}
 
-	public static int getBlockXFromChunk(int chunk, int block){
+	public static float getWorldXFromChunkIndex(int chunk, float block){
 		return chunk > 0 ? (chunk - 1) * Main.world.getChunkLength() + block :
 			chunk * Main.world.getChunkLength() + block;
 	}
@@ -103,4 +105,13 @@ public class Chunk {
 			x % Main.world.getChunkLength());
 		//return Math.abs(x % Main.world.getChunkLength());
 	}
+
+	public Collection<Entity> getEntities() {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (Entity e : level.getEntities())
+			if (e.getLocation().getChunk() == this.getNum())
+				entities.add(e);
+		return entities;
+	}
+
 }

@@ -4,8 +4,8 @@ import com.headswilllol.mineflat.event.Event;
 
 public class KeyPressEvent extends Event {
 	
-	private int key;
-	private char c;
+	private final int key;
+	private final char c;
 	
 	public KeyPressEvent(int key, char c){
 		this.key = key;

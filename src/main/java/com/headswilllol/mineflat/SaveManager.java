@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.headswilllol.mineflat.entity.*;
 import com.headswilllol.mineflat.util.FileUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +25,7 @@ public class SaveManager {
 
 		JSONObject save = new JSONObject();
 		save.put("name", Main.world.getName());
-		save.put("createTime", System.currentTimeMillis() / 1000L);
+		save.put("createTime", Main.world.creationTime);
 		save.put("modifyTime", System.currentTimeMillis() / 1000L);
 		save.put("chunkCount", Main.world.getChunkCount());
 		save.put("chunkLength", Main.world.getChunkLength());
@@ -58,8 +59,38 @@ public class SaveManager {
 						}
 					}
 				}
-				//TODO: iterate entities
 				c.put("blocks", blocks);
+				JSONArray entities = new JSONArray();
+				for (Entity entity : chunk.getEntities()){
+					JSONObject e = new JSONObject();
+					e.put("type", entity.getType().toString());
+					e.put("x", entity.getLocation().getPosInChunk());
+					e.put("y", entity.getY());
+					e.put("w", entity.width);
+					e.put("h", entity.height);
+					e.put("xv", entity.getXVelocity());
+					e.put("yv", entity.getYVelocity());
+					if (entity instanceof LivingEntity){
+						e.put("living", true);
+						LivingEntity le = (LivingEntity)entity;
+						e.put("fd", le.getFacingDirection().toString());
+						e.put("md", le.getMovementDirection().toString());
+						e.put("j", le.isJumping());
+						if (le instanceof Mob){
+							e.put("mob", true);
+							Mob m = (Mob)le;
+							e.put("pwd", m.getPlannedWalkDistance());
+							e.put("awd", m.getActualWalkDistance());
+							e.put("lx", m.getLastX());
+						}
+						else if (le instanceof Player){
+							if (((Player)le).isPrimary())
+								e.put("primary", true);
+						}
+					}
+					entities.add(e);
+				}
+				c.put("entities", entities);
 				chunks.add(c);
 			}
 			l.put("chunks", chunks);
@@ -113,6 +144,7 @@ public class SaveManager {
 			Main.world = new World((String)save.get("name"), longToInt((Long)save.get("chunkCount")),
 					longToInt((Long)save.get("chunkLength")), longToInt((Long)save.get("chunkHeight")));
 			Main.world.seed = (Long)save.get("seed");
+			Main.world.creationTime = (Long)save.get("createTime");
 			TickManager.setTicks(longToInt((Long)save.get("ticks")));
 			for (Object levelObj : (JSONArray)save.get("levels")){
 				JSONObject level = (JSONObject)levelObj;
@@ -128,12 +160,51 @@ public class SaveManager {
 						Material type = Material.valueOf((String)block.get("type"));
 						if (type == null)
 							type = Material.AIR;
-						Block b = new Block(type, new Location(l, Chunk.getBlockXFromChunk(cIndex, longToInt((Long)block.get("x"))),
+						Block b = new Block(type, new Location(l, Chunk.getWorldXFromChunkIndex(cIndex, longToInt((Long)block.get("x"))),
 								longToInt((Long)block.get("y"))));
 						JSONObject meta = (JSONObject)block.get("metadata");
 						for (Object key : meta.keySet())
 							b.setMetadata((String)key, meta.get(key));
 						b.addToWorld();
+					}
+					for (Object entityObj : (JSONArray)chunk.get("entities")){
+						JSONObject entity = (JSONObject)entityObj;
+						EntityType type = EntityType.valueOf((String)entity.get("type"));
+						float x = Chunk.getWorldXFromChunkIndex(c.getNum(), Float.valueOf(Double.toString((Double)entity.get("x"))));
+						float y = Float.valueOf(Double.toString((Double)entity.get("y")));
+						float w = Float.valueOf(Double.toString((Double)entity.get("w")));
+						float h = Float.valueOf(Double.toString((Double)entity.get("h")));
+						Entity e;
+						if (entity.containsKey("living")){
+							if (entity.containsKey("mob")){
+								switch (type){
+									case ZOMBIE:
+										e = new Zombie(new Location(l, x, y));
+										break;
+									default:
+										e = new LivingEntity(type, new Location(l, x, y), w, h);
+								}
+								((Mob)e).setPlannedWalkDistance((Float)entity.get("pwd"));
+								((Mob)e).setActualWalkDistance((Float)entity.get("awd"));
+								((Mob)e).setLastX((Float)entity.get("lx"));
+							}
+							else if (entity.containsKey("primary")){
+								e = new Player(new Location(l, x, y));
+								((Player)e).setPrimary(true);
+							}
+							else
+								e = new LivingEntity(type, new Location(l, x, y), w, h);
+							((LivingEntity)e).setFacingDirection(Direction.valueOf((String)entity.get("fd")));
+							((LivingEntity)e).setMovementDirection(Direction.valueOf((String)entity.get("md")));
+							((LivingEntity)e).setJumping((Boolean)entity.get("j"));
+						}
+						else
+							e = new Entity(type, new Location(l, x, y), w, h);
+						e.setXVelocity(Float.valueOf(Double.toString((Double)entity.get("xv"))));
+						e.setYVelocity(Float.valueOf(Double.toString((Double)entity.get("yv"))));
+						l.addEntity(e);
+						if (e instanceof Player && ((Player)e).isPrimary())
+							Main.player = (Player)e;
 					}
 				}
 				for (Chunk c : l.chunks.values())

@@ -7,14 +7,6 @@ import com.headswilllol.mineflat.entity.Player;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 /**
  * @author Maxim Roncacé
  * 
@@ -60,12 +52,11 @@ public class Main {
 		boolean launchedProperly = true;
 		try {
 			// verify libraries are present and LWJGL is in path
-			DisplayMode[] modes = Display.getAvailableDisplayModes();
-			for (int i = 0; i < modes.length; i++){
-				if (modes[i].getWidth() == Display.getDesktopDisplayMode().getWidth() &&
-						modes[i].getHeight() == Display.getDesktopDisplayMode()
-								.getHeight() && modes[i].isFullscreenCapable()){
-					Display.setDisplayMode(modes[i]);
+			for (DisplayMode mode : Display.getAvailableDisplayModes()){
+				if (mode.getWidth() == Display.getDesktopDisplayMode().getWidth() &&
+						mode.getHeight() == Display.getDesktopDisplayMode()
+								.getHeight() && mode.isFullscreenCapable()){
+					Display.setDisplayMode(mode);
 					break;
 				}
 			}
@@ -86,14 +77,12 @@ public class Main {
 
 		if (world == null){
 			world = new World("world", 8, 16, 128);
+			world.creationTime = System.currentTimeMillis() / 1000L;
 			world.addLevel(0);
 			player = new Player(new Location(world.getLevel(0), 0, 0));
+			player.setPrimary(true);
 			world.getLevel(0).addEntity(player);
 			Terrain.generateTerrain();
-		}
-		else {
-			player = new Player(new Location(world.getLevel(0), 0, 0));
-			world.getLevel(0).addEntity(player);
 		}
 		
 		
@@ -113,7 +102,7 @@ public class Main {
 			TickManager.checkForTick();
 			for (Entity e : world.getLevel(0).getEntities())
 				if (e instanceof LivingEntity)
-					((LivingEntity)e).manageMovement();
+					(e).manageMovement();
 				else
 					e.manageMovement();
 			Block.updateSelectedBlock();

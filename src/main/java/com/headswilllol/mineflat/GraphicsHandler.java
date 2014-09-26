@@ -4,7 +4,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class GraphicsHandler implements Runnable {
 	/**
 	 * The minimum OpenGL version required to run the game
 	 */
-	public static double MINIMUM_GL_VERSION = 1.5;
+	public static final double MINIMUM_GL_VERSION = 1.5;
 
 	/**
 	 * The system's OpenGL version
@@ -69,23 +68,22 @@ public class GraphicsHandler implements Runnable {
 	// offset of character shadows (duh)
 	private static final float shadowOffset = 1;
 
-	public static HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
+	public static final HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
 
 	public void run(){
 		try {
-			DisplayMode[] modes = Display.getAvailableDisplayModes();
-			for (int i = 0; i < modes.length; i++){
-				if (modes[i].getWidth() == Display.getDesktopDisplayMode().getWidth() &&
-						modes[i].getHeight() == Display.getDesktopDisplayMode()
-						.getHeight() && modes[i].isFullscreenCapable()){
-					Display.setDisplayMode(modes[i]);
+			for (DisplayMode mode : Display.getAvailableDisplayModes()){
+				if (mode.getWidth() == Display.getDesktopDisplayMode().getWidth() &&
+						mode.getHeight() == Display.getDesktopDisplayMode()
+						.getHeight() && mode.isFullscreenCapable()){
+					Display.setDisplayMode(mode);
 					break;
 				}
 			}
 			Display.setVSyncEnabled(true);
 			Display.setTitle("MineFlat");
 			Display.setResizable(false);
-			ByteBuffer[] icons = null;
+			ByteBuffer[] icons;
 			if (System.getProperty("os.name").startsWith("Windows")){
 				icons = new ByteBuffer[2];
 				BufferedImage icon1 = ImageUtil.scaleImage(
@@ -93,7 +91,7 @@ public class GraphicsHandler implements Runnable {
 								.getResourceAsStream("textures/block/grass.png")), Block.length, Block.length);
 				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
-						.getResourceAsStream("textures/block/grass.png")), 32, 32);;
+						.getResourceAsStream("textures/block/grass.png")), 32, 32);
 						icons[0] = BufferUtil.asByteBuffer(icon1);
 						icons[1] = BufferUtil.asByteBuffer(icon2);
 			}
@@ -194,7 +192,11 @@ public class GraphicsHandler implements Runnable {
 				else
 					Block.isSelected = false;
 				if (Block.isSelected && Block.selected != null) {
-					glColor3f(0f, 0f, 0f);
+					if (Block.selected.getBlock().getLightLevel() < 0.5f)
+						glColor3f(1f, 1f, 1f);
+					else
+						glColor3f(0f, 0f, 0f);
+					glColor3f(0.5f, 0.5f, 0.5f);
 					glBegin(GL_LINES);
 					glVertex2f(Block.selectedX, Block.selectedY);
 					glVertex2f(Block.selectedX + Block.length, Block.selectedY);
@@ -251,7 +253,7 @@ public class GraphicsHandler implements Runnable {
 		Main.closed = true;
 	}
 
-	public static void initializeChars() throws IOException {
+	public static void initializeChars() {
 		InputStream is = NumUtil.class.getClassLoader().getResourceAsStream(
 				"textures/chars.png");
 		//InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
@@ -294,7 +296,7 @@ public class GraphicsHandler implements Runnable {
 			glBegin(GL_QUADS);
 			float pos = 0f;
 			for (char c : str.toCharArray()){
-				float tx = 25f, ty = 3f;
+				float tx, ty;
 				if (Character.isLetter(c)){
 					if (Character.isUpperCase(c)){
 						tx = c - 'A';
@@ -315,8 +317,8 @@ public class GraphicsHandler implements Runnable {
 				}
 				else {
 					ty = 3f;
-					if (specialChars.containsKey((Character)c))
-						tx = (float)specialChars.get((Character)c);
+					if (specialChars.containsKey(c))
+						tx = specialChars.get(c);
 					else
 						tx = 25f;
 				}

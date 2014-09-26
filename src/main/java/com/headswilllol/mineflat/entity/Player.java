@@ -19,8 +19,18 @@ public class Player extends LivingEntity {
 	
 	public static float light = 1f;
 
+	private boolean primary = false;
+
 	public Player(Location location){
 		super(EntityType.PLAYER, location, 0.5f, 2f);
+	}
+
+	public boolean isPrimary(){
+		return primary;
+	}
+
+	public void setPrimary(boolean primary){
+		this.primary = primary;
 	}
 
 	public Location getLocation(){
@@ -50,8 +60,8 @@ public class Player extends LivingEntity {
 	}
 	
 	public static void calculateLight(){
-		float firstLight = 1f;
-		float secondLight = 1f;
+		float firstLight;
+		float secondLight;
 		light = 1f;
 		Block top = Main.player.getLocation().subtract(0, 1).getBlock();
 		Block bottom = Main.player.getLocation().getBlock();
@@ -64,7 +74,7 @@ public class Player extends LivingEntity {
 			int beside = Main.player.getX() % 1 < 0.5f ? -1 : 1;
 			Block top2 = Main.player.getLocation().subtract(beside, 1).getBlock();
 			Block bottom2 = Main.player.getLocation().subtract(beside, 0).getBlock();
-			if (top2 != null && bottom2 != null && top2.getType() == Material.AIR && top2.getType() == Material.AIR){
+			if (top2 != null && bottom2 != null && top2.getType() == Material.AIR){
 				float topLight2 = top2.getLightLevel() / (float)Block.maxLight;
 				float bottomLight2 = bottom2.getLightLevel() / (float)Block.maxLight;
 				secondLight = (topLight2 * topBias + bottomLight2 * bottomBias);
@@ -78,8 +88,8 @@ public class Player extends LivingEntity {
 		else if (Main.player.getY() > 127)
 			light = 0f;
 		
-		if (light <= 0f)
-			light = 1f / (float)Block.maxLight;
+		if (light <= 2f / (float)Block.maxLight)
+			light = 2f / (float)Block.maxLight;
 	}
 
 	public static void centerPlayer(){

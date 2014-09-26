@@ -1,7 +1,6 @@
 package com.headswilllol.mineflat;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 import org.lwjgl.input.Mouse;
@@ -9,7 +8,7 @@ import org.lwjgl.opengl.Display;
 
 public class Block {
 
-	public static int blockHandle;
+	public static int blockHandle; //TODO: figure out what I meant to do with this
 
 	protected Location location;
 
@@ -17,7 +16,7 @@ public class Block {
 
 	protected int light = 0;
 
-	protected int chunk;
+	protected final int chunk;
 
 	public static final int maxLight = 16;
 	public static final int minLight = 0;
@@ -46,7 +45,7 @@ public class Block {
 
 	public int lastLightUpdate = -1;
 
-	public HashMap<String, Object> metadata = new HashMap<String, Object>();
+	public final HashMap<String, Object> metadata = new HashMap<String, Object>();
 
 	public Block(Material m, Location location){
 		this.type = m;
@@ -127,15 +126,15 @@ public class Block {
 	}
 
 	public boolean updateLight(){
-		int newLight = 0;
-		Block up = null, down = null, left = null, right = null;
+		int newLight;
+		Block up = null, down = null, left, right;
 		if (getY() > 0)
-			up = Block.getBlock(getLevel(), (int)getX(), getY() - 1);
+			up = Block.getBlock(getLevel(), getX(), getY() - 1);
 		if (getY() < Main.world.getChunkHeight() - 1)
-			down = Block.getBlock(getLevel(), (int)getX(), getY() +
+			down = Block.getBlock(getLevel(), getX(), getY() +
 					1);
-		left = Block.getBlock(getLevel(), (int)getX() - 1, getY());
-		right = Block.getBlock(getLevel(), (int)getX() + 1, getY());
+		left = Block.getBlock(getLevel(), getX() - 1, getY());
+		right = Block.getBlock(getLevel(), getX() + 1, getY());
 		Block[] adjacent = new Block[]{up, down, left, right};
 		if (getY() <= Block.getTop(location))
 			newLight = Block.maxLight;
@@ -209,7 +208,7 @@ public class Block {
 				(float)Block.length;
 		double xDiff = mouseX - Main.player.getX();
 		double yDiff = mouseY - Main.player.getY();
-		double angle = Math.atan2(xDiff, yDiff);
+		double angle = Math.atan2(xDiff, yDiff); // IntelliJ tells me this shouldn't work. I concur.
 		boolean found = false;
 		for (double d = 0.5; d <= 5; d += 0.5){
 			double xAdd = d * Math.sin(angle);
@@ -265,9 +264,7 @@ public class Block {
 	 * @return Whether the block is air
 	 */
 	public static boolean isAir(Block b){
-		if (b != null)
-			return Block.isAir(b.getLevel(), b.getX(), b.getY());
-		return true;
+		return b == null || Block.isAir(b.getLevel(), b.getX(), b.getY());
 	}
 
 	public static boolean isAir(Location l){

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class EventManager {
 
-	public static List<ListenerData> listeners = new ArrayList<ListenerData>();
+	public static final List<ListenerData> listeners = new ArrayList<ListenerData>();
 
 	/**
 	 * Registers a given class as an event listener.

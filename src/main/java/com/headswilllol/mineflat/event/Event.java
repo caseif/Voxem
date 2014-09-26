@@ -11,9 +11,8 @@ public class Event {
 	public static void fireEvent(Event e){
 		for (ListenerData ep : EventManager.listeners){
 			Method m = ep.getMethod();
-			String[] eventArray = ep.getEvent().split("\\.");
-			for (int i = 0; i < eventArray.length; i++){
-				if (eventArray[i].equals(e.getClass().getSimpleName())){
+			for (String event : ep.getEvent().split("\\.")){
+				if (event.equals(e.getClass().getSimpleName())){
 					try {
 						m.invoke(ep.getListener(), e);
 					}

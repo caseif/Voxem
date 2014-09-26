@@ -28,12 +28,12 @@ public class Entity {
 	/**
 	 * The width of the entity relative to a block's width
 	 */
-	public float width;
+	public final float width;
 
 	/**
 	 * The height of the entity relative to a block's height
 	 */
-	public float height;
+	public final float height;
 
 	/**
 	 * The current velocity on the x axis (e.g. from moving, throwing)
@@ -50,7 +50,7 @@ public class Entity {
 	 */
 	public static final int vertOffset = Block.length / Block.horAngle / 2;
 
-	public static HashMap<EntityType, Integer> sprites = new HashMap<EntityType, Integer>();
+	public static final HashMap<EntityType, Integer> sprites = new HashMap<EntityType, Integer>();
 
 	protected Location location;
 	protected EntityType type;
@@ -67,6 +67,10 @@ public class Entity {
 		return location.getLevel();
 	}
 
+	public Location getLocation(){
+		return location;
+	}
+
 	public float getX(){
 		return location.getX();
 	}
@@ -81,6 +85,10 @@ public class Entity {
 
 	public void setLevel(Level level){
 		location.setLevel(level);
+	}
+
+	public void setLocation(Location location){
+		this.location = location;
 	}
 
 	public void setX(float x){
@@ -204,7 +212,7 @@ public class Entity {
 		glColor3f(1f, 1f, 1f);
 		glTranslatef(getX() * Block.length + GraphicsHandler.xOffset - (width / 2) * Block.length,
 				getY() * Block.length + GraphicsHandler.yOffset, 0);
-		if (this instanceof LivingEntity && ((LivingEntity)this).getFacing() == Direction.RIGHT){
+		if (this instanceof LivingEntity && ((LivingEntity)this).getFacingDirection() == Direction.RIGHT){
 			glTranslatef(Block.length * width, 0f, 0f);
 			glScalef(-1f, 1f, 1f);
 		}

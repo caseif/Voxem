@@ -11,9 +11,9 @@ public abstract class Mob extends LivingEntity {
 	protected float walkDistance;
 	protected float distance;
 	protected float lastX;
-	public static int mobCapacity = 100;
-	public static List<EntityType> mobTypes = new ArrayList<EntityType>();
-	public static HashMap<EntityType, Integer> light = new HashMap<EntityType, Integer>();
+	public static final int MOB_CAPACITY = 100;
+	public static final List<EntityType> mobTypes = new ArrayList<EntityType>();
+	public static final HashMap<EntityType, Integer> light = new HashMap<EntityType, Integer>();
 	
 	public Mob(EntityType type, Location location, float width, float height){
 		super(type, location, width, height);

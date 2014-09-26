@@ -14,14 +14,14 @@ import com.headswilllol.mineflat.event.input.KeyPressEvent;
 
 public class InputManager {
 
-	private static int left1 = KEY_A;
-	private static int left2 = KEY_LEFT;
-	private static int right1 = KEY_D;
-	private static int right2 = KEY_RIGHT;
-	private static int jump1 = KEY_W;
-	private static int jump2 = KEY_UP;
-	private static int jump3 = KEY_SPACE;
-	private static int console = KEY_GRAVE;
+	private static final int LEFT_1 = KEY_A;
+	private static final int LEFT_2 = KEY_LEFT;
+	private static final int RIGHT_1 = KEY_D;
+	private static final int RIGHT_2 = KEY_RIGHT;
+	private static final int JUMP_1 = KEY_W;
+	private static final int JUMP_2 = KEY_UP;
+	private static final int JUMP_3 = KEY_SPACE;
+	private static final int CONSOLE = KEY_GRAVE;
 
 	private static boolean f3 = false;
 	private static boolean mouse1 = false;
@@ -30,25 +30,25 @@ public class InputManager {
 	private static int mouseY = 0;
 
 	private static long lastAction = 0;
-	private static long actionWait = 350;
+	private static final long ACTION_WAIT = 350;
 
-	public static ArrayList<Integer> baseKeysToCheck = new ArrayList<Integer>();
+	public static final ArrayList<Integer> baseKeysToCheck = new ArrayList<Integer>();
 	public static ArrayList<Integer> keysToCheck= new ArrayList<Integer>();
-	public static ArrayList<Boolean> keysDownLastFrame = new ArrayList<Boolean>();
-	public static ArrayList<Boolean> keysPressed = new ArrayList<Boolean>();
+	public static final ArrayList<Boolean> keysDownLastFrame = new ArrayList<Boolean>();
+	public static final ArrayList<Boolean> keysPressed = new ArrayList<Boolean>();
 
 	public static void updateKeys(ArrayList<Integer> keys){
 		keysToCheck = keys;
 		keysDownLastFrame.clear();
 		keysPressed.clear();
-		for(int i = 0; i < keysToCheck.size(); i++){
+		for (int i = 0; i < keysToCheck.size(); i++){
 			keysDownLastFrame.add(false);
 			keysPressed.add(false);
 		}
 	}
 
 	public static void initialize(){
-		baseKeysToCheck.add(console);
+		baseKeysToCheck.add(CONSOLE);
 		InputManager.updateKeys(baseKeysToCheck);
 	}
 
@@ -64,50 +64,41 @@ public class InputManager {
 			}
 		}
 
-		if (Mouse.isButtonDown(0))
-			mouse1 = true;
-		else
-			mouse1 = false;
-		if (Mouse.isButtonDown(1))
-			mouse2 = true;
-		else
-			mouse2 = false;
+		mouse1 = Mouse.isButtonDown(0);
+		mouse2 = Mouse.isButtonDown(1);
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
 
 		//if(!Console.enabled){
 
-			if ((isKeyDown(left1) || isKeyDown(left2)) && (isKeyDown(right1) || isKeyDown(right2)))
-				Main.player.setDirection(Direction.STATIONARY);
-			else if (isKeyDown(left1) || isKeyDown(left2)){
-				Main.player.setFacing(Direction.LEFT);
-				Main.player.setDirection(Direction.LEFT);
-			}else if (isKeyDown(right1) || isKeyDown(right2)){
-				Main.player.setDirection(Direction.RIGHT);
-				Main.player.setFacing(Direction.RIGHT);
+			if ((isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) && (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)))
+				Main.player.setMovementDirection(Direction.STATIONARY);
+			else if (isKeyDown(LEFT_1) || isKeyDown(LEFT_2)){
+				Main.player.setFacingDirection(Direction.LEFT);
+				Main.player.setMovementDirection(Direction.LEFT);
+			}else if (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)){
+				Main.player.setFacingDirection(Direction.RIGHT);
+				Main.player.setMovementDirection(Direction.RIGHT);
 			}else
-				Main.player.setDirection(Direction.STATIONARY);
-			if (isKeyDown(jump1) || isKeyDown(jump2) || isKeyDown(jump3))
+				Main.player.setMovementDirection(Direction.STATIONARY);
+			if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3))
 				Main.player.setJumping(true);
 			else
 				Main.player.setJumping(false);
-			if (isKeyDown(KEY_F3))
-				f3 = true;
-			else
-				f3 = false;
+			f3 = isKeyDown(KEY_F3);
 		//}
 
 	}
 
 	public static void manage(){
 
-		if (f3 && System.currentTimeMillis() - lastAction >= actionWait){
+		if (f3 && System.currentTimeMillis() - lastAction >= ACTION_WAIT){
 			Main.debug = !Main.debug;
 			lastAction = System.currentTimeMillis();
 		}
 
 		/*if (isKeyDown(KEY_F11)){
-			if (System.currentTimeMillis() - lastAction >= actionWait){
+			if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
 				try {
 					Display.setFullscreen(!Display.isFullscreen());
 				}
@@ -130,7 +121,7 @@ public class InputManager {
 		}
 		else {*/
 			if (mouse1){
-				if (System.currentTimeMillis() - lastAction >= actionWait){
+				if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
 					if (Block.selected != null &&
 							!Block.isAir((Block.selected.getBlock())) &&
 							Block.selected.getBlock().getType() != Material.BEDROCK){
@@ -143,7 +134,7 @@ public class InputManager {
 			}
 
 			if (mouse2){
-				if (System.currentTimeMillis() - lastAction >= actionWait){
+				if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
 					if (Block.selected != null){
 						int x = Block.selected.getX() > Main.player.getX() ?
 								(int)Math.floor(Block.selected.getX()) :

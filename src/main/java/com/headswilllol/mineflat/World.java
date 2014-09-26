@@ -8,12 +8,14 @@ public class World {
 
 	public long seed;
 
-	private HashMap<Integer, Level> levels = new HashMap<Integer, Level>();
+	private final HashMap<Integer, Level> levels = new HashMap<Integer, Level>();
+
+	public long creationTime;
 	
-	private String name;
-	private int chunkCount;
-	private int chunkLength;
-	private int chunkHeight;
+	private final String name;
+	private final int chunkCount;
+	private final int chunkLength;
+	private final int chunkHeight;
 	
 	public World(String name, int chunkCount, int chunkLength, int chunkHeight){
 		this.seed = System.currentTimeMillis() * 1337337331;
@@ -36,7 +38,8 @@ public class World {
 	}
 	
 	public List<Level> getLevels(){
-		return Arrays.asList(levels.values().toArray(new Level[]{}));
+		java.util.Collection<Level> var = levels.values();
+		return Arrays.asList(var.toArray(new Level[var.size()]));
 	}
 	
 	public void addLevel(int index){

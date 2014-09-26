@@ -1,8 +1,8 @@
 package com.headswilllol.mineflat;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
@@ -10,14 +10,15 @@ import com.headswilllol.mineflat.entity.Mob;
 
 public class Level {
 
-	public HashMap<Integer, Chunk> chunks = new HashMap<Integer, Chunk>();
+	public final HashMap<Integer, Chunk> chunks = new HashMap<Integer, Chunk>();
 
-	private World world;
-	private int index;
-	private List<Entity> entities = new ArrayList<Entity>();
+	private final World world;
+	private final int index;
+	private final Collection<Entity> entities = new ArrayList<Entity>();
 
 	public Level(World world, int index){
 		this.world = world;
+		this.index = index;
 	}
 
 	/**
@@ -34,16 +35,8 @@ public class Level {
 	/**
 	 * @return A list containing all entities in the world
 	 */
-	public List<Entity> getEntities(){
+	public Collection<Entity> getEntities(){
 		return entities;
-	}
-
-	/**
-	 * Sets the list of entities in the world (dunno why this would be needed, but please be careful)
-	 * @param entities
-	 */
-	public void setEntities(List<Entity> entities){
-		this.entities = entities;
 	}
 
 	/**

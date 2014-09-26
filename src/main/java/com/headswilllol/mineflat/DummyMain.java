@@ -10,15 +10,15 @@ import java.net.URISyntaxException;
 
 public class DummyMain extends JFrame implements ActionListener {
 
-	JFrame f;
+	private final JFrame f;
 
-	String[] str = new String[]{
+	private String[] str = new String[]{
 			"MineFlat cannot be opened as a standalone program. Instead, a special launcher",
 			"must be used to ensure its libraries are properly loaded and it is kept updated.",
 			"You can grab a copy of MineFlat's launcher from my CI server at ci.amigocraft.net,",
 			"or by clicking the button below."};
 
-	Font font = new Font("Arial", Font.BOLD, 16);
+	private final Font font = new Font("Arial", Font.BOLD, 16);
 
 	public DummyMain(){
 		f = this;

@@ -22,20 +22,20 @@ public class LivingEntity extends Entity {
 		super(type, location, width, height);
 	}
 
-	public Direction getFacing(){
+	public Direction getFacingDirection(){
 		return facing;
 	}
 
-	public void setFacing(Direction facing){
+	public void setFacingDirection(Direction facing){
 		this.facing = facing;
 	}
 
-	public void setDirection(Direction direction){
-		this.direction = direction;
+	public Direction getMovementDirection(){
+		return direction;
 	}
 
-	public Direction getFacing(Direction facing){
-		return direction;
+	public void setMovementDirection(Direction direction){
+		this.direction = direction;
 	}
 
 	@Override

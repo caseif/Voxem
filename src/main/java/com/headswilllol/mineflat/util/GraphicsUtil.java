@@ -12,8 +12,8 @@ import com.headswilllol.mineflat.Material;
 
 public class GraphicsUtil {
 	
-	public static HashMap<Material, BufferedImage> textures = new HashMap<Material, BufferedImage>();
-	public static HashMap<Material, Location> texCoords = new HashMap<Material, Location>();
+	public static final HashMap<Material, BufferedImage> textures = new HashMap<Material, BufferedImage>();
+	public static final HashMap<Material, Location> texCoords = new HashMap<Material, Location>();
 	public static int atlas;
 	public static float atlasSize;
 

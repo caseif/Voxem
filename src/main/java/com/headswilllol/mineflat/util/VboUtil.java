@@ -23,7 +23,7 @@ public class VboUtil {
 	public static int bufferHandle;
 	public static float[] vertexArray;
 	public static FloatBuffer vertexData = null;
-	public static HashMap<Integer, Float[]> chunkArrays = new HashMap<Integer, Float[]>();
+	public static final HashMap<Integer, Float[]> chunkArrays = new HashMap<Integer, Float[]>();
 	public static boolean rebindArray = false;
 
 	/**
@@ -142,7 +142,7 @@ public class VboUtil {
 							cValues.add(l2); // rgb
 						cValues.add(1f); // alpha
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+						cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
 						cValues.add(tY);
 
 						// bottom right
@@ -156,8 +156,8 @@ public class VboUtil {
 							cValues.add(l3); // rgb
 						cValues.add(1f); // alpha
 						// texture
-						cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
-						//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+						cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
+						//cValues.add(tY + 1 / (GraphicsUtil.atlasSize / Block.length));
 						cValues.add(1f);
 
 						// bottom left
@@ -210,8 +210,8 @@ public class VboUtil {
 										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
 							cValues.add(1f); // alpha
 							// texture
-							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
-							//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+							cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
+							//cValues.add(tY + 1 / (GraphicsUtil.atlasSize / Block.length));
 							cValues.add(1f);
 
 							// back right
@@ -226,7 +226,7 @@ public class VboUtil {
 										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
 							cValues.add(1f); // alpha
 							// texture
-							cValues.add(tX + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+							cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
 							cValues.add(tY);
 
 							// back left
@@ -249,7 +249,7 @@ public class VboUtil {
 			}
 
 			chunkArrays.remove(c.getNum());
-			Float[] cArray = cValues.toArray(new Float[]{});
+			Float[] cArray = cValues.toArray(new Float[cValues.size()]);
 			chunkArrays.put(c.getNum(), cArray);
 
 			recreateArray();
