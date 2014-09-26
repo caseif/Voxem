@@ -42,8 +42,6 @@ public class SaveManager {
 				c.put("index", chunk.getNum());
 				JSONArray blocks = new JSONArray();
 				for (int x = 0; x < Main.world.getChunkLength(); x++){
-					System.out.println(chunk.getNum() + ", " + x + ", " + Chunk.getBlockXFromChunk(chunk.getNum(), x));
-					System.out.println(chunk.getBlock(x, 0).getX());
 					for (int y = 0; y < Main.world.getChunkHeight(); y++){
 						Block block = chunk.getBlock(x, y);
 						if (block != null){

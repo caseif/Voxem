@@ -65,7 +65,6 @@ public class Terrain {
 							}
 							Block b = new Block(
 									mat, new Location(l, Chunk.getBlockXFromChunk(c.getNum(), x), y));
-							System.out.println(x);
 							b.addToWorld();
 						}
 					}

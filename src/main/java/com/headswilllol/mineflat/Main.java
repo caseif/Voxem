@@ -4,6 +4,16 @@ import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
 import com.headswilllol.mineflat.entity.Player;
+import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.DisplayMode;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @author Maxim Roncacé
@@ -46,6 +56,31 @@ public class Main {
 	public static boolean debug = false;
 
 	public static void main(String[] args){
+
+		boolean launchedProperly = true;
+		try {
+			// verify libraries are present and LWJGL is in path
+			DisplayMode[] modes = Display.getAvailableDisplayModes();
+			for (int i = 0; i < modes.length; i++){
+				if (modes[i].getWidth() == Display.getDesktopDisplayMode().getWidth() &&
+						modes[i].getHeight() == Display.getDesktopDisplayMode()
+								.getHeight() && modes[i].isFullscreenCapable()){
+					Display.setDisplayMode(modes[i]);
+					break;
+				}
+			}
+			Display.destroy();
+		}
+		catch (NoClassDefFoundError ex) {
+			launchedProperly = false;
+		}
+		catch (Exception ex) {
+			launchedProperly = false;
+		}
+		if (!launchedProperly){
+			new DummyMain();
+			return;
+		}
 
 		SaveManager.loadWorld("world");
 

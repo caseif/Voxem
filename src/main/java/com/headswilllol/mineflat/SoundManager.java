@@ -25,7 +25,7 @@ public class SoundManager {
 		soundSystem = new SoundSystem();
 
 		try {
-			if (!Main.class.getProtectionDomain().getCodeSource().getLocation().getPath().contains("git"))
+			if (!Main.class.getProtectionDomain().getCodeSource().getLocation().getPath().contains("git")) // this makes my life a bit easier while testing
 				soundSystem.backgroundMusic("Infinity",
 						new File(new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath() +
 								"/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);

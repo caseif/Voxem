@@ -4,7 +4,7 @@
 	<groupId>com.headswilllol.mineflat</groupId>
 	<artifactId>mineflat</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.0a-indev</version>
+	<version>0.9.1a-indev</version>
 	<name>MineFlat</name>
 	<url>http://amigocraft.net/mineflat</url>
 	<description>A 2D voxel-based game based off of Terraria.</description>
@@ -17,12 +17,12 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>paulscode</id>
-			<url>http://nifty-gui.sourceforge.net/nifty-maven-repo/</url>
+			<id>amigocraft</id>
+			<url>http://repo.amigocraft.net/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>ooo-maven</id>
-			<url>http://ooo-maven.googlecode.com/hg/repository</url>
+			<url>http://ooo-maven.googlecode.com/hg/repository/</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -45,35 +45,36 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.paulscode.soundsystem</groupId>
+			<groupId>com.paulscode.sound</groupId>
 			<artifactId>codecjorbis</artifactId>
 			<version>0.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.paulscode.soundsystem</groupId>
+			<groupId>com.paulscode.sound</groupId>
 			<artifactId>librarylwjglopenal</artifactId>
 			<version>0.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.paulscode.soundsystem</groupId>
+			<groupId>com.paulscode.sound</groupId>
 			<artifactId>soundsystem</artifactId>
 			<version>0.0.1</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+		<!-- Included in CodecJOrbis -->
+		<!--<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jogg</artifactId>
 			<version>0.0.7</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jorbis</artifactId>
 			<version>0.0.15</version>
-			<scope>provided</scope>
-		</dependency>
+			<scope>compile</scope>
+		</dependency>-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

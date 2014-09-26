@@ -65,7 +65,6 @@ public class VboUtil {
 				for (int y = 0; y < Main.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
 					if (!Block.isAir(b)){
-						System.out.println(b.getLocation().getChunk() + ", " + Chunk.getIndexInChunk((int)b.getLocation().getX()) + ", " + b.getLocation().getX());
 						float tX = GraphicsUtil.texCoords.get(b.getType()).getX();
 						float tY = GraphicsUtil.texCoords.get(b.getType()).getY();
 
