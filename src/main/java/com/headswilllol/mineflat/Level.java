@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
+import org.json.simple.JSONObject;
 
 public class Level {
 
@@ -127,6 +128,14 @@ public class Level {
 				new Location(this, x + xx, y + yy).getBlock().setMetadata("solid", false);
 			}
 		}
+	}
+
+	public JSONObject save(){
+		return SaveManager.saveLevel(this);
+	}
+
+	public void saveToMemory(){
+		SaveManager.saveLevelToMemory(this);
 	}
 
 }

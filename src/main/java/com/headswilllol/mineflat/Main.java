@@ -73,6 +73,9 @@ public class Main {
 			return;
 		}
 
+		Thread t = new Thread(new GraphicsHandler());
+		t.start();
+
 		SaveManager.loadWorld("world");
 
 		if (world == null){
@@ -82,17 +85,31 @@ public class Main {
 			player = new Player(new Location(world.getLevel(0), 0, 0));
 			world.getLevel(0).addEntity(player);
 			Terrain.generateTerrain();
+			SaveManager.saveWorldToMemory(world);
+			System.out.println(world.getLevel(0).chunks.size() + " total chunks");
 		}
-		
-		
+
 		//SaveManager.loadWorld("world");
 		
 		InputManager.initialize();
 		//Console.initialize();
 		Mob.initialize();
 		SoundManager.initialize();
-		Thread t = new Thread(new GraphicsHandler());
-		t.start();
+
+		Thread chunkLoader = new Thread(new Runnable(){
+			public void run(){
+				while (true) {
+					Chunk.handleChunkLoading();
+					try {
+						Thread.sleep(Chunk.LOAD_CHECK_INTERVAL);
+					}
+					catch (InterruptedException ex){
+						ex.printStackTrace();
+					}
+				}
+			}
+		});
+		chunkLoader.start();
 
 		while (!closed){
 			Timing.calculateDelta();
@@ -108,7 +125,7 @@ public class Main {
 			Timing.throttleCpu();
 		}
 		SoundManager.soundSystem.cleanup();
-		SaveManager.saveWorld(world);
+		SaveManager.writeWorldToDisk(world);
 
 	}
 

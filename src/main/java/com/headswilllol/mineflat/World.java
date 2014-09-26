@@ -19,7 +19,7 @@ public class World {
 	private final int chunkLength;
 	private final int chunkHeight;
 
-	private JSONObject json;
+	private JSONObject json = new JSONObject();
 
 	public World(String name, int chunkCount, int chunkLength, int chunkHeight){
 		this.seed = System.currentTimeMillis() * 1337337331;

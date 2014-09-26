@@ -70,6 +70,8 @@ public class GraphicsHandler implements Runnable {
 
 	public static final HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
 
+	public static boolean TEXTURES_READY = false;
+
 	public void run(){
 		try {
 			for (DisplayMode mode : Display.getAvailableDisplayModes()){
@@ -146,6 +148,7 @@ public class GraphicsHandler implements Runnable {
 
 		for (Material m : Material.values())
 			GraphicsUtil.addTexture(m);
+		TEXTURES_READY = true;
 
 		//initializeFont();
 

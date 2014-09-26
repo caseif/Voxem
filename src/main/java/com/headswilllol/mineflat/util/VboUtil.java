@@ -65,6 +65,7 @@ public class VboUtil {
 				for (int y = 0; y < Main.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
 					if (!Block.isAir(b)){
+						while (!GraphicsHandler.TEXTURES_READY){} // this is a horrible idea
 						float tX = GraphicsUtil.texCoords.get(b.getType()).getX();
 						float tY = GraphicsUtil.texCoords.get(b.getType()).getY();
 
@@ -251,9 +252,11 @@ public class VboUtil {
 			chunkArrays.remove(c.getIndex());
 			Float[] cArray = cValues.toArray(new Float[cValues.size()]);
 			chunkArrays.put(c.getIndex(), cArray);
-
-			recreateArray();
 		}
+		else
+			chunkArrays.remove(chunk);
+
+		recreateArray();
 	}
 
 	/**
@@ -266,12 +269,14 @@ public class VboUtil {
 		vertexData.put(vertexArray);
 		vertexData.rewind();
 		rebindArray = true;
+		System.out.println("rebinding");
 	}
 
 	/**
 	 * Rebinds the VBO to the OpenGL instance, effectively redrawing it.
 	 */
 	public static void bindArray(){
+		//System.out.println("rebinding");
 		if (vertexData != null){
 			glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
 			glBufferData(GL_ARRAY_BUFFER, vertexData, GL_DYNAMIC_DRAW);

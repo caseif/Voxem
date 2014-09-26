@@ -20,7 +20,7 @@ public class Terrain {
 
 	public static void generateTerrain(){
 		generateChunks();
-		//smoothTerrain();
+		smoothTerrain();
 		generateOres();
 		generateCaves();
 		plantGrass();
