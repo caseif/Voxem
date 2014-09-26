@@ -1,5 +1,7 @@
 package com.headswilllol.mineflat;
 
+import org.json.simple.JSONObject;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +18,9 @@ public class World {
 	private final int chunkCount;
 	private final int chunkLength;
 	private final int chunkHeight;
-	
+
+	private JSONObject json;
+
 	public World(String name, int chunkCount, int chunkLength, int chunkHeight){
 		this.seed = System.currentTimeMillis() * 1337337331;
 		this.name = name;
@@ -65,6 +69,14 @@ public class World {
 	 */
 	public int getChunkHeight(){
 		return chunkHeight;
+	}
+
+	public JSONObject getJSON(){
+		return json;
+	}
+
+	public void setJSON(JSONObject json){
+		this.json = json;
 	}
 
 }

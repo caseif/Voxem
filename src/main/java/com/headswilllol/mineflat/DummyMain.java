@@ -27,7 +27,7 @@ public class DummyMain extends JFrame implements ActionListener {
 		f.setSize(800, 600);
 		f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 400, Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 300);
 		try {
-			f.setIconImage(ImageIO.read(Main.class.getResourceAsStream("/images/icon.png")));
+			f.setIconImage(ImageIO.read(Main.class.getResourceAsStream("/textures/block/grass.png")));
 		}
 		catch (IOException ex){
 			// who cares?

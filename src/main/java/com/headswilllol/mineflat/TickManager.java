@@ -91,7 +91,7 @@ public class TickManager {
 				}
 				switch (type){
 				case ZOMBIE:
-					Main.world.addEntity(new Zombie(Chunk.getWorldXFromChunkIndex(c.getNum(), (int)x), (float)y));
+					Main.world.addEntity(new Zombie(Chunk.getWorldXFromChunkIndex(c.getIndex(), (int)x), (float)y));
 				default:
 				}
 			}

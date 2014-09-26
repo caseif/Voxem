@@ -57,7 +57,7 @@ public class Terrain {
 									mat = Material.DIRT;
 								else if (y >= 15 && y < 17){
 									if ((int)(noise.noise(
-											Chunk.getWorldXFromChunkIndex(c.getNum(), x), y) + 1) == 0)
+											Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y) + 1) == 0)
 										mat = Material.STONE;
 								}
 								else if (y >= 17)
@@ -66,7 +66,7 @@ public class Terrain {
 							else if (y == Main.world.getChunkHeight() - 1)
 								mat = Material.BEDROCK;
 							Block b = new Block(
-									mat, new Location(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x), y));
+									mat, new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y));
 							b.addToWorld();
 						}
 					}
@@ -80,8 +80,8 @@ public class Terrain {
 		for (Level l : Main.world.getLevels()){
 			for (Chunk c : l.chunks.values()){
 				for (int x = 0; x < Main.world.getChunkLength(); x++){
-					int h = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x), 0));
-					int leftHeight = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x) - 1, 0));
+					int h = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0));
+					int leftHeight = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x) - 1, 0));
 					if (leftHeight != -1){
 						h = (h + leftHeight) / 2;
 						if (leftHeight - h >= 3)
@@ -102,24 +102,24 @@ public class Terrain {
 								}
 								else if (y >= 15 && y < 17){
 									if ((int)(noise.noise(
-											Chunk.getWorldXFromChunkIndex(c.getNum(), x), y) + 1) == 0)
+											Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y) + 1) == 0)
 										mat = Material.STONE;
 								}
 								else if (y >= 17 && y < Main.world.getChunkHeight() - 1)
 									mat = Material.STONE;
 							}
-							Block prev = new Location(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x), y)
+							Block prev = new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y)
 									.getBlock();
 							if (Block.isSolid(prev))
 								prev.setType(mat);
 							else {
 								Block b = new Block(mat,
-										new Location(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x), y));
+										new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y));
 								b.addToWorld();
 							}
 						}
 					}
-					if (Chunk.getWorldXFromChunkIndex(c.getNum(), x) == Main.player.getX())
+					if (Chunk.getWorldXFromChunkIndex(c.getIndex(), x) == Main.player.getX())
 						Main.player.setY(h - 2);
 				}
 			}
@@ -137,7 +137,7 @@ public class Terrain {
 			for (Chunk c : l.chunks.values()){
 				for (int xx = 0; xx < Main.world.getChunkLength(); xx++){
 					for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
-						int x = (int)Chunk.getWorldXFromChunkIndex(c.getNum(), xx);
+						int x = (int)Chunk.getWorldXFromChunkIndex(c.getIndex(), xx);
 						int y = yy;
 						if (Block.isSolid(l, x, y) &&
 								Block.getBlock(l, x, y).getType() == Material.STONE){
@@ -208,7 +208,7 @@ public class Terrain {
 		for (Level l : Main.world.getLevels()){
 			for (Chunk c : l.chunks.values()){
 				if (CaveFactory.r.nextInt(2) == 0){
-					int x = (int)Chunk.getWorldXFromChunkIndex(c.getNum(),
+					int x = (int)Chunk.getWorldXFromChunkIndex(c.getIndex(),
 							CaveFactory.r.nextInt(Main.world.getChunkLength()));
 					new CaveFactory(new Location(l, x, Block.getTop(new Location(l, x, 0)) + 1));
 				}
@@ -225,7 +225,7 @@ public class Terrain {
 			// analyze and improve cave systems
 			for (Chunk c : l.chunks.values()){
 				for (int xx = 0; xx < Main.world.getChunkLength(); xx++){
-					int x = (int)Chunk.getWorldXFromChunkIndex(c.getNum(), xx);
+					int x = (int)Chunk.getWorldXFromChunkIndex(c.getIndex(), xx);
 					for (int y = 0; y < Main.world.getChunkHeight(); y++){
 						if (Block.isSolid(l, x, y)){
 							List<Block> surrounding = new ArrayList<Block>();
@@ -354,8 +354,8 @@ public class Terrain {
 		for (Level l : Main.world.getLevels()){
 			for (Chunk c : l.chunks.values()){
 				for (int x = 0; x < Main.world.getChunkLength(); x++){
-					int y = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x), 0));
-					Block b = Block.getBlock(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x), y);
+					int y = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0));
+					Block b = Block.getBlock(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y);
 					if (b.getType() == Material.DIRT)
 						b.setType(Material.GRASS);
 				}
@@ -370,8 +370,8 @@ public class Terrain {
 			for (Chunk c : l.chunks.values()){
 				for (int x = 0; x < Main.world.getChunkLength(); x++){
 					if (r.nextInt(12) == 0){ // plant a tree
-						l.plantTree((int)Chunk.getWorldXFromChunkIndex(c.getNum(), x),
-								Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getNum(), x), 0)));
+						l.plantTree((int)Chunk.getWorldXFromChunkIndex(c.getIndex(), x),
+								Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0)));
 					}
 				}
 			}

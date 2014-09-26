@@ -59,14 +59,6 @@ public class Block {
 		}
 		chunk = location.getChunk();
 	}
-
-	/*public void addToWorld(){
-		Chunk c = location.getLevel().getChunk(location.getChunk());
-		if (c == null)
-			c = new Chunk(location.getLevel(), location.getChunk());
-		System.out.println("add: " + c.getNum() + ", " + Chunk.getIndexInChunk((int)location.getX()) + ", " + location.getX());
-		c.setBlock(Chunk.getIndexInChunk((int)location.getX()), (int)location.getY(), this);
-	}*/
 	
 	public void addToWorld(){
 		Chunk c = location.getLevel().getChunk(location.getChunk());

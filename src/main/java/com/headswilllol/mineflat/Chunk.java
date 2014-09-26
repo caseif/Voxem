@@ -9,13 +9,13 @@ import java.util.List;
 public class Chunk {
 
 	protected final Level level;
-	protected final int num;
+	protected final int index;
 
 	private Block[][] blocks;
 
 	public Chunk(Level level, int num){
 		this.level = level;
-		this.num = num;
+		this.index = num;
 		blocks = new Block[Main.world.getChunkLength()][Main.world.getChunkHeight()];
 		level.chunks.put(num, this);
 	}
@@ -24,8 +24,8 @@ public class Chunk {
 		return level;
 	}
 
-	public int getNum(){
-		return num;
+	public int getIndex(){
+		return index;
 	}
 
 	public Block getBlock(int x, int y){
@@ -109,7 +109,7 @@ public class Chunk {
 	public Collection<Entity> getEntities() {
 		List<Entity> entities = new ArrayList<Entity>();
 		for (Entity e : level.getEntities())
-			if (e.getLocation().getChunk() == this.getNum())
+			if (e.getLocation().getChunk() == this.getIndex())
 				entities.add(e);
 		return entities;
 	}

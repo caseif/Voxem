@@ -248,9 +248,9 @@ public class VboUtil {
 				}
 			}
 
-			chunkArrays.remove(c.getNum());
+			chunkArrays.remove(c.getIndex());
 			Float[] cArray = cValues.toArray(new Float[cValues.size()]);
-			chunkArrays.put(c.getNum(), cArray);
+			chunkArrays.put(c.getIndex(), cArray);
 
 			recreateArray();
 		}

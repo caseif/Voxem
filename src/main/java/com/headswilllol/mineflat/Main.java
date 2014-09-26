@@ -109,7 +109,7 @@ public class Main {
 			Timing.throttleCpu();
 		}
 		SoundManager.soundSystem.cleanup();
-		SaveManager.saveWorld();
+		SaveManager.saveWorld(world);
 
 	}
 
