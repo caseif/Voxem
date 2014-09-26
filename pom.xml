@@ -4,7 +4,7 @@
 	<groupId>com.headswilllol.mineflat</groupId>
 	<artifactId>mineflat</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.1a-indev</version>
+	<version>0.9.2a-indev</version>
 	<name>MineFlat</name>
 	<url>http://amigocraft.net/mineflat</url>
 	<description>A 2D voxel-based game based off of Terraria.</description>
