@@ -1,6 +1,6 @@
 package com.headswilllol.mineflat;
 
-import com.headswilllol.mineflat.location.WorldLocation;
+import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
 
 import java.util.ArrayList;
@@ -15,9 +15,9 @@ public class CaveFactory {
 	public static final int UP_BIAS = 3, DOWN_BIAS = 2, LEFT_BIAS = 2, RIGHT_BIAS = 2;
 	public static final int SPAWN_CHANCE = 130;
 
-	private WorldLocation l;
+	private Location l;
 
-	public CaveFactory(WorldLocation location){
+	public CaveFactory(Location location){
 		this.l = location;
 		CaveFactory.caveFactories.add(this);
 	}

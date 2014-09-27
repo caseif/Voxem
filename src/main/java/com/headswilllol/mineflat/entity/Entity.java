@@ -4,11 +4,12 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.HashMap;
 
+import com.headswilllol.mineflat.vector.Vector2f;
+import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.Direction;
 import com.headswilllol.mineflat.GraphicsHandler;
 import com.headswilllol.mineflat.world.Level;
-import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.util.Timing;
 import com.headswilllol.mineflat.util.ImageUtil;
@@ -36,14 +37,9 @@ public class Entity {
 	public final float height;
 
 	/**
-	 * The current velocity on the x axis (e.g. from moving, throwing)
+	 * The entity's current velocity.
 	 */
-	public static float xVelocity = 0;
-
-	/**
-	 * The current velocity on the y axis (e.g. from falling, jumping)
-	 */
-	public static float yVelocity = 0;
+	public static Vector2f velocity = new Vector2f(0f, 0f);
 
 	/**
 	 * The vertical offset in pixels of entities in relation to the block they are standing on.
@@ -52,11 +48,11 @@ public class Entity {
 
 	public static final HashMap<EntityType, Integer> sprites = new HashMap<EntityType, Integer>();
 
-	protected WorldLocation location;
+	protected Location location;
 	protected EntityType type;
 	public boolean ground = false;
 
-	public Entity(EntityType type, WorldLocation location, float width, float height){
+	public Entity(EntityType type, Location location, float width, float height){
 		this.type = type;
 		this.location = location;
 		this.width = width;
@@ -67,7 +63,7 @@ public class Entity {
 		return location.getLevel();
 	}
 
-	public WorldLocation getLocation(){
+	public Location getLocation(){
 		return location;
 	}
 
@@ -87,7 +83,7 @@ public class Entity {
 		location.setLevel(level);
 	}
 
-	public void setLocation(WorldLocation location){
+	public void setLocation(Location location){
 		this.location = location;
 	}
 
@@ -103,70 +99,62 @@ public class Entity {
 		this.type = type;
 	}
 
-	public float getXVelocity(){
-		return xVelocity;
+	public Vector2f getVelocity(){
+		return velocity;
 	}
 
-	public void setXVelocity(float v){
-		xVelocity = v;
-	}
-
-	public float getYVelocity(){
-		return yVelocity;
-	}
-
-	public void setYVelocity(float v){
-		yVelocity = v;
+	public void setXVelocity(Vector2f v){
+		velocity = v;
 	}
 
 	public void manageMovement(){
 
 		if (!isOnGround()){
-			if (getYVelocity() < terminalVelocity){
-				float newFallSpeed = getYVelocity() + gravity * Timing.delta / Timing.TIME_RESOLUTION * 2.5f;
+			if (getVelocity().getY() < terminalVelocity){
+				float newFallSpeed = getVelocity().getY() + gravity * Timing.delta / Timing.TIME_RESOLUTION * 2.5f;
 				if (newFallSpeed > terminalVelocity)
 					newFallSpeed = terminalVelocity;
-				setYVelocity(newFallSpeed);
+				getVelocity().setY(newFallSpeed);
 			}
 		}
 
 		if (!isXMovementBlocked())
-			setX(getX() + getXVelocity() * (Timing.delta / Timing.TIME_RESOLUTION));
+			setX(getX() + getVelocity().getX() * (Timing.delta / Timing.TIME_RESOLUTION));
 		else {
-			setXVelocity(0);
+			getVelocity().setX(0);
 			if (this instanceof Mob){
 				((Mob)this).setPlannedWalkDistance(0);
 				((Mob)this).setActualWalkDistance(0);
 			}
 		}
 
-		float newY = getY() + getYVelocity() * (Timing.delta / Timing.TIME_RESOLUTION);
+		float newY = getY() + getVelocity().getY() * (Timing.delta / Timing.TIME_RESOLUTION);
 
 		float pX = getX() >= 0 ? getX() :
 			getX() - 1;
 
 		if (newY >= 0 && newY < Main.world.getChunkHeight()){
 			if (Block.isSolid(getLevel(), pX, (float)Math.floor(newY + vertOffset / (float)Block.length)))
-				setYVelocity(0);
+				getVelocity().setY(0);
 		}
 
 		Block below = getBlockBelow();
 		if (newY - getY() < 1){
 			if (below != null && Block.isSolid(below) && (float)below.getY() - getY() < height){
-				setYVelocity(0);
+				getVelocity().setY(0);
 				setY(below.getY() - height);
 			}
 		}
 		else {
 			for (int y = (int)Math.floor(getY()); y <= newY + height; y++){
 				if (Block.isSolid(getLevel(), pX, y)){
-					setYVelocity(0);
+					getVelocity().setY(0);
 					setY(y - height);
 					break;
 				}
 			}
 		}
-		setY(getY() + getYVelocity() * (Timing.delta / Timing.TIME_RESOLUTION));
+		setY(getY() + getVelocity().getY() * (Timing.delta / Timing.TIME_RESOLUTION));
 	}
 
 	public boolean isOnGround(){
@@ -195,14 +183,14 @@ public class Entity {
 	}
 
 	public boolean isXMovementBlocked(){
-		float newX = getX() >= 0 ? getX() + (xVelocity * (Timing.delta / Timing.TIME_RESOLUTION)) :
-			getX() - 1 + (xVelocity * (Timing.delta / Timing.TIME_RESOLUTION));
+		float newX = getX() >= 0 ? getX() + (getVelocity().getX() * (Timing.delta / Timing.TIME_RESOLUTION)) :
+			getX() - 1 + (getVelocity().getX() * (Timing.delta / Timing.TIME_RESOLUTION));
 		int minY = (int)Math.floor(getY());
 		int maxY = (int)Math.ceil(getY() + height - 1);
 		for (int y = minY; y <= maxY; y++)
 			if (Block.isSolid(getLevel(), newX, y))
 				return true;
-		return !getLevel().isChunkGenerated(new WorldLocation(getLevel(), newX, minY).getChunk());
+		return !getLevel().isChunkGenerated(new Location(getLevel(), newX, minY).getChunk());
 	}
 
 	public void draw(){

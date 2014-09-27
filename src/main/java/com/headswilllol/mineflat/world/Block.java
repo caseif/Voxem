@@ -7,7 +7,6 @@ import com.headswilllol.mineflat.GraphicsHandler;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.TickManager;
-import com.headswilllol.mineflat.location.WorldLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -15,7 +14,7 @@ public class Block {
 
 	public static int blockHandle; //TODO: figure out what I meant to do with this
 
-	protected WorldLocation location;
+	protected Location location;
 
 	protected Material type;
 
@@ -34,7 +33,8 @@ public class Block {
 	/**
 	 * The block which is currently selected.
 	 */
-	public static WorldLocation selected = null;
+	public static Location selected = null;
+	//TODO: eliminate the next two variables
 	public static int selectedX = 0;
 	public static int selectedY = 0;
 	public static boolean isSelected = false;
@@ -54,7 +54,7 @@ public class Block {
 
 	public final HashMap<String, Object> metadata = new HashMap<String, Object>();
 
-	public Block(Material m, int data, WorldLocation location){
+	public Block(Material m, int data, Location location){
 		this.type = m;
 		this.data = data;
 		this.location = location;
@@ -68,7 +68,7 @@ public class Block {
 		}
 	}
 
-	public Block(Material m, WorldLocation location){
+	public Block(Material m, Location location){
 		this(m, 0, location);
 	}
 	
@@ -92,7 +92,7 @@ public class Block {
 		return (int)location.getY();
 	}
 
-	public WorldLocation getLocation(){
+	public Location getLocation(){
 		return location;
 	}
 
@@ -121,7 +121,7 @@ public class Block {
 		this.location.setY(y);
 	}
 
-	public void setLocation(WorldLocation location){
+	public void setLocation(Location location){
 		this.location = location;
 	}
 
@@ -189,7 +189,7 @@ public class Block {
 	}
 
 	//TODO: make this faster
-	public static int getTop(WorldLocation location){
+	public static int getTop(Location location){
 		for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
 			if (isSolid(location.getLevel(), location.getX(), yy)){
 				return yy;
@@ -200,7 +200,7 @@ public class Block {
 
 	public static Block getBlock(Level level, int x, int y){
 		if (y >= 0 && y < Main.world.getChunkHeight()){
-			Chunk c = level.getChunk(new WorldLocation(level, x, y).getChunk());
+			Chunk c = level.getChunk(new Location(level, x, y).getChunk());
 			if (c != null)
 				return c.getBlock(Chunk.getIndexInChunk(x), y);
 		}
@@ -228,7 +228,7 @@ public class Block {
 				if (blockY >= 0 && blockY <= Main.world.getChunkHeight() - 1){
 					if (!Block.isAir(Main.player.getLevel(), blockX, blockY)){
 						//TODO: verfiy that player isn't peeking through blocks
-						Block.selected = new WorldLocation(Main.player.getLevel(), blockX, blockY);
+						Block.selected = new Location(Main.player.getLevel(), blockX, blockY);
 						found = true;
 						break;
 					}
@@ -276,7 +276,7 @@ public class Block {
 		return b == null || Block.isAir(b.getLevel(), b.getX(), b.getY());
 	}
 
-	public static boolean isAir(WorldLocation l){
+	public static boolean isAir(Location l){
 		return Block.isAir(l.getLevel(), l.getX(), l.getY());
 	}
 
@@ -285,15 +285,15 @@ public class Block {
 	}
 
 	public static boolean isSolid(Level level, float x, float y){
-		return new WorldLocation(level, x, y).getBlock() != null && !isAir(level, x, y) &&
-				!(new WorldLocation(level, x, y).getBlock().hasMetadata("solid") && !(Boolean)new WorldLocation(level, x, y).getBlock().getMetadata("solid"));
+		return new Location(level, x, y).getBlock() != null && !isAir(level, x, y) &&
+				!(new Location(level, x, y).getBlock().hasMetadata("solid") && !(Boolean)new Location(level, x, y).getBlock().getMetadata("solid"));
 	}
 
 	public static boolean isSolid(Block b){
 		return isSolid(b.getLevel(), b.getX(), b.getY());
 	}
 
-	public static boolean isSolid(WorldLocation l){
+	public static boolean isSolid(Location l){
 		return isSolid(l.getLevel(), l.getX(), l.getY());
 	}
 	

@@ -1,15 +1,16 @@
-package com.headswilllol.mineflat.location;
+package com.headswilllol.mineflat.world;
 
 import com.headswilllol.mineflat.*;
-import com.headswilllol.mineflat.world.Block;
-import com.headswilllol.mineflat.world.Chunk;
-import com.headswilllol.mineflat.world.Level;
+import com.headswilllol.mineflat.vector.Vector2f;
 
-public class WorldLocation extends Location2f {
+/**
+ * Represents a physical location in a world.
+ */
+public class Location extends Vector2f {
 
 	protected Level level;
 
-	public WorldLocation(Level level, float x, float y){
+	public Location(Level level, float x, float y){
 		super(x, y);
 		this.level = level;
 	}
@@ -23,20 +24,20 @@ public class WorldLocation extends Location2f {
 		this.level = level;
 	}
 	
-	public WorldLocation add(WorldLocation location){
+	public Location add(Location location){
 		return add(location.getX(), location.getY());
 	}
 	
-	public WorldLocation add(float x, float y){
-		return new WorldLocation(this.level, this.x + x, this.y + y);
+	public Location add(float x, float y){
+		return new Location(this.level, this.x + x, this.y + y);
 	}
 	
-	public WorldLocation subtract(WorldLocation location){
+	public Location subtract(Location location){
 		return subtract(location.getX(), location.getY());
 	}
 	
-	public WorldLocation subtract(float x, float y){
-		return new WorldLocation(this.level, this.x + x, this.y + y);
+	public Location subtract(float x, float y){
+		return new Location(this.level, this.x + x, this.y + y);
 	}
 
 	public Block getBlock(){
@@ -48,8 +49,8 @@ public class WorldLocation extends Location2f {
 	}
 
 	public boolean equals(Object o){
-		if (o instanceof WorldLocation){
-			WorldLocation l = (WorldLocation)o;
+		if (o instanceof Location){
+			Location l = (Location)o;
 			return l.getX() == this.x && l.getY() == this.y;
 		}
 		return false;

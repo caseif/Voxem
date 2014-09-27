@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.headswilllol.mineflat.location.WorldLocation;
+import com.headswilllol.mineflat.world.Location;
 
 public abstract class Mob extends LivingEntity {
 
@@ -15,7 +15,7 @@ public abstract class Mob extends LivingEntity {
 	public static final List<EntityType> mobTypes = new ArrayList<EntityType>();
 	public static final HashMap<EntityType, Integer> light = new HashMap<EntityType, Integer>();
 	
-	public Mob(EntityType type, WorldLocation location, float width, float height){
+	public Mob(EntityType type, Location location, float width, float height){
 		super(type, location, width, height);
 	}
 	

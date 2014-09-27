@@ -9,12 +9,7 @@ import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.TickManager;
 import com.headswilllol.mineflat.entity.*;
-import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.util.FileUtil;
-import com.headswilllol.mineflat.world.Block;
-import com.headswilllol.mineflat.world.Chunk;
-import com.headswilllol.mineflat.world.Level;
-import com.headswilllol.mineflat.world.World;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -149,7 +144,8 @@ public class SaveManager {
 				Material type = Material.valueOf((String)block.get("type"));
 				if (type == null)
 					type = Material.AIR;
-				Block b = new Block(type, new WorldLocation(level, Chunk.getWorldXFromChunkIndex(chunk,
+				int data = block.get("data") != null ? (Integer)block.get("data") : 0;
+				Block b = new Block(type, data, new Location(level, Chunk.getWorldXFromChunkIndex(chunk,
 						block.get("x") instanceof Integer ? (Integer)block.get("x") : (Long)block.get("x")),
 						block.get("y") instanceof Integer ? (Integer)block.get("y") : (Long)block.get("y")));
 				JSONObject meta = (JSONObject)block.get("metadata");
@@ -169,10 +165,10 @@ public class SaveManager {
 					if (entity.containsKey("mob")) {
 						switch (type) {
 							case ZOMBIE:
-								e = new Zombie(new WorldLocation(level, x, y));
+								e = new Zombie(new Location(level, x, y));
 								break;
 							default:
-								e = new LivingEntity(type, new WorldLocation(level, x, y), w, h);
+								e = new LivingEntity(type, new Location(level, x, y), w, h);
 								break;
 						}
 						((Mob)e).setPlannedWalkDistance((Float)entity.get("pwd"));
@@ -182,13 +178,13 @@ public class SaveManager {
 					else {
 						switch (type) {
 							case PLAYER:
-								e = new Player(new WorldLocation(level, x, y));
+								e = new Player(new Location(level, x, y));
 								break;
 							case HUMAN:
-								e = new Human(new WorldLocation(level, x, y));
+								e = new Human(new Location(level, x, y));
 								break;
 							default:
-								e = new LivingEntity(type, new WorldLocation(level, x, y), w, h);
+								e = new LivingEntity(type, new Location(level, x, y), w, h);
 						}
 					}
 					((LivingEntity)e).setFacingDirection(Direction.valueOf((String)entity.get("fd")));
@@ -196,9 +192,9 @@ public class SaveManager {
 					((LivingEntity)e).setJumping((Boolean)entity.get("j"));
 				}
 				else
-					e = new Entity(type, new WorldLocation(level, x, y), w, h);
-				e.setXVelocity(Float.valueOf(Double.toString((Double)entity.get("xv"))));
-				e.setYVelocity(Float.valueOf(Double.toString((Double)entity.get("yv"))));
+					e = new Entity(type, new Location(level, x, y), w, h);
+				e.getVelocity().setX(Float.valueOf(Double.toString((Double)entity.get("xv"))));
+				e.getVelocity().setY(Float.valueOf(Double.toString((Double)entity.get("yv"))));
 				level.addEntity(e);
 				if (type == EntityType.PLAYER)
 					Main.player = (Player)e;
@@ -239,7 +235,8 @@ public class SaveManager {
 					b.put("x", x);
 					b.put("y", y);
 					b.put("type", block.getType().toString());
-					//TODO: store data values
+					if (block.getData() != 0)
+						b.put("data", block.getData());
 					blocks.add(b);
 					JSONObject meta = new JSONObject();
 					for (String key : block.getAllMetadata())
@@ -257,8 +254,8 @@ public class SaveManager {
 			e.put("y", entity.getY());
 			e.put("w", entity.width);
 			e.put("h", entity.height);
-			e.put("xv", entity.getXVelocity());
-			e.put("yv", entity.getYVelocity());
+			e.put("xv", entity.getVelocity().getX());
+			e.put("yv", entity.getVelocity().getY());
 			if (entity instanceof LivingEntity){
 				e.put("living", true);
 				LivingEntity le = (LivingEntity)entity;

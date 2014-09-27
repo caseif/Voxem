@@ -1,47 +1,40 @@
 package com.headswilllol.mineflat;
 
+import com.headswilllol.mineflat.vector.Vector2i;
+
 import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class Button {
 
 	private static int nextHandle = 0;
 	private static final List<Button> buttons = new ArrayList<Button>();
 	
-	private int x;
-	private int y;
+	private Vector2i position;
 	private int width;
 	private int height;
 	private String text;
 	private final int handle;
 	private boolean active = true;
 
-	public Button(int x, int y, int width, int height, String text){
-		this.x = x;
-		this.y = y;
+	public Button(Vector2i position, int width, int height, String text){
+		this.position = position;
 		this.width = width;
 		this.height = height;
 		this.text = text;
 		this.handle = nextHandle;
 		nextHandle += 1;
 	}
-	
-	public int getX(){
-		return x;
+
+	public Vector2i getPosition(){
+		return position;
 	}
 
-	public void setX(int x){
-		this.x = x;
-	}
-
-	public int getY(){
-		return y;
-	}
-
-	public void setY(int y){
-		this.y = y;
+	public void setPosition(Vector2i position){
+		this.position = position;
 	}
 
 	public int getWidth(){
@@ -83,10 +76,10 @@ public class Button {
 	public void draw(){
 		glColor3f(0.5f, 0.5f, 0.5f);
 		glBegin(GL_QUADS);
-		glVertex2f(x, y);
-		glVertex2f(x + width, y);
-		glVertex2f(x + width, y + height);
-		glVertex2f(x, y + height);
+		glVertex2f(position.getX(), position.getY());
+		glVertex2f(position.getX() + width, position.getY());
+		glVertex2f(position.getX() + width, position.getY() + height);
+		glVertex2f(position.getX(), position.getY() + height);
 		glEnd();
 	}
 	

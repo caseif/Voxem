@@ -1,12 +1,12 @@
 package com.headswilllol.mineflat.event.block;
 
+import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
-import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.util.VboUtil;
 
 public class BlockPlaceEvent extends BlockEvent {
 
-	public BlockPlaceEvent(WorldLocation l, Block b){
+	public BlockPlaceEvent(Location l, Block b){
 		this.location = l;
 		this.oldBlock = null;
 		this.newBlock = b;

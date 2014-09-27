@@ -1,7 +1,7 @@
 package com.headswilllol.mineflat;
 
-import com.headswilllol.mineflat.location.Location2f;
-import com.headswilllol.mineflat.location.WorldLocation;
+import com.headswilllol.mineflat.world.Location;
+import com.headswilllol.mineflat.vector.Vector2f;
 import com.headswilllol.mineflat.util.ImageUtil;
 import com.headswilllol.mineflat.world.Block;
 
@@ -19,9 +19,9 @@ public class Texture {
 	private Material material;
 	private int data;
 	private BufferedImage image;
-	private Location2f atlasLoc;
+	private Vector2f atlasLoc;
 
-	public Texture(Material material, int data, BufferedImage image, Location2f atlasLoc){
+	public Texture(Material material, int data, BufferedImage image, Vector2f atlasLoc){
 		this.material = material;
 		this.data = data;
 		this.image = image;
@@ -29,7 +29,7 @@ public class Texture {
 	}
 
 	public Texture(Material material, int data, BufferedImage image, int atlasX, int atlastY){
-		this(material, data, image, new WorldLocation(null, -1, -1));
+		this(material, data, image, new Location(null, -1, -1));
 	}
 
 	public Texture(Material material, int data, BufferedImage image){
@@ -48,7 +48,7 @@ public class Texture {
 		return image;
 	}
 
-	public Location2f getAtlasLocation(){
+	public Vector2f getAtlasLocation(){
 		return atlasLoc;
 	}
 
@@ -60,7 +60,7 @@ public class Texture {
 		return atlasLoc.getY();
 	}
 
-	public void setAtlasLocation(Location2f location){
+	public void setAtlasLocation(Vector2f location){
 		this.atlasLoc = location;
 	}
 

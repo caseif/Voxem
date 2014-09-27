@@ -1,11 +1,14 @@
-package com.headswilllol.mineflat.location;
+package com.headswilllol.mineflat.vector;
 
-public class Location2f {
+/**
+ * Represents a vector with 2 float elements.
+ */
+public class Vector2f extends Vector2 {
 
 	protected float x;
 	protected float y;
 
-	public Location2f(float x, float y){
+	public Vector2f(float x, float y){
 		this.x = x;
 		this.y = y;
 	}

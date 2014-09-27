@@ -4,7 +4,7 @@ import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
 import com.headswilllol.mineflat.entity.Player;
-import com.headswilllol.mineflat.location.WorldLocation;
+import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.util.Timing;
 import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.world.Chunk;
@@ -88,7 +88,7 @@ public class Main {
 			world = new World("world", 8, 16, 128);
 			world.creationTime = System.currentTimeMillis() / 1000L;
 			world.addLevel(0);
-			player = new Player(new WorldLocation(world.getLevel(0), 0, 0));
+			player = new Player(new Location(world.getLevel(0), 0, 0));
 			world.getLevel(0).addEntity(player);
 			Terrain.generateTerrain();
 			SaveManager.saveWorldToMemory(world);
@@ -112,6 +112,8 @@ public class Main {
 					catch (InterruptedException ex){
 						ex.printStackTrace();
 					}
+					if (closed)
+						return;
 				}
 			}
 		});

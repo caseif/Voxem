@@ -1,11 +1,14 @@
-package com.headswilllol.mineflat.location;
+package com.headswilllol.mineflat.vector;
 
-public class Location2i {
+/**
+ * Represents a vector with two integer elements.
+ */
+public class Vector2i extends Vector2 {
 
 	protected int x;
 	protected int y;
 
-	public Location2i(int x, int y){
+	public Vector2i(int x, int y){
 		this.x = x;
 		this.y = y;
 	}

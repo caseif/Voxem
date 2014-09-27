@@ -1,7 +1,7 @@
 package com.headswilllol.mineflat.entity;
 
 import com.headswilllol.mineflat.Direction;
-import com.headswilllol.mineflat.location.WorldLocation;
+import com.headswilllol.mineflat.world.Location;
 
 public class LivingEntity extends Entity {
 
@@ -18,7 +18,7 @@ public class LivingEntity extends Entity {
 	protected Direction direction = Direction.STATIONARY;
 	protected boolean jump = false;
 
-	public LivingEntity(EntityType type, WorldLocation location, float width, float height){
+	public LivingEntity(EntityType type, Location location, float width, float height){
 		super(type, location, width, height);
 	}
 
@@ -42,14 +42,14 @@ public class LivingEntity extends Entity {
 	public void manageMovement(){
 
 		if(direction == Direction.LEFT)
-			setXVelocity(-getSpeed());
+			getVelocity().setX(-getSpeed());
 		if(direction == Direction.RIGHT)
-			setXVelocity(getSpeed());
+			getVelocity().setX(getSpeed());
 		if(direction == Direction.STATIONARY)
-			setXVelocity(0);
+			getVelocity().setX(0f);
 
 		if(jump && isOnGround())
-			setYVelocity(-jumpPower);
+			getVelocity().setY(-jumpPower);
 
 		super.manageMovement();
 

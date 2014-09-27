@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 import com.headswilllol.mineflat.Texture;
-import com.headswilllol.mineflat.location.Location2f;
+import com.headswilllol.mineflat.vector.Vector2f;
 import org.lwjgl.BufferUtils;
 
 import com.headswilllol.mineflat.world.Block;
@@ -60,7 +60,7 @@ public class ImageUtil {
 				}*/
 				g.drawImage(Texture.textures.get(m)[d].getImage(), x, y, null);
 				Texture.textures.get(m)[d].setAtlasLocation(
-						new Location2f((float)x / width, (float)y / height));
+						new Vector2f((float)x / width, (float)y / height));
 				i += 1;
 			}
 			d += 1;

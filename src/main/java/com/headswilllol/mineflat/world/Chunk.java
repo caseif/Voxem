@@ -2,7 +2,6 @@ package com.headswilllol.mineflat.world;
 
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.entity.Entity;
-import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.util.VboUtil;
 import org.json.simple.JSONObject;
 
@@ -66,7 +65,7 @@ public class Chunk {
 					int y = i == 0 ? yy : Main.world.getChunkHeight() - 1 - yy;
 					Block b = this.getBlock(x, y);
 					if (b != null){
-						if (b.getY() <= Block.getTop(new WorldLocation(level, b.getX(), 0)))
+						if (b.getY() <= Block.getTop(new Location(level, b.getX(), 0)))
 							b.setLightLevel(Block.maxLight);
 						else {
 							Block up = null, down = null, left, right;
