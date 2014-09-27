@@ -1,32 +1,32 @@
 package com.headswilllol.mineflat.entity;
 
-import com.headswilllol.mineflat.*;
 import com.headswilllol.mineflat.event.Event;
 import com.headswilllol.mineflat.event.human.HumanMoveEvent;
+import com.headswilllol.mineflat.location.WorldLocation;
 
 /**
  * Represents a human in the world.
  */
 public class Human extends LivingEntity {
 
-	public Human(Location location){
+	public Human(WorldLocation location){
 		super(EntityType.HUMAN, location, 0.5f, 2f);
 	}
 
-	public Location getLocation(){
+	public WorldLocation getLocation(){
 		return location;
 	}
 
 	@Override
 	public void setX(float x){
-		Location old = getLocation();
+		WorldLocation old = getLocation();
 		super.setX(x);
 		Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
 	}
 
 	@Override
 	public void setY(float y){
-		Location old = getLocation();
+		WorldLocation old = getLocation();
 		super.setY(y);
 		Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
 	}

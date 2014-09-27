@@ -1,17 +1,25 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.world;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.headswilllol.mineflat.Direction;
+import com.headswilllol.mineflat.Main;
+import com.headswilllol.mineflat.Material;
+import com.headswilllol.mineflat.TickManager;
 import com.headswilllol.mineflat.entity.*;
+import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.util.FileUtil;
+import com.headswilllol.mineflat.world.Block;
+import com.headswilllol.mineflat.world.Chunk;
+import com.headswilllol.mineflat.world.Level;
+import com.headswilllol.mineflat.world.World;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.net.ssl.SSLContext;
 import java.io.*;
 
 public class SaveManager {
@@ -37,10 +45,8 @@ public class SaveManager {
 		save.put("playerChunk", Main.player.getLocation().getChunk());
 
 		JSONObject levels = (JSONObject)save.get("levels");
-		if (levels == null) {
+		if (levels == null)
 			levels = new JSONObject();
-			System.out.println("created new levels object");
-		}
 		for (Level level : world.getLevels()){
 			levels.put(Integer.toString(level.getIndex()), saveLevel(level));
 		}
@@ -54,9 +60,8 @@ public class SaveManager {
 
 	public static void writeWorldToDisk(World world){
 
-		System.out.println("Writing chunks...");
-
 		saveWorldToMemory(world);
+		System.out.println("Writing chunks...");
 		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator +
 				".mineflat", "saves");
 		saveFolder = new File(saveFolder, world.getName());
@@ -144,7 +149,7 @@ public class SaveManager {
 				Material type = Material.valueOf((String)block.get("type"));
 				if (type == null)
 					type = Material.AIR;
-				Block b = new Block(type, new Location(level, Chunk.getWorldXFromChunkIndex(chunk,
+				Block b = new Block(type, new WorldLocation(level, Chunk.getWorldXFromChunkIndex(chunk,
 						block.get("x") instanceof Integer ? (Integer)block.get("x") : (Long)block.get("x")),
 						block.get("y") instanceof Integer ? (Integer)block.get("y") : (Long)block.get("y")));
 				JSONObject meta = (JSONObject)block.get("metadata");
@@ -152,12 +157,9 @@ public class SaveManager {
 					b.setMetadata((String)key, meta.get(key));
 				b.addToWorld();
 			}
-			System.out.println("about to check entities");
 			for (Object entityObj : (JSONArray)jChunk.get("entities")) {
-				System.out.println("found entity");
 				JSONObject entity = (JSONObject)entityObj;
 				EntityType type = EntityType.valueOf((String)entity.get("type"));
-				System.out.println("type is " + type.toString());
 				float x = Chunk.getWorldXFromChunkIndex(c.getIndex(), Float.valueOf(Double.toString((Double)entity.get("x"))));
 				float y = Float.valueOf(Double.toString((Double)entity.get("y")));
 				float w = Float.valueOf(Double.toString((Double)entity.get("w")));
@@ -167,10 +169,10 @@ public class SaveManager {
 					if (entity.containsKey("mob")) {
 						switch (type) {
 							case ZOMBIE:
-								e = new Zombie(new Location(level, x, y));
+								e = new Zombie(new WorldLocation(level, x, y));
 								break;
 							default:
-								e = new LivingEntity(type, new Location(level, x, y), w, h);
+								e = new LivingEntity(type, new WorldLocation(level, x, y), w, h);
 								break;
 						}
 						((Mob)e).setPlannedWalkDistance((Float)entity.get("pwd"));
@@ -180,13 +182,13 @@ public class SaveManager {
 					else {
 						switch (type) {
 							case PLAYER:
-								e = new Player(new Location(level, x, y));
+								e = new Player(new WorldLocation(level, x, y));
 								break;
 							case HUMAN:
-								e = new Human(new Location(level, x, y));
+								e = new Human(new WorldLocation(level, x, y));
 								break;
 							default:
-								e = new LivingEntity(type, new Location(level, x, y), w, h);
+								e = new LivingEntity(type, new WorldLocation(level, x, y), w, h);
 						}
 					}
 					((LivingEntity)e).setFacingDirection(Direction.valueOf((String)entity.get("fd")));
@@ -194,7 +196,7 @@ public class SaveManager {
 					((LivingEntity)e).setJumping((Boolean)entity.get("j"));
 				}
 				else
-					e = new Entity(type, new Location(level, x, y), w, h);
+					e = new Entity(type, new WorldLocation(level, x, y), w, h);
 				e.setXVelocity(Float.valueOf(Double.toString((Double)entity.get("xv"))));
 				e.setYVelocity(Float.valueOf(Double.toString((Double)entity.get("yv"))));
 				level.addEntity(e);
@@ -202,6 +204,7 @@ public class SaveManager {
 					Main.player = (Player)e;
 			}
 			c.updateLight();
+			System.gc(); //TODO: temporary fix until I have the motivation to find the memory leak
 			return c;
 		}
 		return null;
@@ -311,14 +314,11 @@ public class SaveManager {
 		JSONObject chunks = (JSONObject)level.get("chunks");
 		if (chunks == null)
 			chunks = new JSONObject();
-		System.out.println(chunks.size());
 		JSONObject jChunk = saveChunk(chunk);
 		chunks.put(Integer.toString(chunk.getIndex()), jChunk);
 		level.put("chunks", chunks);
 		levels.put(Integer.toString(chunk.getLevel().getIndex()), level);
 		world.put("levels", levels);
-		if (world == chunk.getLevel().getWorld().getJSON())
-			System.out.println("somethingsomething");
 	}
 
 	/**

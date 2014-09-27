@@ -12,10 +12,11 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import com.headswilllol.mineflat.Texture;
+import com.headswilllol.mineflat.location.Location2f;
 import org.lwjgl.BufferUtils;
 
-import com.headswilllol.mineflat.Block;
-import com.headswilllol.mineflat.Location;
+import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.Material;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
@@ -42,24 +43,30 @@ public class ImageUtil {
 		//TODO: Rewrite to use something other than BufferedImage
 		//int finalSize = NumUtil.nextPowerOfTwo((int)Math.sqrt(GraphicsUtil.textures.size() *
 		//		Math.pow(Block.length, 2)));
-		int width = GraphicsUtil.textures.size() * Block.length;
+		int width = Texture.textures.size() * Block.length;
 		int height = Block.length;
 		BufferedImage atlas = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = atlas.createGraphics();
 		int y = 0;
-		for (int i = 0; i < GraphicsUtil.textures.size(); i++){
-			//int x = (i * Block.length - (height * (y / Block.length))) / Block.length * Block.length;
-			int x = i * Block.length;
-			/*if (width - x < Block.length){
-				x = 0;
-				y += Block.length;
-			}*/
-			g.drawImage(GraphicsUtil.textures.get(GraphicsUtil.textures.keySet().toArray()[i]), x, y, null);
-			GraphicsUtil.texCoords.put((Material)(GraphicsUtil.textures.keySet().toArray()[i]),
-					new Location(null, (float)x / width, (float)y / height));
+		int i = 0;
+		for (Material m : Texture.textures.keySet()){
+			int d = 0;
+			for (Texture t : Texture.textures.get(m)){
+				//int x = (i * Block.length - (height * (y / Block.length))) / Block.length * Block.length;
+				int x = i * Block.length;
+				/*if (width - x < Block.length){
+					x = 0;
+					y += Block.length;
+				}*/
+				g.drawImage(Texture.textures.get(m)[d].getImage(), x, y, null);
+				Texture.textures.get(m)[d].setAtlasLocation(
+						new Location2f((float)x / width, (float)y / height));
+				i += 1;
+			}
+			d += 1;
 		}
-		//GraphicsUtil.atlasSize = finalSize;
-		GraphicsUtil.atlasSize = width;
+		//Texture.atlasSize = finalSize;
+		Texture.atlasSize = width;
 
 		/*try {
 			File outputfile = new File("atlas.png");
@@ -70,7 +77,7 @@ public class ImageUtil {
 		}*/
 
 		try {
-			GraphicsUtil.atlas = ImageUtil.createTextureFromStream(ImageUtil.asInputStream(atlas));
+			Texture.atlas = ImageUtil.createTextureFromStream(ImageUtil.asInputStream(atlas));
 		}
 		catch (Exception ex){
 			ex.printStackTrace();

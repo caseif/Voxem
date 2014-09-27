@@ -1,11 +1,12 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.world;
 
+import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.entity.Entity;
+import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.util.VboUtil;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Chunk {
 	// how often the game should try to load new chunks
 	public static final long LOAD_CHECK_INTERVAL = 1000L;
 
-	private static final int CHUNKS_TO_LOAD = 7; // the number of chunks to keep loaded at a time (will be incremented if even)
+	private static final int CHUNKS_TO_LOAD = 5; // the number of chunks to keep loaded at a time (will be incremented if even)
 
 	public Chunk(Level level, int num){
 		this.level = level;
@@ -65,7 +66,7 @@ public class Chunk {
 					int y = i == 0 ? yy : Main.world.getChunkHeight() - 1 - yy;
 					Block b = this.getBlock(x, y);
 					if (b != null){
-						if (b.getY() <= Block.getTop(new Location(level, b.getX(), 0)))
+						if (b.getY() <= Block.getTop(new WorldLocation(level, b.getX(), 0)))
 							b.setLightLevel(Block.maxLight);
 						else {
 							Block up = null, down = null, left, right;
@@ -140,7 +141,6 @@ public class Chunk {
 	public void unload(){
 		saveToMemory();
 		level.chunks.remove(this.getIndex());
-		System.out.println("unloaded " + this.getIndex());
 	}
 
 	public static void handleChunkLoading(){
@@ -149,16 +149,11 @@ public class Chunk {
 
 	public static void handleChunkLoading(boolean doNotRender) {
 		if (System.currentTimeMillis() - lastLoadCheck >= LOAD_CHECK_INTERVAL) {
-			System.out.println("========================= checking =========================");
 			lastLoadCheck = System.currentTimeMillis();
 			if (Main.player.getX() != lastX) { // get whether player has moved
-				System.out.println("player moved");
 				int lastChunk = getChunkNum((int)lastX);
 				int currentChunk = getChunkNum((int)Main.player.getX());
-				System.out.println("last chunk: " + lastChunk);
-				System.out.println("current chunk: " + currentChunk);
 				if (lastChunk != currentChunk || lastX != lastX){
-					System.out.println("chunk changed");
 					int minChunk = currentChunk - CHUNKS_TO_LOAD / 2;
 					int maxChunk = currentChunk + CHUNKS_TO_LOAD / 2;
 					if ((minChunk > 0) != (maxChunk > 0)) // range passes through x=0 so we need to compensate for no chunk 0
@@ -166,13 +161,10 @@ public class Chunk {
 							minChunk -= 1;
 						else
 							maxChunk += 1;
-					System.out.println("Loading chunks " + minChunk + " through " + maxChunk);
 					List<Chunk> unloadChunks = new ArrayList<Chunk>();
 					boolean rebind = false;
 					for (Chunk c : Main.player.getLevel().chunks.values()) {
-						System.out.println("checking " + c.getIndex() + " for unload");
 						if (c.getIndex() < minChunk || c.getIndex() > maxChunk){
-							System.out.println("unloading " + c.getIndex());
 							unloadChunks.add(c);
 							rebind = true;
 						}
@@ -184,13 +176,19 @@ public class Chunk {
 					}
 					for (int i = minChunk; i <= maxChunk; i++){
 						if (i != 0) {
-							System.out.println("checking " + i + " for load");
 							if (Main.player.getLevel().getChunk(i) == null) {
-								System.out.println(i + " is not loaded");
-								SaveManager.loadChunk(Main.player.getLevel(), i);
-								rebind = true;
-								if (!doNotRender)
-									VboUtil.updateChunkArray(Main.player.getLevel(), i);
+								Chunk c = SaveManager.loadChunk(Main.player.getLevel(), i);
+								if (c != null) {
+										Chunk adj1 = c.getLevel().getChunk(i == -1 ? 1 : i + 1);
+										if (adj1 != null)
+											adj1.updateLight();
+										Chunk adj2 = c.getLevel().getChunk(i == 1 ? -1 : i - 1);
+										if (adj2 != null)
+											adj2.updateLight();
+									rebind = true;
+									if (!doNotRender)
+										VboUtil.updateChunkArray(Main.player.getLevel(), i);
+								}
 							}
 						}
 					}
@@ -199,7 +197,6 @@ public class Chunk {
 				}
 			}
 			lastX = Main.player.getX();
-			System.out.println("======================= done checking ======================");
 		}
 	}
 

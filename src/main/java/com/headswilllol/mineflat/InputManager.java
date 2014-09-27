@@ -4,6 +4,8 @@ import static org.lwjgl.input.Keyboard.*;
 
 import java.util.ArrayList;
 
+import com.headswilllol.mineflat.location.WorldLocation;
+import com.headswilllol.mineflat.world.Block;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -153,18 +155,18 @@ public class InputManager {
 										double yDiff = mouseY - playerY;
 										double m = yDiff / xDiff;
 										double b = playerY - m * playerX;
-										Location l = null;
+										WorldLocation l = null;
 										if (m * x + b >= Block.selected.getY() &&
 												m * x + b <= Block.selected.getY() + 1){
 											if (x == Block.selected.getX())
 												x -= 1;
-											l = new Location(Main.player.getLevel(), x, Block.selected.getY());
+											l = new WorldLocation(Main.player.getLevel(), x, Block.selected.getY());
 										}
 										else if ((y - b) / m >= Block.selected.getX() &&
 												(y - b) / m <= Block.selected.getX() + 1){
 											if (y == Block.selected.getY())
 												y -= 1;
-											l = new Location(Main.player.getLevel(), Block.selected.getX(), y);
+											l = new WorldLocation(Main.player.getLevel(), Block.selected.getX(), y);
 										}
 										if (l != null && Block.isAir(l)){
 											if ((int)playerY == y)

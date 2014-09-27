@@ -1,5 +1,7 @@
 package com.headswilllol.mineflat;
 
+import com.headswilllol.mineflat.util.Timing;
+
 public class TickManager {
 
 	/**

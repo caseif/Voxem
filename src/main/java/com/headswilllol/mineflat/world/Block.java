@@ -1,8 +1,13 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.world;
 
 import java.util.HashMap;
 import java.util.Set;
 
+import com.headswilllol.mineflat.GraphicsHandler;
+import com.headswilllol.mineflat.Main;
+import com.headswilllol.mineflat.Material;
+import com.headswilllol.mineflat.TickManager;
+import com.headswilllol.mineflat.location.WorldLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -10,9 +15,11 @@ public class Block {
 
 	public static int blockHandle; //TODO: figure out what I meant to do with this
 
-	protected Location location;
+	protected WorldLocation location;
 
 	protected Material type;
+
+	protected int data;
 
 	protected int light = 0;
 
@@ -27,7 +34,7 @@ public class Block {
 	/**
 	 * The block which is currently selected.
 	 */
-	public static Location selected = null;
+	public static WorldLocation selected = null;
 	public static int selectedX = 0;
 	public static int selectedY = 0;
 	public static boolean isSelected = false;
@@ -35,7 +42,7 @@ public class Block {
 	/**
 	 * The diameter of a block
 	 */
-	public static final int length = 44;
+	public static final int length = 54;
 
 	/**
 	 * The factor by which the light level of a block should decrease from its brightest adjacent
@@ -47,9 +54,11 @@ public class Block {
 
 	public final HashMap<String, Object> metadata = new HashMap<String, Object>();
 
-	public Block(Material m, Location location){
+	public Block(Material m, int data, WorldLocation location){
 		this.type = m;
+		this.data = data;
 		this.location = location;
+		this.chunk = location.getChunk();
 		for (int i = (int)location.getY() - 1; i >= 0; i--){
 			Block b = Block.getBlock(getLevel(), (int)location.getX(), i);
 			if (b != null){
@@ -57,7 +66,10 @@ public class Block {
 				break;
 			}
 		}
-		chunk = location.getChunk();
+	}
+
+	public Block(Material m, WorldLocation location){
+		this(m, 0, location);
 	}
 	
 	public void addToWorld(){
@@ -80,12 +92,16 @@ public class Block {
 		return (int)location.getY();
 	}
 
-	public Location getLocation(){
+	public WorldLocation getLocation(){
 		return location;
 	}
 
 	public Material getType(){
 		return type;
+	}
+
+	public int getData(){
+		return data;
 	}
 
 	public int getLightLevel(){
@@ -105,7 +121,7 @@ public class Block {
 		this.location.setY(y);
 	}
 
-	public void setLocation(Location location){
+	public void setLocation(WorldLocation location){
 		this.location = location;
 	}
 
@@ -172,7 +188,8 @@ public class Block {
 		return new Block(type, location);
 	}
 
-	public static int getTop(Location location){
+	//TODO: make this faster
+	public static int getTop(WorldLocation location){
 		for (int yy = 0; yy < Main.world.getChunkHeight(); yy++){
 			if (isSolid(location.getLevel(), location.getX(), yy)){
 				return yy;
@@ -183,7 +200,7 @@ public class Block {
 
 	public static Block getBlock(Level level, int x, int y){
 		if (y >= 0 && y < Main.world.getChunkHeight()){
-			Chunk c = level.getChunk(new Location(level, x, y).getChunk());
+			Chunk c = level.getChunk(new WorldLocation(level, x, y).getChunk());
 			if (c != null)
 				return c.getBlock(Chunk.getIndexInChunk(x), y);
 		}
@@ -211,7 +228,7 @@ public class Block {
 				if (blockY >= 0 && blockY <= Main.world.getChunkHeight() - 1){
 					if (!Block.isAir(Main.player.getLevel(), blockX, blockY)){
 						//TODO: verfiy that player isn't peeking through blocks
-						Block.selected = new Location(Main.player.getLevel(), blockX, blockY);
+						Block.selected = new WorldLocation(Main.player.getLevel(), blockX, blockY);
 						found = true;
 						break;
 					}
@@ -259,7 +276,7 @@ public class Block {
 		return b == null || Block.isAir(b.getLevel(), b.getX(), b.getY());
 	}
 
-	public static boolean isAir(Location l){
+	public static boolean isAir(WorldLocation l){
 		return Block.isAir(l.getLevel(), l.getX(), l.getY());
 	}
 
@@ -268,15 +285,15 @@ public class Block {
 	}
 
 	public static boolean isSolid(Level level, float x, float y){
-		return new Location(level, x, y).getBlock() != null && !isAir(level, x, y) &&
-				!(new Location(level, x, y).getBlock().hasMetadata("solid") && !(Boolean)new Location(level, x, y).getBlock().getMetadata("solid"));
+		return new WorldLocation(level, x, y).getBlock() != null && !isAir(level, x, y) &&
+				!(new WorldLocation(level, x, y).getBlock().hasMetadata("solid") && !(Boolean)new WorldLocation(level, x, y).getBlock().getMetadata("solid"));
 	}
 
 	public static boolean isSolid(Block b){
 		return isSolid(b.getLevel(), b.getX(), b.getY());
 	}
 
-	public static boolean isSolid(Location l){
+	public static boolean isSolid(WorldLocation l){
 		return isSolid(l.getLevel(), l.getX(), l.getY());
 	}
 	

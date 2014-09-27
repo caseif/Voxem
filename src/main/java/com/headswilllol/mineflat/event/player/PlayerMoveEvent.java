@@ -1,6 +1,6 @@
 package com.headswilllol.mineflat.event.player;
 
-import com.headswilllol.mineflat.Location;
+import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.entity.Player;
 import com.headswilllol.mineflat.event.Cancellable;
 import com.headswilllol.mineflat.event.Event;
@@ -17,7 +17,7 @@ public class PlayerMoveEvent extends HumanMoveEvent implements Cancellable {
 	 * @param to The location the player is moving to.
 	 * @param from The location of the player before this event was fired.
 	 */
-	public PlayerMoveEvent(Player player, Location to, Location from){
+	public PlayerMoveEvent(Player player, WorldLocation to, WorldLocation from){
 		super(player, to, from);
 		Event.fireEvent((HumanMoveEvent)this);
 	}

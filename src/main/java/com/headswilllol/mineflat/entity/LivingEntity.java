@@ -1,7 +1,7 @@
 package com.headswilllol.mineflat.entity;
 
 import com.headswilllol.mineflat.Direction;
-import com.headswilllol.mineflat.Location;
+import com.headswilllol.mineflat.location.WorldLocation;
 
 public class LivingEntity extends Entity {
 
@@ -18,7 +18,7 @@ public class LivingEntity extends Entity {
 	protected Direction direction = Direction.STATIONARY;
 	protected boolean jump = false;
 
-	public LivingEntity(EntityType type, Location location, float width, float height){
+	public LivingEntity(EntityType type, WorldLocation location, float width, float height){
 		super(type, location, width, height);
 	}
 

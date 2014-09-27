@@ -1,13 +1,12 @@
 package com.headswilllol.mineflat.entity;
 
 import com.headswilllol.mineflat.event.Event;
-import com.headswilllol.mineflat.event.human.HumanMoveEvent;
 import com.headswilllol.mineflat.event.player.PlayerMoveEvent;
+import com.headswilllol.mineflat.location.WorldLocation;
 import org.lwjgl.opengl.Display;
 
-import com.headswilllol.mineflat.Block;
+import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.GraphicsHandler;
-import com.headswilllol.mineflat.Location;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
 
@@ -23,21 +22,21 @@ public class Player extends Human {
 	
 	public static float light = 1f;
 
-	public Player(Location location){
+	public Player(WorldLocation location){
 		super(location);
 		this.setType(EntityType.PLAYER);
 	}
 
 	@Override
 	public void setX(float x){
-		Location old = getLocation();
+		WorldLocation old = getLocation();
 		super.setX(x);
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}
 
 	@Override
 	public void setY(float y){
-		Location old = getLocation();
+		WorldLocation old = getLocation();
 		super.setY(y);
 		Event.fireEvent(new PlayerMoveEvent(this, getLocation(), old));
 	}

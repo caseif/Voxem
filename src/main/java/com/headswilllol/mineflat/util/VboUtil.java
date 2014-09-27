@@ -9,14 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.headswilllol.mineflat.*;
+import com.headswilllol.mineflat.world.Block;
+import com.headswilllol.mineflat.world.Chunk;
+import com.headswilllol.mineflat.world.Level;
 import org.lwjgl.BufferUtils;
-
-import com.headswilllol.mineflat.Block;
-import com.headswilllol.mineflat.Chunk;
-import com.headswilllol.mineflat.GraphicsHandler;
-import com.headswilllol.mineflat.Level;
-import com.headswilllol.mineflat.Main;
-import com.headswilllol.mineflat.Material;
 
 public class VboUtil {
 
@@ -65,9 +62,9 @@ public class VboUtil {
 				for (int y = 0; y < Main.world.getChunkHeight(); y++){
 					Block b = c.getBlock(x, y);
 					if (!Block.isAir(b)){
-						while (!GraphicsHandler.TEXTURES_READY){} // this is a horrible idea
-						float tX = GraphicsUtil.texCoords.get(b.getType()).getX();
-						float tY = GraphicsUtil.texCoords.get(b.getType()).getY();
+						Texture t = Texture.getTexture(b);
+						float tX = t.getAtlasX();
+						float tY = t.getAtlasY();
 
 						// this whole bit takes care of smooth lighting
 						List<Integer> s = new ArrayList<Integer>();
@@ -143,7 +140,7 @@ public class VboUtil {
 							cValues.add(l2); // rgb
 						cValues.add(1f); // alpha
 						// texture
-						cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
+						cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
 						cValues.add(tY);
 
 						// bottom right
@@ -157,8 +154,8 @@ public class VboUtil {
 							cValues.add(l3); // rgb
 						cValues.add(1f); // alpha
 						// texture
-						cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
-						//cValues.add(tY + 1 / (GraphicsUtil.atlasSize / Block.length));
+						cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
+						//cValues.add(tY + 1 / (Texture.atlasSize / Block.length));
 						cValues.add(1f);
 
 						// bottom left
@@ -172,18 +169,20 @@ public class VboUtil {
 						cValues.add(1f); // alpha
 						// texture
 						cValues.add(tX);
-						//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+						//cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
 						cValues.add(1f);
 
 						if (!Block.isAir(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
 
 							if (b.getType() == Material.GRASS){
-								tX = GraphicsUtil.texCoords.get(Material.GRASS_TOP).getX();
-								tY = GraphicsUtil.texCoords.get(Material.GRASS_TOP).getY();
+								Texture t2 = Texture.getTexture(Material.GRASS_TOP);
+								tX = t2.getAtlasX();
+								tY = t2.getAtlasY();
 							}
 							else if (b.getType() == Material.LOG){
-								tX = GraphicsUtil.texCoords.get(Material.LOG_TOP).getX();
-								tY = GraphicsUtil.texCoords.get(Material.LOG_TOP).getY();
+								Texture t2 = Texture.getTexture(Material.LOG_TOP);
+								tX = t2.getAtlasX();
+								tY = t2.getAtlasY();
 							}
 
 							// front left
@@ -197,7 +196,7 @@ public class VboUtil {
 							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX);
-							//cValues.add(tY + 1 / ((float)GraphicsUtil.atlasSize / Block.length));
+							//cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
 							cValues.add(1f);
 
 							// front right
@@ -211,8 +210,8 @@ public class VboUtil {
 										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
 							cValues.add(1f); // alpha
 							// texture
-							cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
-							//cValues.add(tY + 1 / (GraphicsUtil.atlasSize / Block.length));
+							cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
+							//cValues.add(tY + 1 / (Texture.atlasSize / Block.length));
 							cValues.add(1f);
 
 							// back right
@@ -227,7 +226,7 @@ public class VboUtil {
 										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
 							cValues.add(1f); // alpha
 							// texture
-							cValues.add(tX + 1 / (GraphicsUtil.atlasSize / Block.length));
+							cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
 							cValues.add(tY);
 
 							// back left
@@ -269,7 +268,6 @@ public class VboUtil {
 		vertexData.put(vertexArray);
 		vertexData.rewind();
 		rebindArray = true;
-		System.out.println("rebinding");
 	}
 
 	/**
@@ -309,7 +307,7 @@ public class VboUtil {
 	public static void render(){
 		glPushMatrix();
 		glTranslatef(GraphicsHandler.xOffset, GraphicsHandler.yOffset, 0);
-		glBindTexture(GL_TEXTURE_2D, GraphicsUtil.atlas);
+		glBindTexture(GL_TEXTURE_2D, Texture.atlas);
 		glVertexPointer(2, GL_FLOAT, 32, 0);
 		glColorPointer(4, GL_FLOAT, 32, 8);
 		glTexCoordPointer(2, GL_FLOAT, 32, 24);

@@ -1,8 +1,7 @@
 package com.headswilllol.mineflat.event.human;
 
-import com.headswilllol.mineflat.Location;
+import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.entity.Human;
-import com.headswilllol.mineflat.entity.Player;
 import com.headswilllol.mineflat.event.Cancellable;
 
 /**
@@ -13,11 +12,11 @@ public class HumanMoveEvent extends HumanEvent implements Cancellable {
 	/**
 	 * The location the entity is moving to.
 	 */
-	private Location to;
+	private WorldLocation to;
 	/**
 	 * The location of the entity before this event was fired.
 	 */
-	private Location from;
+	private WorldLocation from;
 	
 	/**
 	 * Fired when a human moves from one point in space to another.
@@ -25,25 +24,25 @@ public class HumanMoveEvent extends HumanEvent implements Cancellable {
 	 * @param to The location the player is moving to.
 	 * @param from The location of the player before this event was fired.
 	 */
-	public HumanMoveEvent(Human entity, Location to, Location from){
+	public HumanMoveEvent(Human entity, WorldLocation to, WorldLocation from){
 		this.entity = entity;
 		this.to = to;
 		this.from = from;
 	}
 
-	public Location getTo(){
+	public WorldLocation getTo(){
 		return to;
 	}
 
-	public void setTo(Location to){
+	public void setTo(WorldLocation to){
 		this.to = to;
 	}
 
-	public Location getFrom(){
+	public WorldLocation getFrom(){
 		return from;
 	}
 
-	public void setFrom(Location from){
+	public void setFrom(WorldLocation from){
 		this.from = from;
 	}
 

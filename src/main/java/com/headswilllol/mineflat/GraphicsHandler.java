@@ -10,17 +10,14 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import com.headswilllol.mineflat.util.*;
+import com.headswilllol.mineflat.world.Block;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.Player;
-import com.headswilllol.mineflat.util.BufferUtil;
-import com.headswilllol.mineflat.util.GraphicsUtil;
-import com.headswilllol.mineflat.util.ImageUtil;
-import com.headswilllol.mineflat.util.NumUtil;
-import com.headswilllol.mineflat.util.VboUtil;
 
 public class GraphicsHandler implements Runnable {
 
@@ -147,7 +144,7 @@ public class GraphicsHandler implements Runnable {
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		for (Material m : Material.values())
-			GraphicsUtil.addTexture(m);
+			Texture.addTexture(m);
 		TEXTURES_READY = true;
 
 		//initializeFont();

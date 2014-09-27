@@ -1,4 +1,4 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.world;
 
 import org.json.simple.JSONObject;
 

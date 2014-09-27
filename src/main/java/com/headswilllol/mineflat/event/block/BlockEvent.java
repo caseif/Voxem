@@ -1,12 +1,12 @@
 package com.headswilllol.mineflat.event.block;
 
-import com.headswilllol.mineflat.Block;
-import com.headswilllol.mineflat.Location;
+import com.headswilllol.mineflat.world.Block;
+import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.event.Event;
 
 public class BlockEvent extends Event {
 
-	protected Location location;
+	protected WorldLocation location;
 	protected Block oldBlock;
 	protected Block newBlock;
 	
@@ -14,7 +14,7 @@ public class BlockEvent extends Event {
 		return location.getBlock();
 	}
 	
-	public Location getLocation(){
+	public WorldLocation getLocation(){
 		return location;
 	}
 	

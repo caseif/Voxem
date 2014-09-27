@@ -1,12 +1,14 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
+import com.headswilllol.mineflat.location.WorldLocation;
 import org.json.simple.JSONObject;
 
 public class Level {
@@ -111,8 +113,8 @@ public class Level {
 		for (int i = 0; i < xCheck.length; i++){
 			int xx = xCheck[i];
 			int yy = yCheck[i];
-			if (new Location(this, x + xx, y + yy).getBlock() == null ||
-					new Location(this, x + xx, y + yy).getBlock() != null && new Location(this, x + xx, y + yy).getBlock().getType() != Material.AIR)
+			if (new WorldLocation(this, x + xx, y + yy).getBlock() == null ||
+					new WorldLocation(this, x + xx, y + yy).getBlock() != null && new WorldLocation(this, x + xx, y + yy).getBlock().getType() != Material.AIR)
 				return;
 		}
 
@@ -120,12 +122,12 @@ public class Level {
 			int xx = xCheck[i];
 			int yy = yCheck[i];
 			if (i < 3){
-				new Location(this, x + xx, y + yy).getBlock().setType(Material.LOG);
-				new Location(this, x + xx, y + yy).getBlock().setMetadata("solid", false);
+				new WorldLocation(this, x + xx, y + yy).getBlock().setType(Material.LOG);
+				new WorldLocation(this, x + xx, y + yy).getBlock().setMetadata("solid", false);
 			}
 			else {
-				new Location(this, x + xx, y + yy).getBlock().setType(Material.LEAVES);
-				new Location(this, x + xx, y + yy).getBlock().setMetadata("solid", false);
+				new WorldLocation(this, x + xx, y + yy).getBlock().setType(Material.LEAVES);
+				new WorldLocation(this, x + xx, y + yy).getBlock().setMetadata("solid", false);
 			}
 		}
 	}

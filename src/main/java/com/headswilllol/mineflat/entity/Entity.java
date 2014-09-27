@@ -4,13 +4,13 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.HashMap;
 
-import com.headswilllol.mineflat.Block;
+import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.Direction;
 import com.headswilllol.mineflat.GraphicsHandler;
-import com.headswilllol.mineflat.Level;
-import com.headswilllol.mineflat.Location;
+import com.headswilllol.mineflat.world.Level;
+import com.headswilllol.mineflat.location.WorldLocation;
 import com.headswilllol.mineflat.Main;
-import com.headswilllol.mineflat.Timing;
+import com.headswilllol.mineflat.util.Timing;
 import com.headswilllol.mineflat.util.ImageUtil;
 
 public class Entity {
@@ -52,11 +52,11 @@ public class Entity {
 
 	public static final HashMap<EntityType, Integer> sprites = new HashMap<EntityType, Integer>();
 
-	protected Location location;
+	protected WorldLocation location;
 	protected EntityType type;
 	public boolean ground = false;
 
-	public Entity(EntityType type, Location location, float width, float height){
+	public Entity(EntityType type, WorldLocation location, float width, float height){
 		this.type = type;
 		this.location = location;
 		this.width = width;
@@ -67,7 +67,7 @@ public class Entity {
 		return location.getLevel();
 	}
 
-	public Location getLocation(){
+	public WorldLocation getLocation(){
 		return location;
 	}
 
@@ -87,7 +87,7 @@ public class Entity {
 		location.setLevel(level);
 	}
 
-	public void setLocation(Location location){
+	public void setLocation(WorldLocation location){
 		this.location = location;
 	}
 
@@ -202,7 +202,7 @@ public class Entity {
 		for (int y = minY; y <= maxY; y++)
 			if (Block.isSolid(getLevel(), newX, y))
 				return true;
-		return !getLevel().isChunkGenerated(new Location(getLevel(), newX, minY).getChunk());
+		return !getLevel().isChunkGenerated(new WorldLocation(getLevel(), newX, minY).getChunk());
 	}
 
 	public void draw(){

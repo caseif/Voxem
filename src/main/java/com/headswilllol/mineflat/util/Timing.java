@@ -1,4 +1,4 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.util;
 
 import java.util.concurrent.locks.LockSupport;
 
