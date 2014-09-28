@@ -7,8 +7,10 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.xml.soap.Text;
 
 import com.headswilllol.mineflat.util.*;
 import com.headswilllol.mineflat.world.Block;
@@ -69,12 +71,20 @@ public class GraphicsHandler implements Runnable {
 
 	public static boolean TEXTURES_READY = false;
 
+	public static int[][] borderLines = new int[Block.length / 2][6];
+	public static float borderColor = 0f;
+	public static final int BORDER_COLOR_CHANGE_SPEED = 750;
+	public static final int BORDER_LINE_MIN_SPEED = 400;
+	public static final int BORDER_LINE_MAX_SPEED = 550;
+	public static final int BORDER_LINE_SIZE_DIVIDER = 8;
+	public static boolean borderColorIncreasing = true;
+
 	public void run(){
 		try {
 			for (DisplayMode mode : Display.getAvailableDisplayModes()){
 				if (mode.getWidth() == Display.getDesktopDisplayMode().getWidth() &&
 						mode.getHeight() == Display.getDesktopDisplayMode()
-						.getHeight() && mode.isFullscreenCapable()){
+								.getHeight() && mode.isFullscreenCapable()){
 					Display.setDisplayMode(mode);
 					break;
 				}
@@ -90,22 +100,22 @@ public class GraphicsHandler implements Runnable {
 								.getResourceAsStream("textures/block/grass.png")), Block.length, Block.length);
 				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
-						.getResourceAsStream("textures/block/grass.png")), 32, 32);
-						icons[0] = BufferUtil.asByteBuffer(icon1);
-						icons[1] = BufferUtil.asByteBuffer(icon2);
+								.getResourceAsStream("textures/block/grass.png")), 32, 32);
+				icons[0] = BufferUtil.asByteBuffer(icon1);
+				icons[1] = BufferUtil.asByteBuffer(icon2);
 			}
 			else if (System.getProperty("os.name").startsWith("Mac")){
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
-						.getResourceAsStream("textures/block/grass.png")), Main.world.getChunkHeight(), Main.world.getChunkHeight());
+								.getResourceAsStream("textures/block/grass.png")), Main.world.getChunkHeight(), Main.world.getChunkHeight());
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			else {
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
 						Main.class.getClassLoader()
-						.getResourceAsStream("textures/block/grass.png")), 32, 32);
+								.getResourceAsStream("textures/block/grass.png")), 32, 32);
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			Display.setIcon(icons);
@@ -113,7 +123,7 @@ public class GraphicsHandler implements Runnable {
 			glVersion = Double.parseDouble(glGetString(GL_VERSION).substring(0, 3));
 			if (glVersion < MINIMUM_GL_VERSION){
 				System.err.println("Minimum required OpenGL version is " +
-						MINIMUM_GL_VERSION + "; " + 
+						MINIMUM_GL_VERSION + "; " +
 						"current version is " + glVersion);
 				Display.destroy();
 				System.exit(0);
@@ -163,6 +173,17 @@ public class GraphicsHandler implements Runnable {
 		VboUtil.initialize();
 		VboUtil.prepareBindArray();
 
+		Random r = new Random();
+		for (int i = 0; i < Block.length / 2; i++){
+			borderLines[i] = new int[]{
+					// first line
+					r.nextInt(Display.getHeight()), r.nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER) + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER,
+					r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED,
+					// second line
+					r.nextInt(Display.getHeight()), r.nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER) + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER,
+					r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED};
+		}
+
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			if (Timing.getTime() - lastFpsUpdate >= fpsUpdateTime){
@@ -206,14 +227,68 @@ public class GraphicsHandler implements Runnable {
 					glVertex2f(Block.selectedX, Block.selectedY + Block.length);
 					glVertex2f(Block.selectedX, Block.selectedY + Block.length);
 					glVertex2f(Block.selectedX, Block.selectedY);
-					if (Block.selected != null && Block.selected.getY() < 0 || (Block.selected.getX() < 128 && Block.isAir(Block.selected.getLevel(),
-							Block.selected.getX(), Block.selected.getY() - 1))) {
+					if (Block.selected != null && Block.selected.getY() < 0 ||
+							(Block.selected.getY() < Block.selected.getLevel().getWorld().getChunkHeight() &&
+									Block.isAir(Block.selected.getLevel(), Block.selected.getX(), Block.selected.getY() - 1))) {
 						glVertex2f(Block.selectedX, Block.selectedY);
 						glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
 						glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
 						glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
 						glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
 						glVertex2f(Block.selectedX + Block.length, Block.selectedY);
+					}
+					glEnd();
+				}
+			}
+
+			// draw world borders
+			int minChunk = -Main.world.getChunkCount() / 2;
+			int maxChunk = Main.world.getChunkCount() / 2;
+			if (borderColor >= 1f)
+				borderColorIncreasing = false;
+			else if (borderColor <= 0f)
+				borderColorIncreasing = true;
+			if (borderColorIncreasing)
+				borderColor += Timing.displayDelta / (Timing.TIME_RESOLUTION / 1000L) / (float)BORDER_COLOR_CHANGE_SPEED;
+			else
+				borderColor -= Timing.displayDelta / (Timing.TIME_RESOLUTION / 1000L) / (float)BORDER_COLOR_CHANGE_SPEED;
+			glColor3f(0f, borderColor * 0.3f + 0.7f, 1f);
+			for (int j = 0; j <= 1; j++) {
+				if ((j == 0 && Main.player.getLevel().getChunk(minChunk) != null) || (j == 1 && Main.player.getLevel().getChunk(maxChunk) != null)) {
+					int startPixel = Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk)
+							.getBlock(j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1, 0).getLocation().add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
+					glBegin(GL_LINES);
+					{
+						for (int i = 0; i < Block.length; i += 2) {
+							int[] lineInfo = borderLines[i / 2];
+							// line 1
+							int y1 = lineInfo[0];
+							int length1 = lineInfo[1];
+							int speed1 = lineInfo[2];
+							glVertex2f(startPixel + i, y1);
+							glVertex2f(startPixel + i, y1 + length1);
+							if (y1 + length1 <= 0) {
+								borderLines[i / 2][0] = Display.getHeight() + length1;
+								borderLines[i / 2][1] = new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
+								borderLines[i / 2][2] = r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED;
+							}
+							else
+								borderLines[i / 2][0] = (int)(y1 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed1);
+
+							// line 2
+							int y2 = lineInfo[3];
+							int length2 = lineInfo[4];
+							int speed2 = lineInfo[5];
+							glVertex2f(startPixel + i, y2);
+							glVertex2f(startPixel + i, y2 + length2);
+							if (y2 + length2 <= 0) {
+								borderLines[i / 2][3] = Display.getHeight() + length2;
+								borderLines[i / 2][4] = new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
+								borderLines[i / 2][5] = r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED;
+							}
+							else
+								borderLines[i / 2][3] = (int)(y2 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed2);
+						}
 					}
 					glEnd();
 				}
@@ -280,13 +355,13 @@ public class GraphicsHandler implements Runnable {
 		glPushMatrix();
 		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, Main.charTexture);
-		for (int i = 0; i <= (shadow ? 1 : 0); i++){
+		for (int i = 0; i <= (shadow ? 1 : 0); i++) {
 			if (i == 0 && shadow) {
 				glColor3f(0f, 0f, 0f);
 				x -= shadowOffset;
 				y -= shadowOffset;
 			}
-			else if (i == 1){
+			else if (i == 1) {
 				glColor3f(1f, 1f, 1f);
 				x += shadowOffset;
 				y += shadowOffset;
@@ -294,46 +369,48 @@ public class GraphicsHandler implements Runnable {
 			else
 				glColor3f(1f, 1f, 1f);
 			glBegin(GL_QUADS);
-			float pos = 0f;
-			for (char c : str.toCharArray()){
-				float tx, ty;
-				if (Character.isLetter(c)){
-					if (Character.isUpperCase(c)){
-						tx = c - 'A';
-						ty = 0;
+			{
+				float pos = 0f;
+				for (char c : str.toCharArray()) {
+					float tx, ty;
+					if (Character.isLetter(c)) {
+						if (Character.isUpperCase(c)) {
+							tx = c - 'A';
+							ty = 0;
+						}
+						else {
+							tx = c - 'a';
+							ty = 0; // temporary until I remember to add lowercase characters to the image
+						}
+					}
+					else if (NumUtil.isInt(Character.toString(c))) {
+						tx = Float.parseFloat((Character.toString(c)));
+						ty = 2f;
+					}
+					else if (c == ' ') {
+						pos += 1;
+						continue;
 					}
 					else {
-						tx = c - 'a';
-						ty = 0; // temporary until I remember to add lowercase characters to the image
+						ty = 3f;
+						if (specialChars.containsKey(c))
+							tx = specialChars.get(c);
+						else
+							tx = 25f;
 					}
-				}
-				else if (NumUtil.isInt(Character.toString(c))){
-					tx = Float.parseFloat((Character.toString(c)));
-					ty = 2f;
-				}
-				else if (c == ' '){
-					pos += 1;
-					continue;
-				}
-				else {
-					ty = 3f;
-					if (specialChars.containsKey(c))
-						tx = specialChars.get(c);
+					glTexCoord2f(tx / wm, (ty / hm));
+					glVertex2f(x + pos * width, y);
+					glTexCoord2f((tx + 1f) / wm, (ty / hm));
+					glVertex2f(x + pos * width + width, y);
+					glTexCoord2f((tx + 1f) / wm, (ty + 1f) / hm);
+					glVertex2f(x + pos * width + width, y + height);
+					glTexCoord2f(tx / wm, (ty + 1f) / hm);
+					glVertex2f(x + pos * width, y + height);
+					if (c != '.' && c != ',' && c != ':')
+						pos += 1f + (height / 32f) * interCharSpace;
 					else
-						tx = 25f;
+						pos += (1f / 6f) + interCharSpace;
 				}
-				glTexCoord2f(tx / wm, (ty / hm));
-				glVertex2f(x + pos * width, y);
-				glTexCoord2f((tx + 1f) / wm, (ty / hm));
-				glVertex2f(x + pos * width + width, y);
-				glTexCoord2f((tx + 1f) / wm, (ty + 1f) / hm);
-				glVertex2f(x + pos * width + width, y + height);
-				glTexCoord2f(tx / wm, (ty + 1f) / hm);
-				glVertex2f(x + pos * width, y + height);
-				if (c != '.' && c != ',' && c != ':')
-					pos += 1f + (height / 32f) * interCharSpace;
-				else
-					pos += (1f / 6f) + interCharSpace;
 			}
 		}
 		glEnd();

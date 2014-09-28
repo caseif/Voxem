@@ -23,22 +23,6 @@ public class Location extends Vector2f {
 	public void setLevel(Level level){
 		this.level = level;
 	}
-	
-	public Location add(Location location){
-		return add(location.getX(), location.getY());
-	}
-	
-	public Location add(float x, float y){
-		return new Location(this.level, this.x + x, this.y + y);
-	}
-	
-	public Location subtract(Location location){
-		return subtract(location.getX(), location.getY());
-	}
-	
-	public Location subtract(float x, float y){
-		return new Location(this.level, this.x + x, this.y + y);
-	}
 
 	public Block getBlock(){
 		Chunk c = Main.world.getLevel(0).getChunk(getChunk());
@@ -78,12 +62,33 @@ public class Location extends Vector2f {
 		return (int)(getY() * Block.length);
 	}
 
+	public Location add(Location vector){
+		return add(vector.getX(), vector.getY());
+	}
+
+	public Location add(float x, float y){
+		return new Location(level, this.x + x, this.y + y);
+	}
+
+	public Location subtract(Location vector){
+		return subtract(vector.getX(), vector.getY());
+	}
+
+	public Location subtract(float x, float y){
+		return new Location(level, this.x - x, this.y - y);
+	}
+
 	public static int getXFromPixels(int x){
 		return x / Block.length - GraphicsHandler.xOffset;
 	}
 
 	public static int getYFromPixels(int y){
 		return y / Block.length - GraphicsHandler.yOffset;
+	}
+
+	@Override
+	public Location clone(){
+		return new Location(level, x, y);
 	}
 
 }

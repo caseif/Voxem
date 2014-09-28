@@ -67,7 +67,7 @@ public class Player extends Human {
 			else
 				light = firstLight;
 		}
-		else if (Main.player.getY() > 127)
+		else if (Main.player.getY() > Main.player.getLevel().getWorld().getChunkHeight() - 1)
 			light = 0f;
 		
 		if (light <= 2f / (float)Block.maxLight)

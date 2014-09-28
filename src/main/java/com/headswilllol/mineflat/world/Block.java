@@ -71,7 +71,7 @@ public class Block {
 	public Block(Material m, Location location){
 		this(m, 0, location);
 	}
-	
+
 	public void addToWorld(){
 		Chunk c = location.getLevel().getChunk(location.getChunk());
 		if (c == null)
@@ -93,7 +93,7 @@ public class Block {
 	}
 
 	public Location getLocation(){
-		return location;
+		return location.clone();
 	}
 
 	public Material getType(){
@@ -130,7 +130,7 @@ public class Block {
 	}
 
 	public void setLightLevel(int light){
-		this.light = light; 
+		this.light = light;
 	}
 
 	public boolean updateLight(){
@@ -169,13 +169,18 @@ public class Block {
 				if (bl != null && bl.lastLightUpdate != TickManager.getTicks())
 					bl.updateLight();
 		}
-		for (int y = getY() + 1; y < 128; y++){
+		for (int y = getY() + 1; y < getLevel().getWorld().getChunkHeight(); y++) {
 			Block b = Block.getBlock(getLevel(), getX(), y);
-			if (b.lastLightUpdate != TickManager.getTicks())
-				if (!b.updateLight())
-					break;
-				else
-					break;
+			if (b != null) {
+				if (b.lastLightUpdate != TickManager.getTicks()){
+					if (!b.updateLight()) { // I don't know wtf this code is for but I might need it later
+						break;
+					}
+					else {
+						break;
+					}
+				}
+			}
 		}
 		return changed;
 	}
@@ -296,7 +301,7 @@ public class Block {
 	public static boolean isSolid(Location l){
 		return isSolid(l.getLevel(), l.getX(), l.getY());
 	}
-	
+
 	public Set<String> getAllMetadata(){
 		return metadata.keySet();
 	}
