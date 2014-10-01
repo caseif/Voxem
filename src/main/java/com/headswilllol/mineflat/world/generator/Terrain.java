@@ -1,9 +1,11 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.world.generator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.headswilllol.mineflat.Main;
+import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.noise.SimplexNoiseGenerator;
 import com.headswilllol.mineflat.world.Block;

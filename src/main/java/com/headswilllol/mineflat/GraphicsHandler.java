@@ -255,42 +255,52 @@ public class GraphicsHandler implements Runnable {
 			glColor3f(0f, borderColor * 0.3f + 0.7f, 1f);
 			for (int j = 0; j <= 1; j++) {
 				if ((j == 0 && Main.player.getLevel().getChunk(minChunk) != null) || (j == 1 && Main.player.getLevel().getChunk(maxChunk) != null)) {
-					int startPixel = Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk)
-							.getBlock(j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1, 0).getLocation().add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
-					glBegin(GL_LINES);
-					{
-						for (int i = 0; i < Block.length; i += 2) {
-							int[] lineInfo = borderLines[i / 2];
-							// line 1
-							int y1 = lineInfo[0];
-							int length1 = lineInfo[1];
-							int speed1 = lineInfo[2];
-							glVertex2f(startPixel + i, y1);
-							glVertex2f(startPixel + i, y1 + length1);
-							if (y1 + length1 <= 0) {
-								borderLines[i / 2][0] = Display.getHeight() + length1;
-								borderLines[i / 2][1] = new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
-								borderLines[i / 2][2] = r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED;
-							}
-							else
-								borderLines[i / 2][0] = (int)(y1 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed1);
+					synchronized(Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk)){
+						if (Main.player == null)
+							System.out.println("player is null");
+						else if (Main.player.getLevel() == null)
+							System.out.println("level is null");
+						else if (Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk) == null)
+							System.out.println((j == 0 ? "minChunk" : "maxChunk") + " is null");
+						else if (Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getBlock(j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1, 0) == null)
+							System.out.println("block is null");
+						int startPixel = Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk)
+								.getBlock(j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1, 0).getLocation().add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
+						glBegin(GL_LINES);
+						{
+							for (int i = 0; i < Block.length; i += 2) {
+								int[] lineInfo = borderLines[i / 2];
+								// line 1
+								int y1 = lineInfo[0];
+								int length1 = lineInfo[1];
+								int speed1 = lineInfo[2];
+								glVertex2f(startPixel + i, y1);
+								glVertex2f(startPixel + i, y1 + length1);
+								if (y1 + length1 <= 0) {
+									borderLines[i / 2][0] = Display.getHeight() + length1;
+									borderLines[i / 2][1] = new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
+									borderLines[i / 2][2] = r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED;
+								}
+								else
+									borderLines[i / 2][0] = (int)(y1 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed1);
 
-							// line 2
-							int y2 = lineInfo[3];
-							int length2 = lineInfo[4];
-							int speed2 = lineInfo[5];
-							glVertex2f(startPixel + i, y2);
-							glVertex2f(startPixel + i, y2 + length2);
-							if (y2 + length2 <= 0) {
-								borderLines[i / 2][3] = Display.getHeight() + length2;
-								borderLines[i / 2][4] = new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
-								borderLines[i / 2][5] = r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED;
+								// line 2
+								int y2 = lineInfo[3];
+								int length2 = lineInfo[4];
+								int speed2 = lineInfo[5];
+								glVertex2f(startPixel + i, y2);
+								glVertex2f(startPixel + i, y2 + length2);
+								if (y2 + length2 <= 0) {
+									borderLines[i / 2][3] = Display.getHeight() + length2;
+									borderLines[i / 2][4] = new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER + Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
+									borderLines[i / 2][5] = r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED;
+								}
+								else
+									borderLines[i / 2][3] = (int)(y2 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed2);
 							}
-							else
-								borderLines[i / 2][3] = (int)(y2 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed2);
 						}
+						glEnd();
 					}
-					glEnd();
 				}
 			}
 
@@ -325,6 +335,7 @@ public class GraphicsHandler implements Runnable {
 			//Display.sync(60);
 			Display.update();
 		}
+		SoundManager.soundSystem.cleanup();
 		Main.closed = true;
 	}
 

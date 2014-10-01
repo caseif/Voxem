@@ -1,5 +1,6 @@
-package com.headswilllol.mineflat;
+package com.headswilllol.mineflat.world.generator;
 
+import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
 

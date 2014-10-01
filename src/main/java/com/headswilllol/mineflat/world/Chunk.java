@@ -138,14 +138,27 @@ public class Chunk {
 	 * Unloads the chunk from memory. This implicitly parses the object into JSON and saves it to memory as such.
 	 */
 	public void unload(){
-		saveToMemory();
-		level.chunks.remove(this.getIndex());
+		synchronized(this){
+			saveToMemory();
+			level.chunks.remove(this.getIndex());
+		}
 	}
 
+	/**
+	 * Checks for and loads into memory chunks within appropriate range of the player
+	 * (as defined by {@link Chunk#CHUNKS_TO_LOAD}.
+	 */
 	public static void handleChunkLoading(){
 		handleChunkLoading(false);
 	}
 
+	/**
+	 * Checks for and loads into memory chunks within appropriate range of the player
+	 * (as defined by {@link Chunk#CHUNKS_TO_LOAD}.
+	 * @param doNotRender Whether the method should skip updating the VBOs. This should
+	 * only be used the first time chunks are loaded into memory, when the game is
+	 * initially launched.
+	 */
 	public static void handleChunkLoading(boolean doNotRender) {
 		if (System.currentTimeMillis() - lastLoadCheck >= LOAD_CHECK_INTERVAL) {
 			lastLoadCheck = System.currentTimeMillis();
@@ -178,15 +191,23 @@ public class Chunk {
 							if (Main.player.getLevel().getChunk(i) == null) {
 								Chunk c = SaveManager.loadChunk(Main.player.getLevel(), i);
 								if (c != null) {
-										Chunk adj1 = c.getLevel().getChunk(i == -1 ? 1 : i + 1);
-										if (adj1 != null)
-											adj1.updateLight();
-										Chunk adj2 = c.getLevel().getChunk(i == 1 ? -1 : i - 1);
-										if (adj2 != null)
-											adj2.updateLight();
-									rebind = true;
-									if (!doNotRender)
+									c.updateLight();
+									if (!doNotRender){
+										rebind = true;
 										VboUtil.updateChunkArray(Main.player.getLevel(), i);
+									}
+									Chunk adj1 = c.getLevel().getChunk(i == -1 ? 1 : i + 1);
+									if (adj1 != null){
+										adj1.updateLight();
+										if (!doNotRender)
+											VboUtil.updateChunkArray(Main.player.getLevel(), c.getIndex());
+									}
+									Chunk adj2 = c.getLevel().getChunk(i == 1 ? -1 : i - 1);
+									if (adj2 != null){
+										adj2.updateLight();
+										if (!doNotRender)
+											VboUtil.updateChunkArray(Main.player.getLevel(), c.getIndex());
+									}
 								}
 							}
 						}

@@ -43,7 +43,7 @@ public class VboUtil {
 	 */
 	public static void updateArray(){
 		for (Level l : Main.world.getLevels()){
-			for (int c : Main.player.getLevel().chunks.keySet())
+			for (int c : l.chunks.keySet())
 				updateChunkArray(l, c);
 		}
 		recreateArray();

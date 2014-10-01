@@ -4,7 +4,7 @@
 	<groupId>com.headswilllol.mineflat</groupId>
 	<artifactId>mineflat</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.8-indev</version>
+	<version>0.9.9-indev</version>
 	<name>MineFlat</name>
 	<url>http://amigocraft.net/mineflat</url>
 	<description>A 2D voxel-based game inspired by Terraria.</description>
@@ -26,41 +26,42 @@
 		</repository>
 	</repositories>
 	<dependencies>
+		<!-- scopes are marked as compile so game can be run from a testing environment -->
 		<dependency>
 			<groupId>org.lwjgl.lwjgl</groupId>
 			<artifactId>lwjgl</artifactId>
 			<version>2.9.1</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.3</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 			<version>1.1.1</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.paulscode.sound</groupId>
 			<artifactId>codecjorbis</artifactId>
 			<version>0.0.1</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.paulscode.sound</groupId>
 			<artifactId>librarylwjglopenal</artifactId>
 			<version>0.0.1</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.paulscode.sound</groupId>
 			<artifactId>soundsystem</artifactId>
 			<version>0.0.1</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<!-- Included in CodecJOrbis -->
 		<!--<dependency>
@@ -102,7 +103,7 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>1.4</version>
@@ -114,7 +115,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>

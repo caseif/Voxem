@@ -17,10 +17,11 @@ public class FileUtil {
 			return System.getenv("APPDATA");
 		else if (OS.contains("MAC"))
 			return System.getProperty("user.home") + "/Library/Application Support";
-		try {return new File(Main.class.getProtectionDomain()
+		return System.getProperty("user.home");
+		// not sure why I wrote this
+		/*try {return new File(Main.class.getProtectionDomain()
 				.getCodeSource().getLocation().toURI().getPath()).getParent();}
-		catch (Exception ex){ex.printStackTrace();}
-		return System.getProperty("user.dir");
+		catch (Exception ex){ex.printStackTrace();}*/
 	}
 
 	public static void ungzip(String gzipFile, String newFile){

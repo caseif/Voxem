@@ -10,6 +10,7 @@ import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.world.Chunk;
 import com.headswilllol.mineflat.world.SaveManager;
 import com.headswilllol.mineflat.world.World;
+import com.headswilllol.mineflat.world.generator.Terrain;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
@@ -69,9 +70,11 @@ public class Main {
 			Display.destroy();
 		}
 		catch (NoClassDefFoundError ex) {
+			ex.printStackTrace();
 			launchedProperly = false;
 		}
 		catch (Exception ex) {
+			ex.printStackTrace();
 			launchedProperly = false;
 		}
 		if (!launchedProperly){
@@ -79,10 +82,14 @@ public class Main {
 			return;
 		}
 
-		Thread t = new Thread(new GraphicsHandler());
-		t.start();
-
-		SaveManager.loadWorld("world");
+		try {
+			SaveManager.loadWorld("world");
+		}
+		catch (Exception ex){
+			System.err.println("Exception occurred while loading world \"" + "world" + "\" from disk! " +
+					"The save file may be invalid or corrupt.");
+			ex.printStackTrace();
+		}
 
 		if (world == null){
 			world = new World("world", 8, 16, 128);
@@ -95,7 +102,8 @@ public class Main {
 			System.out.println(world.getLevel(0).chunks.size() + " total chunks");
 		}
 
-		//SaveManager.loadWorld("world");
+		Thread t = new Thread(new GraphicsHandler());
+		t.start();
 		
 		InputManager.initialize();
 		//Console.initialize();
