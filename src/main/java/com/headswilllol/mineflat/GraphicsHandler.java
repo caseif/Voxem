@@ -14,6 +14,8 @@ import javax.xml.soap.Text;
 
 import com.headswilllol.mineflat.util.*;
 import com.headswilllol.mineflat.world.Block;
+import com.headswilllol.mineflat.world.Chunk;
+import com.headswilllol.mineflat.world.Location;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -264,8 +266,8 @@ public class GraphicsHandler implements Runnable {
 							System.out.println((j == 0 ? "minChunk" : "maxChunk") + " is null");
 						else if (Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getBlock(j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1, 0) == null)
 							System.out.println("block is null");
-						int startPixel = Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk)
-								.getBlock(j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1, 0).getLocation().add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
+						int startPixel = new Location(Main.player.getLevel(), Chunk.getWorldXFromChunkIndex(Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getIndex(),
+								j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1), 0).add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
 						glBegin(GL_LINES);
 						{
 							for (int i = 0; i < Block.length; i += 2) {

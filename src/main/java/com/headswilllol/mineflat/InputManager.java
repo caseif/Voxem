@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
+import net.java.games.input.Component;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -39,6 +40,8 @@ public class InputManager {
 	public static final ArrayList<Boolean> keysDownLastFrame = new ArrayList<Boolean>();
 	public static final ArrayList<Boolean> keysPressed = new ArrayList<Boolean>();
 
+	private static int kStage = 0;
+
 	public static void updateKeys(ArrayList<Integer> keys){
 		keysToCheck = keys;
 		keysDownLastFrame.clear();
@@ -56,13 +59,79 @@ public class InputManager {
 
 	public static void pollInput(){
 
-		while (next()){
+		while (next()) {
 			int key = getEventKey();
 			boolean down = getEventKeyState();
 			//boolean repeat = isRepeatEvent(); // I might need this at some point...
 			char c = getEventCharacter();
-			if (down){
+			if (down) {
 				Event.fireEvent(new KeyPressEvent(key, c));
+				if (kStage < 10){
+					switch (kStage) {
+						case 0:
+							if (key == KEY_UP)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 1:
+							if (key == KEY_UP)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 2:
+							if (key == KEY_DOWN)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 3:
+							if (key == KEY_DOWN)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 4:
+							if (key == KEY_LEFT)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 5:
+							if (key == KEY_RIGHT)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 6:
+							if (key == KEY_LEFT)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 7:
+							if (key == KEY_RIGHT)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 8:
+							if (key == KEY_B)
+								kStage += 1;
+							else
+								kStage = 0;
+							break;
+						case 9:
+							if (key == KEY_A) {
+								kStage += 1;
+								SoundManager.generateMeme();
+							}
+							else
+								kStage = 0;
+							break;
+					}
+				}
 			}
 		}
 
@@ -73,21 +142,21 @@ public class InputManager {
 
 		//if(!Console.enabled){
 
-			if ((isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) && (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)))
-				Main.player.setMovementDirection(Direction.STATIONARY);
-			else if (isKeyDown(LEFT_1) || isKeyDown(LEFT_2)){
-				Main.player.setFacingDirection(Direction.LEFT);
-				Main.player.setMovementDirection(Direction.LEFT);
-			}else if (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)){
-				Main.player.setFacingDirection(Direction.RIGHT);
-				Main.player.setMovementDirection(Direction.RIGHT);
-			}else
-				Main.player.setMovementDirection(Direction.STATIONARY);
-			if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3))
-				Main.player.setJumping(true);
-			else
-				Main.player.setJumping(false);
-			f3 = isKeyDown(KEY_F3);
+		if ((isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) && (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)))
+			Main.player.setMovementDirection(Direction.STATIONARY);
+		else if (isKeyDown(LEFT_1) || isKeyDown(LEFT_2)){
+			Main.player.setFacingDirection(Direction.LEFT);
+			Main.player.setMovementDirection(Direction.LEFT);
+		}else if (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)){
+			Main.player.setFacingDirection(Direction.RIGHT);
+			Main.player.setMovementDirection(Direction.RIGHT);
+		}else
+			Main.player.setMovementDirection(Direction.STATIONARY);
+		if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3))
+			Main.player.setJumping(true);
+		else
+			Main.player.setJumping(false);
+		f3 = isKeyDown(KEY_F3);
 		//}
 
 	}
@@ -122,76 +191,76 @@ public class InputManager {
 			}
 		}
 		else {*/
-			if (mouse1){
-				if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
-					if (Block.selected != null &&
-							!Block.isAir((Block.selected.getBlock())) &&
-							Block.selected.getBlock().getType() != Material.BEDROCK){
-						Block b = Block.getBlock(Main.player.getLevel(), (int)Math.floor(Block.selected.getX()),
-								(int)Math.floor(Block.selected.getY()));
-						Event.fireEvent(new BlockBreakEvent(Block.selected, b));
-					}
-					lastAction = System.currentTimeMillis();
+		if (mouse1){
+			if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
+				if (Block.selected != null &&
+						!Block.isAir((Block.selected.getBlock())) &&
+						Block.selected.getBlock().getType() != Material.BEDROCK){
+					Block b = Block.getBlock(Main.player.getLevel(), (int)Math.floor(Block.selected.getX()),
+							(int)Math.floor(Block.selected.getY()));
+					Event.fireEvent(new BlockBreakEvent(Block.selected, b));
 				}
+				lastAction = System.currentTimeMillis();
 			}
+		}
 
-			if (mouse2){
-				if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
-					if (Block.selected != null){
-						int x = Block.selected.getX() > Main.player.getX() ?
-								(int)Math.floor(Block.selected.getX()) :
-									(int)Math.floor(Block.selected.getX()) + 1;
-								int y = Block.selected.getY() > Main.player.getY() ?
-										(int)Math.floor(Block.selected.getY()) :
-											(int)Math.floor(Block.selected.getY()) + 1;
-										double playerX = Main.player.getX();
-										double playerY = Main.player.getY();
-										double mouseX = (InputManager.mouseX - GraphicsHandler.xOffset) /
-												(float)Block.length;
-										double mouseY = (Display.getHeight() -
-												InputManager.mouseY - GraphicsHandler.yOffset) /
-												(float)Block.length;
-										double xDiff = mouseX - playerX;
-										double yDiff = mouseY - playerY;
-										double m = yDiff / xDiff;
-										double b = playerY - m * playerX;
-										Location l = null;
-										if (m * x + b >= Block.selected.getY() &&
-												m * x + b <= Block.selected.getY() + 1){
-											if (x == Block.selected.getX())
-												x -= 1;
-											l = new Location(Main.player.getLevel(), x, Block.selected.getY());
-										}
-										else if ((y - b) / m >= Block.selected.getX() &&
-												(y - b) / m <= Block.selected.getX() + 1){
-											if (y == Block.selected.getY())
-												y -= 1;
-											l = new Location(Main.player.getLevel(), Block.selected.getX(), y);
-										}
-										if (l != null && Block.isAir(l)){
-											if ((int)playerY == y)
-												playerY -= 1;
-											boolean pBlock = false;
-											if (playerY >= 0 && playerY < Main.world.getChunkHeight())
-												if (l.getX() == (float)Math.floor(playerX) &&
-												l.getY() == (float)Math.floor(playerY))
-													pBlock = true;
-											if (playerY >= -1 && playerY < Main.world.getChunkHeight() - 1)
-												if (l.getX() == (float)Math.floor(playerX) &&
-												l.getY() == (float)Math.floor(playerY + 1))
-													pBlock = true;
-											if (!pBlock && l.getY() > 0 &&
-													l.getY() < Main.world.getChunkHeight()){
-												Block block = new Block(Material.WOOD, l);
-												block.addToWorld();
-												Event.fireEvent(
-														new BlockPlaceEvent(l, block));
-											}
-										}
+		if (mouse2){
+			if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
+				if (Block.selected != null){
+					int x = Block.selected.getX() > Main.player.getX() ?
+							(int)Math.floor(Block.selected.getX()) :
+							(int)Math.floor(Block.selected.getX()) + 1;
+					int y = Block.selected.getY() > Main.player.getY() ?
+							(int)Math.floor(Block.selected.getY()) :
+							(int)Math.floor(Block.selected.getY()) + 1;
+					double playerX = Main.player.getX();
+					double playerY = Main.player.getY();
+					double mouseX = (InputManager.mouseX - GraphicsHandler.xOffset) /
+							(float)Block.length;
+					double mouseY = (Display.getHeight() -
+							InputManager.mouseY - GraphicsHandler.yOffset) /
+							(float)Block.length;
+					double xDiff = mouseX - playerX;
+					double yDiff = mouseY - playerY;
+					double m = yDiff / xDiff;
+					double b = playerY - m * playerX;
+					Location l = null;
+					if (m * x + b >= Block.selected.getY() &&
+							m * x + b <= Block.selected.getY() + 1){
+						if (x == Block.selected.getX())
+							x -= 1;
+						l = new Location(Main.player.getLevel(), x, Block.selected.getY());
 					}
-					lastAction = System.currentTimeMillis();
+					else if ((y - b) / m >= Block.selected.getX() &&
+							(y - b) / m <= Block.selected.getX() + 1){
+						if (y == Block.selected.getY())
+							y -= 1;
+						l = new Location(Main.player.getLevel(), Block.selected.getX(), y);
+					}
+					if (l != null && Block.isAir(l)){
+						if ((int)playerY == y)
+							playerY -= 1;
+						boolean pBlock = false;
+						if (playerY >= 0 && playerY < Main.world.getChunkHeight())
+							if (l.getX() == (float)Math.floor(playerX) &&
+									l.getY() == (float)Math.floor(playerY))
+								pBlock = true;
+						if (playerY >= -1 && playerY < Main.world.getChunkHeight() - 1)
+							if (l.getX() == (float)Math.floor(playerX) &&
+									l.getY() == (float)Math.floor(playerY + 1))
+								pBlock = true;
+						if (!pBlock && l.getY() > 0 &&
+								l.getY() < Main.world.getChunkHeight()){
+							Block block = new Block(Material.WOOD, l);
+							block.addToWorld();
+							Event.fireEvent(
+									new BlockPlaceEvent(l, block));
+						}
+					}
 				}
+				lastAction = System.currentTimeMillis();
 			}
+		}
 		//}
 	}
 
