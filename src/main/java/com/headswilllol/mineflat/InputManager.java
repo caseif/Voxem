@@ -4,6 +4,7 @@ import static org.lwjgl.input.Keyboard.*;
 
 import java.util.ArrayList;
 
+import com.headswilllol.mineflat.vector.Vector2i;
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
 import net.java.games.input.Component;
@@ -140,24 +141,26 @@ public class InputManager {
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
 
-		//if(!Console.enabled){
+		if (Main.mainMenu.isActive() && mouse1)
+			Main.mainMenu.checkMousePos(new Vector2i(mouseX, Display.getHeight() - mouseY));
 
-		if ((isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) && (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)))
-			Main.player.setMovementDirection(Direction.STATIONARY);
-		else if (isKeyDown(LEFT_1) || isKeyDown(LEFT_2)){
-			Main.player.setFacingDirection(Direction.LEFT);
-			Main.player.setMovementDirection(Direction.LEFT);
-		}else if (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)){
-			Main.player.setFacingDirection(Direction.RIGHT);
-			Main.player.setMovementDirection(Direction.RIGHT);
-		}else
-			Main.player.setMovementDirection(Direction.STATIONARY);
-		if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3))
-			Main.player.setJumping(true);
-		else
-			Main.player.setJumping(false);
+		if (Main.player != null) {
+			if ((isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) && (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)))
+				Main.player.setMovementDirection(Direction.STATIONARY);
+			else if (isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) {
+				Main.player.setFacingDirection(Direction.LEFT);
+				Main.player.setMovementDirection(Direction.LEFT);
+			} else if (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)) {
+				Main.player.setFacingDirection(Direction.RIGHT);
+				Main.player.setMovementDirection(Direction.RIGHT);
+			} else
+				Main.player.setMovementDirection(Direction.STATIONARY);
+			if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3))
+				Main.player.setJumping(true);
+			else
+				Main.player.setJumping(false);
+		}
 		f3 = isKeyDown(KEY_F3);
-		//}
 
 	}
 

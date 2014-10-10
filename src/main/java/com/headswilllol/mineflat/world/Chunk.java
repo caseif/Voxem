@@ -11,6 +11,8 @@ import java.util.List;
 
 public class Chunk {
 
+	public Object lockAndLoad = new Object(); // hehe
+
 	protected final Level level;
 	protected final int index;
 
@@ -138,7 +140,7 @@ public class Chunk {
 	 * Unloads the chunk from memory. This implicitly parses the object into JSON and saves it to memory as such.
 	 */
 	public void unload(){
-		synchronized(this){
+		synchronized(this.lockAndLoad){
 			saveToMemory();
 			level.chunks.remove(this.getIndex());
 		}

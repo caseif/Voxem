@@ -4,19 +4,17 @@ import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
 import com.headswilllol.mineflat.entity.Player;
-import com.headswilllol.mineflat.world.Location;
+import com.headswilllol.mineflat.gui.Gui;
 import com.headswilllol.mineflat.util.Timing;
 import com.headswilllol.mineflat.world.Block;
-import com.headswilllol.mineflat.world.Chunk;
 import com.headswilllol.mineflat.world.SaveManager;
 import com.headswilllol.mineflat.world.World;
-import com.headswilllol.mineflat.world.generator.Terrain;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
 /**
  * @author Maxim Roncacé
- * 
+ *
  * @License
  *
  * Copyright (c) 2014 Maxim Roncacé
@@ -36,12 +34,12 @@ import org.lwjgl.opengl.DisplayMode;
 
 public class Main {
 
-	public static World world;
+	public static World world = null;
 
 	/**
 	 * The player of the game, or rather, their virtual doppelganger
 	 */
-	public static Player player;
+	public static Player player = null;
 
 	public static boolean closed = false;
 
@@ -53,6 +51,8 @@ public class Main {
 	public static int charArmTexture;
 
 	public static boolean debug = false;
+
+	public static Gui mainMenu = new Gui();
 
 	public static void main(String[] args){
 
@@ -82,66 +82,33 @@ public class Main {
 			return;
 		}
 
-		try {
-			SaveManager.loadWorld("world");
-		}
-		catch (Exception ex){
-			System.err.println("Exception occurred while loading world \"" + "world" + "\" from disk! " +
-					"The save file may be invalid or corrupt.");
-			ex.printStackTrace();
-		}
-
-		if (world == null){
-			world = new World("world", 8, 16, 128);
-			world.creationTime = System.currentTimeMillis() / 1000L;
-			world.addLevel(0);
-			player = new Player(new Location(world.getLevel(0), 0, 0));
-			world.getLevel(0).addEntity(player);
-			Terrain.generateTerrain();
-			SaveManager.saveWorldToMemory(world);
-			System.out.println(world.getLevel(0).chunks.size() + " total chunks");
-		}
-
 		Thread t = new Thread(new GraphicsHandler());
 		t.start();
-		
+
 		InputManager.initialize();
 		//Console.initialize();
 		Mob.initialize();
 		SoundManager.initialize();
 
-		Thread chunkLoader = new Thread(new Runnable(){
-			public void run(){
-				while (true) {
-					Chunk.handleChunkLoading();
-					try {
-						Thread.sleep(Chunk.LOAD_CHECK_INTERVAL);
-					}
-					catch (InterruptedException ex){
-						ex.printStackTrace();
-					}
-					if (closed)
-						return;
-				}
-			}
-		});
-		chunkLoader.start();
-
 		while (!closed){
 			Timing.calculateDelta();
 			InputManager.manage();
-			Player.calculateLight();
-			TickManager.checkForTick();
-			for (Entity e : world.getLevel(0).getEntities())
-				if (e instanceof LivingEntity)
-					(e).manageMovement();
-				else
-					e.manageMovement();
-			Block.updateSelectedBlock();
+			if (world != null && player != null) {
+				Player.calculateLight();
+				TickManager.checkForTick();
+				for (Entity e : player.getLevel().getEntities())
+					if (e instanceof LivingEntity)
+						(e).manageMovement();
+					else
+						e.manageMovement();
+				Block.updateSelectedBlock();
+			}
 			Timing.throttleCpu();
 		}
 		SoundManager.soundSystem.cleanup();
-		SaveManager.writeWorldToDisk(world);
+		if (world != null) {
+			SaveManager.writeWorldToDisk(world);
+		}
 
 	}
 

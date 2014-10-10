@@ -3,7 +3,7 @@ package com.headswilllol.mineflat.vector;
 /**
  * Represents a vector with 2 float elements.
  */
-public class Vector2f extends Vector2 {
+public class Vector2f implements Vector2 {
 
 	protected float x;
 	protected float y;

@@ -1,9 +1,9 @@
 package com.headswilllol.mineflat.vector;
 
 /**
- * Represents a vector with two integer elements.
+ * Represents a vector with two int elements.
  */
-public class Vector2i extends Vector2 {
+public class Vector2i implements Vector2 {
 
 	protected int x;
 	protected int y;
@@ -30,7 +30,7 @@ public class Vector2i extends Vector2 {
 	}
 
 	public Vector2i add(Vector2i vector){
-		return add(vector.getX(), vector.getY());
+	return add(vector.getX(), vector.getY());
 	}
 
 	public Vector2i add(int x, int y){

@@ -88,6 +88,7 @@ public class SaveManager {
 
 	//TODO: make this method more type-safe
 	public static void loadWorld(String world) {
+		System.out.println("Loading world \"" + world + "\"");
 		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator +
 				".mineflat", "saves");
 		saveFolder = new File(saveFolder, world);
@@ -131,7 +132,8 @@ public class SaveManager {
 	}
 
 	public static Chunk loadChunk(Level level, int chunk){
-		JSONObject jChunk = (JSONObject)((JSONObject)((JSONObject)((JSONObject)((JSONObject)level
+		System.out.println("Loading chunk " + chunk);
+		JSONObject jChunk = (JSONObject)((JSONObject)(((JSONObject)((JSONObject)level
 				.getWorld()
 				.getJSON()
 				.get("levels"))

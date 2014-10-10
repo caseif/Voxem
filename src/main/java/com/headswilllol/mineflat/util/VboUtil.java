@@ -15,6 +15,7 @@ import com.headswilllol.mineflat.world.Chunk;
 import com.headswilllol.mineflat.world.Level;
 import org.lwjgl.BufferUtils;
 
+// I'm slowly realizing this class does extremely weird things when I'm not looking
 public class VboUtil {
 
 	public static int bufferHandle;
@@ -27,6 +28,7 @@ public class VboUtil {
 	 * Initializes VBO support in the OpenGL instance.
 	 */
 	public static void initialize(){
+		//System.out.println("[VboUtil] initialize");
 		ImageUtil.createAtlas();
 		IntBuffer buffer = BufferUtils.createIntBuffer(1);
 		glGenBuffers(buffer);
@@ -42,9 +44,12 @@ public class VboUtil {
 	 * Updates the entire VBO. This method may cause a severe drop in FPS while running.
 	 */
 	public static void updateArray(){
-		for (Level l : Main.world.getLevels()){
-			for (int c : l.chunks.keySet())
-				updateChunkArray(l, c);
+		//System.out.println("[VboUtil] update");
+		if (Main.world != null) {
+			for (Level l : Main.world.getLevels()) {
+				for (int c : l.chunks.keySet())
+					updateChunkArray(l, c);
+			}
 		}
 		recreateArray();
 	}
@@ -55,6 +60,7 @@ public class VboUtil {
 	 * @param chunk The chunk to update in the VBO.
 	 */
 	public static void updateChunkArray(Level level, int chunk){
+		//System.out.println("[VboUtil] update chunk " + chunk);
 		Chunk c = level.getChunk(chunk);
 		if (c != null){
 			List<Float> cValues = new ArrayList<Float>();
@@ -262,6 +268,7 @@ public class VboUtil {
 	 * Prepares the data to bind to the primary VBO
 	 */
 	public static void prepareBindArray(){
+		//System.out.println("[VboUtil] prepare");
 		vertexData = (FloatBuffer)BufferUtils
 				.createFloatBuffer(vertexArray.length).flip();
 		vertexData.limit(vertexData.capacity());
@@ -274,7 +281,7 @@ public class VboUtil {
 	 * Rebinds the VBO to the OpenGL instance, effectively redrawing it.
 	 */
 	public static void bindArray(){
-		//System.out.println("rebinding");
+		//System.out.println("[VboUtil] bind");
 		if (vertexData != null){
 			glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
 			glBufferData(GL_ARRAY_BUFFER, vertexData, GL_DYNAMIC_DRAW);
@@ -287,6 +294,7 @@ public class VboUtil {
 	 * Splices all chunk arrays into a single VBO.
 	 */
 	public static void recreateArray(){
+		//System.out.println("[VboUtil] recreate");
 		int length = 0;
 		for (Float[] f : chunkArrays.values())
 			length += f.length;
