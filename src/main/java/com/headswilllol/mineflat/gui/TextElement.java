@@ -1,6 +1,7 @@
 package com.headswilllol.mineflat.gui;
 
 import com.headswilllol.mineflat.GraphicsHandler;
+import com.headswilllol.mineflat.util.Alignment;
 import com.headswilllol.mineflat.vector.Vector2i;
 
 public class TextElement extends GuiElement {
@@ -10,15 +11,16 @@ public class TextElement extends GuiElement {
 	private boolean dropShadow;
 	private Alignment alignment = Alignment.LEFT;
 
-	public TextElement(Vector2i position, String text, int height, boolean dropShadow){
+	public TextElement(String id, Vector2i position, String text, int height, boolean dropShadow){
+		super.id = id;
 		super.position = position;
 		this.text = text;
 		this.height = height;
 		this.dropShadow = dropShadow;
 	}
 
-	public TextElement(Vector2i position, String text, int height){
-		this(position, text, height, false);
+	public TextElement(String id, Vector2i position, String text, int height){
+		this(id, position, text, height, false);
 	}
 
 	public String getText(){
@@ -38,17 +40,19 @@ public class TextElement extends GuiElement {
 	}
 
 	public void draw(){
-		switch (alignment){
-			case CENTER:
-				GraphicsHandler.drawString(text, position.getX() - GraphicsHandler.getStringLength(text, height) / 2,
-						position.getY(), height, false);
-				break;
-			case RIGHT:
-				//TODO: actually implement this
-				break;
-			default:
-				GraphicsHandler.drawString(text, position.getX(), position.getY(), height, false);
-				break;
+		if (isActive()) {
+			switch (alignment) {
+				case CENTER:
+					GraphicsHandler.drawString(text, getAbsolutePosition().getX() - GraphicsHandler.getStringLength(text, height) / 2,
+							getAbsolutePosition().getY(), height, false);
+					break;
+				case RIGHT:
+					//TODO: actually implement this
+					break;
+				default:
+					GraphicsHandler.drawString(text, position.getX(), position.getY(), height, false);
+					break;
+			}
 		}
 	}
 

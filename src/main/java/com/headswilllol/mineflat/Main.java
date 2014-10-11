@@ -5,6 +5,7 @@ import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
 import com.headswilllol.mineflat.entity.Player;
 import com.headswilllol.mineflat.gui.Gui;
+import com.headswilllol.mineflat.threading.Scheduler;
 import com.headswilllol.mineflat.util.Timing;
 import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.world.SaveManager;
@@ -92,6 +93,7 @@ public class Main {
 
 		while (!closed){
 			Timing.calculateDelta();
+			Scheduler.checkTasks();
 			InputManager.manage();
 			if (world != null && player != null) {
 				Player.calculateLight();

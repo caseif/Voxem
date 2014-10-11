@@ -1,4 +1,4 @@
-package com.headswilllol.mineflat.gui;
+package com.headswilllol.mineflat.util;
 
 public enum Alignment {
 

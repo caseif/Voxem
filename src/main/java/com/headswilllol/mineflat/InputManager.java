@@ -4,10 +4,8 @@ import static org.lwjgl.input.Keyboard.*;
 
 import java.util.ArrayList;
 
-import com.headswilllol.mineflat.vector.Vector2i;
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
-import net.java.games.input.Component;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -141,8 +139,9 @@ public class InputManager {
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
 
-		if (Main.mainMenu.isActive() && mouse1)
-			Main.mainMenu.checkMousePos(new Vector2i(mouseX, Display.getHeight() - mouseY));
+		if (Main.mainMenu.isActive() && mouse1) {
+			Main.mainMenu.checkMousePos();
+		}
 
 		if (Main.player != null) {
 			if ((isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) && (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)))

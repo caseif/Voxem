@@ -10,6 +10,7 @@ import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.TickManager;
 import com.headswilllol.mineflat.entity.*;
 import com.headswilllol.mineflat.util.FileUtil;
+import com.headswilllol.mineflat.util.VboUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -337,6 +338,28 @@ public class SaveManager {
 	// this saves me a bit of casting and makes the code look nicer
 	private static int longToInt(long number){
 		return (int)number;
+	}
+
+	public static void prepareWorld(){
+		VboUtil.updateArray();
+		VboUtil.prepareBindArray();
+
+		Thread chunkLoader = new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					Chunk.handleChunkLoading();
+					try {
+						Thread.sleep(Chunk.LOAD_CHECK_INTERVAL);
+					}
+					catch (InterruptedException ex) {
+						ex.printStackTrace();
+					}
+					if (Main.closed)
+						return;
+				}
+			}
+		});
+		chunkLoader.start();
 	}
 
 }

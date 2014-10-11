@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -11,12 +12,15 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import com.headswilllol.mineflat.gui.Alignment;
+import com.headswilllol.mineflat.gui.ContainerElement;
+import com.headswilllol.mineflat.gui.GuiElement;
+import com.headswilllol.mineflat.threading.Scheduler;
+import com.headswilllol.mineflat.util.Alignment;
 import com.headswilllol.mineflat.gui.Button;
 import com.headswilllol.mineflat.gui.TextElement;
 import com.headswilllol.mineflat.util.*;
 import com.headswilllol.mineflat.vector.Vector2i;
-import com.headswilllol.mineflat.vector.Vector3f;
+import com.headswilllol.mineflat.vector.Vector4f;
 import com.headswilllol.mineflat.world.*;
 import com.headswilllol.mineflat.world.generator.Terrain;
 import org.lwjgl.input.Keyboard;
@@ -152,7 +156,11 @@ public class GraphicsHandler implements Runnable {
 
 		glClearColor(0.3f, 0.3f, 0.8f, 1f);
 
+		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.1f);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
@@ -162,57 +170,113 @@ public class GraphicsHandler implements Runnable {
 			Texture.addTexture(m);
 		TEXTURES_READY = true;
 
-		TextElement titleText = new TextElement(new Vector2i(Display.getWidth() / 2, 50), "MineFlat", 64);
+		TextElement titleText = new TextElement("titleText", new Vector2i(Display.getWidth() / 2, 50), "MineFlat", 64);
 		titleText.setAlignment(Alignment.CENTER);
 		Main.mainMenu.addElement(titleText);
 
-		Main.mainMenu.addElement(new Button("play", new Vector2i(Display.getWidth() / 2 - 200, Display.getHeight() / 2 - 25),
-				new Vector2i(400, 50), "Play Game", new Vector3f(0.5f, 0.5f, 0.5f), new Vector3f(0.8f, 0.4f, 0.4f), new Runnable() {
+		final ContainerElement menuPanel = new ContainerElement("menuPanel",
+				new Vector2i((int)(Display.getWidth() * 0.25), 200),
+				new Vector2i((int)(Display.getWidth() * 0.5), Display.getHeight() - 300),
+				new Vector4f(0.6f, 0.6f, 0.6f, 0f));
+		menuPanel.setActive(true);
+		Main.mainMenu.addElement(menuPanel);
+
+		final ContainerElement startList = new ContainerElement("startList",
+				new Vector2i(0, 0),
+				menuPanel.getSize(),
+				new Vector4f(0.6f, 0.6f, 0.6f, 0f));
+		startList.setActive(true);
+		menuPanel.addElement(startList);
+
+		startList.addElement(new Button("play", new Vector2i(startList.getSize().getX() / 2 - 200, 50),
+				new Vector2i(400, 50), "Play Game", new Vector4f(0.5f, 0.5f, 0.5f, 1f), new Vector4f(0.8f, 0.4f, 0.4f, 1f), new Runnable() {
 			public void run() {
-				try {
-					SaveManager.loadWorld("world");
-				}
-				catch (Exception ex) {
-					System.err.println("Exception occurred while loading world \"" + "world" + "\" from disk! " +
-							"The save file may be invalid or corrupt.");
-					ex.printStackTrace();
-				}
-
-				if (Main.world == null) {
-					Main.world = new World("world", 8, 16, 128);
-					Main.world.creationTime = System.currentTimeMillis() / 1000L;
-					Main.world.addLevel(0);
-					Main.player = new Player(new Location(Main.world.getLevel(0), 0, 0));
-					Main.world.getLevel(0).addEntity(Main.player);
-					Terrain.generateTerrain();
-					SaveManager.saveWorldToMemory(Main.world);
-					System.out.println(Main.world.getLevel(0).chunks.size() + " total chunks");
-				}
-
-				VboUtil.updateArray();
-				VboUtil.prepareBindArray();
-
-				Thread chunkLoader = new Thread(new Runnable() {
+				Scheduler.runAsyncTaskLater(new Runnable() {
 					public void run() {
-						while (true) {
-							Chunk.handleChunkLoading();
-							try {
-								Thread.sleep(Chunk.LOAD_CHECK_INTERVAL);
-							}
-							catch (InterruptedException ex) {
-								ex.printStackTrace();
-							}
-							if (Main.closed)
-								return;
-						}
+						menuPanel.getElement("startList").setActive(false);
+						menuPanel.getElement("worldList").setActive(true);
 					}
-				});
-				chunkLoader.start();
-
-				Main.mainMenu.setActive(false);
-				Main.state = GameState.INGAME;
+				}, 100);
 			}
 		}));
+
+		startList.addElement(new Button("quit", new Vector2i(startList.getSize().getX() / 2 - 200, startList.getSize().getY() - 100),
+				new Vector2i(400, 50), "Quit", new Vector4f(0.5f, 0.5f, 0.5f, 1f), new Vector4f(0.8f, 0.4f, 0.4f, 1f), new Runnable() {
+			public void run() {
+				Main.closed = true;
+			}
+		}));
+
+		final ContainerElement worldList = new ContainerElement("worldList",
+				new Vector2i(0, 0),
+				menuPanel.getSize(),
+				new Vector4f(0.6f, 0.6f, 0.6f, 0f));
+		worldList.setActive(false);
+		menuPanel.addElement(worldList);
+
+		TextElement worldListLabel = new TextElement("worldListLabel", new Vector2i(worldList.getSize().getX() / 2, 50), "Worlds", 24);
+		worldListLabel.setAlignment(Alignment.CENTER);
+		worldList.addElement(worldListLabel);
+
+		Button cB = new Button("createWorld", new Vector2i(worldList.getSize().getX() / 2 - 200, 125),
+				new Vector2i(400, 50), "Create New World", new Vector4f(0.5f, 0.5f, 0.5f, 1f), new Vector4f(0.8f, 0.4f, 0.4f, 1f), new Runnable() {
+			public void run() {
+				Main.world = new World("world", 8, 16, 128);
+				Main.world.creationTime = System.currentTimeMillis() / 1000L;
+				Main.world.addLevel(0);
+				Main.player = new Player(new Location(Main.world.getLevel(0), 0, 0));
+				Main.world.getLevel(0).addEntity(Main.player);
+				Terrain.generateTerrain();
+				SaveManager.saveWorldToMemory(Main.world);
+
+				Main.mainMenu.setActive(false);
+
+				SaveManager.prepareWorld();
+				Main.state = GameState.INGAME;
+			}
+		});
+		cB.setActive(false);
+		worldList.addElement(cB);
+
+		int buttons = 0;
+		for (final File f : new File(FileUtil.getAppDataFolder() + File.separator + ".mineflat", "saves").listFiles()){
+			Button lB = new Button("loadWorld-" + f.getName(), new Vector2i(worldList.getSize().getX() / 2 - 200, 125 + 75 * (buttons + 1)),
+					new Vector2i(400, 50), f.getName(), new Vector4f(0.5f, 0.5f, 0.5f, 1f), new Vector4f(0.8f, 0.4f, 0.4f, 1f), new Runnable() {
+				public void run() {
+					try {
+						SaveManager.loadWorld(f.getName()); // TODO: load world name from JSON file
+					}
+					catch (Exception ex) {
+						System.err.println("Exception occurred while loading world \"" + f.getName() + "\" from disk! " +
+								"The save file may be invalid or corrupt.");
+						ex.printStackTrace();
+					}
+
+					SaveManager.prepareWorld();
+
+					Main.mainMenu.setActive(false);
+
+					Main.state = GameState.INGAME;
+				}
+			});
+			lB.setActive(false);
+			worldList.addElement(lB);
+			buttons += 1;
+		}
+
+		Button bB = new Button("backToMain", new Vector2i(worldList.getSize().getX() / 2 - 200, worldList.getSize().getY() - 50),
+				new Vector2i(400, 50), "Back", new Vector4f(0.5f, 0.5f, 0.5f, 1f), new Vector4f(0.8f, 0.4f, 0.4f, 1f), new Runnable() {
+			public void run(){
+				//TODO: ignore clicks from previous menus
+				Scheduler.runAsyncTaskLater(new Runnable() {
+					public void run() {
+						worldList.setActive(false);
+						Main.mainMenu.getElement("startList").setActive(true);
+					}
+				}, 50);
+			}
+		});
+		worldList.addElement(bB);
 
 		Main.mainMenu.setActive(true);
 
@@ -243,7 +307,7 @@ public class GraphicsHandler implements Runnable {
 					r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED};
 		}
 
-		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+		while (!Main.closed && !Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			if (Timing.getTime() - lastFpsUpdate >= fpsUpdateTime){
 				fps = (int)Math.floor(Timing.TIME_RESOLUTION / renderDelta);
@@ -421,7 +485,6 @@ public class GraphicsHandler implements Runnable {
 		float hm = 4f;
 		float width = height * charWHRatio;
 		glPushMatrix();
-		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, Main.charTexture);
 		for (int i = 0; i <= (shadow ? 1 : 0); i++) {
 			if (i == 0 && shadow) {
@@ -482,7 +545,6 @@ public class GraphicsHandler implements Runnable {
 			}
 		}
 		glEnd();
-		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
 	}
