@@ -320,14 +320,6 @@ public class GraphicsHandler implements Runnable {
 				for (int j = 0; j <= 1; j++) {
 					if ((j == 0 && Main.player.getLevel().getChunk(minChunk) != null) || (j == 1 && Main.player.getLevel().getChunk(maxChunk) != null)) {
 						synchronized (j == 0 ? Main.player.getLevel().getChunk(minChunk) : Main.player.getLevel().getChunk(maxChunk)) {
-							if (Main.player == null)
-								System.err.println("player is null");
-							else if (Main.player.getLevel() == null)
-								System.err.println("level is null");
-							else if (Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk) == null)
-								System.err.println((j == 0 ? "minChunk" : "maxChunk") + " is null");
-							else if (Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getBlock(j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1, 0) == null)
-								System.err.println("block is null");
 							int startPixel = new Location(Main.player.getLevel(), Chunk.getWorldXFromChunkIndex(Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getIndex(),
 									j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1), 0).add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
 							glBegin(GL_LINES);
@@ -456,7 +448,7 @@ public class GraphicsHandler implements Runnable {
 						}
 						else {
 							tx = c - 'a';
-							ty = 0; // temporary until I remember to add lowercase characters to the image
+							ty = 0; //TODO: temporary until I remember to add lowercase characters to the image
 						}
 					}
 					else if (NumUtil.isInt(Character.toString(c))) {
