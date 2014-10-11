@@ -68,4 +68,9 @@ public class Vector3f implements Vector3 {
 		return new Vector3f(x, y, z);
 	}
 
+	@Override
+	public String toString(){
+		return "Vector3f{" + x + ", " + y + ", " + z + "}";
+	}
+
 }

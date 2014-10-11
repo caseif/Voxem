@@ -5,7 +5,4 @@ package com.headswilllol.mineflat.vector;
  */
 public interface Vector {
 
-	@Override
-	public boolean equals(Object o);
-
 }

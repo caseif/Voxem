@@ -78,4 +78,9 @@ public class Vector4f implements Vector4 {
 		return new Vector4f(x, y, z, w);
 	}
 
+	@Override
+	public String toString(){
+		return "Vector4f{" + x + ", " + y + ", " + z + ", " + w + "}";
+	}
+
 }

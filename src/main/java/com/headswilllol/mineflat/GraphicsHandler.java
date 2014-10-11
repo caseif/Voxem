@@ -13,7 +13,6 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import com.headswilllol.mineflat.gui.ContainerElement;
-import com.headswilllol.mineflat.gui.GuiElement;
 import com.headswilllol.mineflat.threading.Scheduler;
 import com.headswilllol.mineflat.util.Alignment;
 import com.headswilllol.mineflat.gui.Button;
@@ -87,6 +86,8 @@ public class GraphicsHandler implements Runnable {
 	public static final int BORDER_LINE_MAX_SPEED = 550;
 	public static final int BORDER_LINE_SIZE_DIVIDER = 8;
 	public static boolean borderColorIncreasing = true;
+
+	public static String timeOfDay = "DAY";
 
 	public void run(){
 		try {
@@ -318,7 +319,35 @@ public class GraphicsHandler implements Runnable {
 			renderDelta = Timing.getTime() - lastRenderTime;
 			lastRenderTime = Timing.getTime();
 
-			glClearColor(0.3f * Player.light, 0.3f * Player.light, 0.8f * Player.light, 1f);
+			float timeBrightness = 1f;
+			if (TickManager.getTicks() >= TickManager.DAWN_END && TickManager.getTicks() <= TickManager.DUSK_BEGIN) {
+				timeBrightness = 1f;
+				timeOfDay = "DAY";
+			}
+			else if (TickManager.getTicks() > TickManager.DUSK_END && TickManager.getTicks() < TickManager.DAWN_BEGIN) {
+				timeBrightness = 0;
+				timeOfDay = "NIGHT";
+			}
+			else {
+				if (TickManager.getTicks() > TickManager.DUSK_BEGIN && TickManager.getTicks() < TickManager.DUSK_END){
+					timeBrightness = (TickManager.DUSK_END - TickManager.getTicks()) / (float)(TickManager.DUSK_END - TickManager.DUSK_BEGIN);
+					timeOfDay = "DUSK";
+				}
+				else if (TickManager.getTicks() / 12000 == 0 && TickManager.getTicks() <= TickManager.DAWN_END) {
+					timeBrightness = 1 - (TickManager.DAWN_END - TickManager.getTicks()) / (float)Math.abs(TickManager.DAWN_END - TickManager.DAWN_BEGIN + 24000);
+					timeOfDay = "DAWN";
+				}
+				else if (TickManager.getTicks() / 12000 == 1 && TickManager.getTicks() >= TickManager.DAWN_BEGIN){
+					timeBrightness = 1 - (TickManager.DAWN_END - TickManager.getTicks() + 24000) / (float)Math.abs(TickManager.DAWN_END - TickManager.DAWN_BEGIN + 24000);
+					timeOfDay = "DAWN";
+				}
+			}
+
+			glClearColor(
+					0.3f * Math.max(Player.light * timeBrightness, TickManager.MIN_SKY_BRIGHTNESS),
+					0.3f * Math.max(Player.light * timeBrightness, TickManager.MIN_SKY_BRIGHTNESS),
+					0.8f * Math.max(Player.light * timeBrightness, TickManager.MIN_SKY_BRIGHTNESS),
+					1f);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -442,7 +471,7 @@ public class GraphicsHandler implements Runnable {
 						(Main.player == null ? "???" : Main.player.ground), 10, 130, height, true);
 				drawString("light level: " +
 						(Main.player == null ? "???" : String.format("%.3f", Player.light * Block.maxLight)), 10, 160, height, true);
-				drawString("ticks: " + TickManager.getTicks(), 10, 190, height, true);
+				drawString("ticks: " + TickManager.getTicks() + " (" + timeOfDay.toLowerCase() + ")", 10, 190, height, true);
 				int mb = 1024 * 1024;
 				Runtime runtime = Runtime.getRuntime();
 				drawString(runtime.totalMemory() / mb + "mb allocated memory: " +

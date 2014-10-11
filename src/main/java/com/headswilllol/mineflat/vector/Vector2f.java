@@ -58,4 +58,9 @@ public class Vector2f implements Vector2 {
 		return new Vector2f(x, y);
 	}
 
+	@Override
+	public String toString(){
+		return "Vector2f{" + x + ", " + y + "}";
+	}
+
 }

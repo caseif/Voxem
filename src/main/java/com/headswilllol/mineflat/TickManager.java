@@ -38,7 +38,32 @@ public class TickManager {
 	 * Chance that an entity will spawn in a given tick if the world is at half-mob capacity
 	 */
 	public static final int SPAWN_CHANCE = 600;
-	
+
+	/**
+	 * The time at which the sky will begin to darken.
+	 */
+	public static final int DUSK_BEGIN = 12000;
+
+	/**
+	 * The time at which the sky will become its darkest.
+	 */
+	public static final int DUSK_END = 14000;
+
+	/**
+	 * The time at which the sky will begin to brighten.
+	 */
+	public static final int DAWN_BEGIN = 22000;
+
+	/**
+	 * The time at which the sky will become its brightest.
+	 */
+	public static final int DAWN_END = 0;
+
+	/**
+	 * The minimum brightness of the sky.
+	 */
+	public static final float MIN_SKY_BRIGHTNESS = 0.1f;
+
 	/**
 	 * Retrieves the current tick count of the game.
 	 * @return the current tick count of the game.
