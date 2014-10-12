@@ -4,6 +4,7 @@ import static org.lwjgl.input.Keyboard.*;
 
 import java.util.ArrayList;
 
+import com.headswilllol.mineflat.gui.Gui;
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
 import org.lwjgl.input.Mouse;
@@ -139,8 +140,10 @@ public class InputManager {
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
 
-		if (Main.mainMenu.isActive() && mouse1) {
-			Main.mainMenu.checkMousePos();
+		for (Gui gui : GraphicsHandler.guis.values()){
+			if (gui.isActive() && mouse1){
+				gui.checkMousePos();
+			}
 		}
 
 		if (Main.player != null) {
@@ -166,7 +169,7 @@ public class InputManager {
 	public static void manage(){
 
 		if (f3 && System.currentTimeMillis() - lastAction >= ACTION_WAIT){
-			Main.debug = !Main.debug;
+			GraphicsHandler.guis.get("debug").setActive(!GraphicsHandler.guis.get("debug").isActive());
 			lastAction = System.currentTimeMillis();
 		}
 

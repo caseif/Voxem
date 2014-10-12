@@ -29,12 +29,20 @@ public class ContainerElement extends GuiElement {
 		return size;
 	}
 
+	public void setSize(Vector2i size){
+		this.size = size;
+	}
+
 	@Override
 	public void setActive(boolean active){
 		super.setActive(active);
 		for (GuiElement ge : elements.values()){
 			ge.setActive(active);
 		}
+	}
+
+	public Collection<GuiElement> getElements(){
+		return elements.values();
 	}
 
 	public GuiElement getElement(String id){

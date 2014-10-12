@@ -12,11 +12,9 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import com.headswilllol.mineflat.gui.ContainerElement;
+import com.headswilllol.mineflat.gui.*;
 import com.headswilllol.mineflat.threading.Scheduler;
 import com.headswilllol.mineflat.util.Alignment;
-import com.headswilllol.mineflat.gui.Button;
-import com.headswilllol.mineflat.gui.TextElement;
 import com.headswilllol.mineflat.util.*;
 import com.headswilllol.mineflat.vector.Vector2i;
 import com.headswilllol.mineflat.vector.Vector4f;
@@ -89,6 +87,8 @@ public class GraphicsHandler implements Runnable {
 
 	public static String timeOfDay = "DAY";
 
+	public static HashMap<String, Gui> guis = new HashMap<String, Gui>();
+
 	public void run(){
 		try {
 			for (DisplayMode mode : Display.getAvailableDisplayModes()){
@@ -96,6 +96,7 @@ public class GraphicsHandler implements Runnable {
 						mode.getHeight() == Display.getDesktopDisplayMode()
 								.getHeight() && mode.isFullscreenCapable()){
 					Display.setDisplayMode(mode);
+					Display.setLocation(Display.getX() - 3, Display.getY());
 					break;
 				}
 			}
@@ -171,16 +172,19 @@ public class GraphicsHandler implements Runnable {
 			Texture.addTexture(m);
 		TEXTURES_READY = true;
 
-		TextElement titleText = new TextElement("titleText", new Vector2i(Display.getWidth() / 2, 50), "MineFlat", 64);
+		final Gui mainMenu = new Gui();
+		guis.put("main", mainMenu);
+
+		TextElement titleText = new TextElement("titleText", new Vector2i(Display.getWidth() / 2, 50), "MineFlat", 64, true);
 		titleText.setAlignment(Alignment.CENTER);
-		Main.mainMenu.addElement(titleText);
+		mainMenu.addElement(titleText);
 
 		final ContainerElement menuPanel = new ContainerElement("menuPanel",
 				new Vector2i((int)(Display.getWidth() * 0.25), 200),
 				new Vector2i((int)(Display.getWidth() * 0.5), Display.getHeight() - 300),
 				new Vector4f(0.6f, 0.6f, 0.6f, 0f));
 		menuPanel.setActive(true);
-		Main.mainMenu.addElement(menuPanel);
+		mainMenu.addElement(menuPanel);
 
 		final ContainerElement startList = new ContainerElement("startList",
 				new Vector2i(0, 0),
@@ -215,7 +219,7 @@ public class GraphicsHandler implements Runnable {
 		worldList.setActive(false);
 		menuPanel.addElement(worldList);
 
-		TextElement worldListLabel = new TextElement("worldListLabel", new Vector2i(worldList.getSize().getX() / 2, 50), "Worlds", 24);
+		TextElement worldListLabel = new TextElement("worldListLabel", new Vector2i(worldList.getSize().getX() / 2, 50), "Worlds", 24, true);
 		worldListLabel.setAlignment(Alignment.CENTER);
 		worldList.addElement(worldListLabel);
 
@@ -230,7 +234,7 @@ public class GraphicsHandler implements Runnable {
 				Terrain.generateTerrain();
 				SaveManager.saveWorldToMemory(Main.world);
 
-				Main.mainMenu.setActive(false);
+				mainMenu.setActive(false);
 
 				SaveManager.prepareWorld();
 				Main.state = GameState.INGAME;
@@ -255,7 +259,7 @@ public class GraphicsHandler implements Runnable {
 
 					SaveManager.prepareWorld();
 
-					Main.mainMenu.setActive(false);
+					mainMenu.setActive(false);
 
 					Main.state = GameState.INGAME;
 				}
@@ -272,14 +276,29 @@ public class GraphicsHandler implements Runnable {
 				Scheduler.runAsyncTaskLater(new Runnable() {
 					public void run() {
 						worldList.setActive(false);
-						Main.mainMenu.getElement("startList").setActive(true);
+						mainMenu.getElement("startList").setActive(true);
 					}
 				}, 50);
 			}
 		});
 		worldList.addElement(bB);
 
-		Main.mainMenu.setActive(true);
+		mainMenu.setActive(true);
+
+		final ContainerElement debugPanel = new ContainerElement("debugPanel", new Vector2i(0, 0), new Vector2i(0, 280), new Vector4f(0.2f, 0.2f, 0.2f, 0.3f));
+		Gui debugMenu = new Gui();
+		debugMenu.addElement(debugPanel);
+		guis.put("debug", debugMenu);
+		int height = 16;
+		debugPanel.addElement(new TextElement("fps", new Vector2i(10, 10), "fps: ???", height, true));
+		debugPanel.addElement(new TextElement("delta", new Vector2i(10, 40), "delta (ms): ???", height, true));
+		debugPanel.addElement(new TextElement("playerX", new Vector2i(10, 70), "x: ???", height, true));
+		debugPanel.addElement(new TextElement("playerY", new Vector2i(10, 100), "y: ???", height, true));
+		debugPanel.addElement(new TextElement("playerChunk", new Vector2i(10, 130), "chunk: ???", height, true));
+		debugPanel.addElement(new TextElement("playerG", new Vector2i(10, 160), "g: ???", height, true));
+		debugPanel.addElement(new TextElement("playerLight", new Vector2i(10, 190), "light level: ???", height, true));
+		debugPanel.addElement(new TextElement("ticks", new Vector2i(10, 220), "ticks: ???", height, true));
+		debugPanel.addElement(new TextElement("memory", new Vector2i(10, 250), "??? mb allocated memory", height, true));
 
 		//initializeFont();
 
@@ -352,9 +371,6 @@ public class GraphicsHandler implements Runnable {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			InputManager.pollInput();
-
-			if (Main.mainMenu.isActive())
-				Main.mainMenu.draw();
 
 			if (VboUtil.rebindArray)
 				VboUtil.bindArray();
@@ -457,27 +473,34 @@ public class GraphicsHandler implements Runnable {
 					e.draw();
 			}
 
-			// draw debug gui, if necessary
-			if (Main.debug){
-				float height = 16f;
-				drawString("fps: " + fps, 10, 10, height, true);
-				drawString("delta (ms): " +
-						String.format("%.3f", Timing.displayDelta / 1000000), 10, 40, height, true);
-				drawString("x: " +
-						(Main.player == null ? "???" : String.format("%.3f", Main.player.getX())), 10, 70, height, true);
-				drawString("y: " +
-						(Main.player == null ? "???" : String.format("%.3f", Main.player.getY())), 10, 100, height, true);
-				drawString("g: " +
-						(Main.player == null ? "???" : Main.player.ground), 10, 130, height, true);
-				drawString("light level: " +
-						(Main.player == null ? "???" : String.format("%.3f", Player.light * Block.maxLight)), 10, 160, height, true);
-				drawString("ticks: " + TickManager.getTicks() + " (" + timeOfDay.toLowerCase() + ")", 10, 190, height, true);
+			// update debug gui, if necessary
+			if (guis.get("debug").isActive()){
+				((TextElement)debugPanel.getElement("fps")).setText("fps: " + fps);
+				((TextElement)debugPanel.getElement("delta")).setText("delta (ms): " + String.format("%.3f", Timing.displayDelta / 1000000));
+				((TextElement)debugPanel.getElement("playerX")).setText("x: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getX())));
+				((TextElement)debugPanel.getElement("playerY")).setText("y: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getY())));
+				((TextElement)debugPanel.getElement("playerChunk")).setText("chunk: " + (Main.player == null ? "???" : Main.player.getLocation().getChunk()));
+				((TextElement)debugPanel.getElement("playerG")).setText("g: " + (Main.player == null ? "???" : Main.player.ground));
+				((TextElement)debugPanel.getElement("playerLight")).setText("light level: " + (Main.player == null ? "???" : String.format("%.3f", Player.light * Block.maxLight)));
+				((TextElement)debugPanel.getElement("ticks")).setText("ticks: " + TickManager.getTicks() + " (" + timeOfDay.toLowerCase() + ")");
 				int mb = 1024 * 1024;
 				Runtime runtime = Runtime.getRuntime();
-				drawString(runtime.totalMemory() / mb + "mb allocated memory: " +
+				((TextElement)debugPanel.getElement("memory")).setText(runtime.totalMemory() / mb + "mb allocated memory: " +
 						(runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
-						runtime.freeMemory() / mb + "mb free", 10, 220, height, true);
+						runtime.freeMemory() / mb + "mb free");
+				int maxSize = 0;
+				for (GuiElement ge : debugPanel.getElements()){
+					if (ge instanceof TextElement){
+						int size = getStringLength(((TextElement)ge).getText(), height);
+						if (size > maxSize)
+							maxSize = size;
+					}
+				}
+				debugPanel.setSize(new Vector2i(maxSize + 20, debugPanel.getSize().getY()));
 			}
+
+			for (Gui gui : guis.values())
+				gui.draw();
 
 			/*if(Console.enabled)
 				Console.draw();*/
@@ -518,13 +541,13 @@ public class GraphicsHandler implements Runnable {
 		for (int i = 0; i <= (shadow ? 1 : 0); i++) {
 			if (i == 0 && shadow) {
 				glColor3f(0f, 0f, 0f);
-				x -= shadowOffset;
-				y -= shadowOffset;
+				x -= shadowOffset * Math.max(1, height / 16);
+				y -= shadowOffset * Math.max(1, height / 16);
 			}
 			else if (i == 1) {
 				glColor3f(1f, 1f, 1f);
-				x += shadowOffset;
-				y += shadowOffset;
+				x += shadowOffset * Math.max(1, height / 16);
+				y += shadowOffset * Math.max(1, height / 16);
 			}
 			else
 				glColor3f(1f, 1f, 1f);

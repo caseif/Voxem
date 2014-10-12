@@ -53,8 +53,6 @@ public class Main {
 
 	public static boolean debug = false;
 
-	public static Gui mainMenu = new Gui();
-
 	public static void main(String[] args){
 
 		boolean launchedProperly = true;

@@ -44,13 +44,13 @@ public class TextElement extends GuiElement {
 			switch (alignment) {
 				case CENTER:
 					GraphicsHandler.drawString(text, getAbsolutePosition().getX() - GraphicsHandler.getStringLength(text, height) / 2,
-							getAbsolutePosition().getY(), height, false);
+							getAbsolutePosition().getY(), height, dropShadow);
 					break;
-				case RIGHT:
-					//TODO: actually implement this
-					break;
+				//case RIGHT:
+				//	//TODO: actually implement this
+				//	break;
 				default:
-					GraphicsHandler.drawString(text, position.getX(), position.getY(), height, false);
+					GraphicsHandler.drawString(text, position.getX(), position.getY(), height, dropShadow);
 					break;
 			}
 		}

@@ -195,7 +195,6 @@ public class Entity {
 
 	public void draw(){
 		glPushMatrix();
-		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, sprites.get(type));
 		glColor3f(1f, 1f, 1f);
 		glTranslatef(getX() * Block.length + GraphicsHandler.xOffset - (width / 2) * Block.length,
@@ -216,7 +215,6 @@ public class Entity {
 		glTexCoord2f(0f, 1f);
 		glVertex2f(0f, hHeight - vertOffset);
 		glEnd();
-		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPopMatrix();
 	}

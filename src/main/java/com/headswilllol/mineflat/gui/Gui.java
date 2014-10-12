@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+// I actually considered writing this class in Visual Basic at one point, but I wouldn't have been able to implement anything directly
 public class Gui {
 
 	private String id;
