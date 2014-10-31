@@ -30,7 +30,7 @@ public class Terrain {
 		generateOres();
 		generateCaves();
 		plantGrass();
-		plantTrees();
+		plantStuff();
 		lightTerrain();
 	}
 
@@ -369,8 +369,8 @@ public class Terrain {
 		}
 	}
 
-	public static void plantTrees(){
-		System.out.println("Planting trees...");
+	public static void plantStuff(){
+		System.out.println("Planting other stuff...");
 		Random r = new Random(Main.world.seed);
 		for (Level l : Main.world.getLevels()){
 			for (Chunk c : l.chunks.values()){
@@ -378,6 +378,25 @@ public class Terrain {
 					if (r.nextInt(12) == 0){ // plant a tree
 						l.plantTree((int)Chunk.getWorldXFromChunkIndex(c.getIndex(), x),
 								Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0)));
+					}
+					else if (r.nextInt(64) == 0){ // plant a pumkin patch
+						int count = r.nextInt(7);
+						Location lastLoc = null;
+						for (int i = -count / 2; i % 2 == 0 ? i < count / 2 : i <= count / 2; i++){
+							Location loc = new Location(l, (int)Chunk.getWorldXFromChunkIndex(c.getIndex(), x),
+									Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0).add(i, 0)))
+									.add(i, -1);
+							if (lastLoc == null || Math.abs(lastLoc.subtract(loc).getY()) < 1) {
+								if (loc.getBlock() != null)
+									loc.getBlock().setType(Material.PUMPKIN);
+								else
+									loc.getLevel().getChunk(loc.getChunk()).setBlock((int)loc.getPosInChunk(), (int)loc.getY(), new Block(Material.PUMPKIN, 0, loc));
+								loc.getBlock().setMetadata("solid", false);
+								lastLoc = loc;
+							}
+							else
+								break;
+						}
 					}
 				}
 			}

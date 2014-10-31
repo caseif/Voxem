@@ -180,6 +180,7 @@ public class VboUtil {
 
 						if (!Block.isAir(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
 
+							//TODO: make this more flexible (less awful)
 							if (b.getType() == Material.GRASS){
 								Texture t2 = Texture.getTexture(Material.GRASS_TOP);
 								tX = t2.getAtlasX();
@@ -187,6 +188,11 @@ public class VboUtil {
 							}
 							else if (b.getType() == Material.LOG){
 								Texture t2 = Texture.getTexture(Material.LOG_TOP);
+								tX = t2.getAtlasX();
+								tY = t2.getAtlasY();
+							}
+							else if (b.getType() == Material.PUMPKIN){
+								Texture t2 = Texture.getTexture(Material.PUMPKIN_TOP);
 								tX = t2.getAtlasX();
 								tY = t2.getAtlasY();
 							}
