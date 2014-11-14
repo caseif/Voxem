@@ -244,29 +244,32 @@ public class GraphicsHandler implements Runnable {
 		worldList.addElement(cB);
 
 		int buttons = 0;
-		for (final File f : new File(FileUtil.getAppDataFolder() + File.separator + ".mineflat", "saves").listFiles()){
-			Button lB = new Button("loadWorld-" + f.getName(), new Vector2i(worldList.getSize().getX() / 2 - 200, 125 + 75 * (buttons + 1)),
-					new Vector2i(400, 50), f.getName(), new Vector4f(0.5f, 0.5f, 0.5f, 1f), new Vector4f(0.8f, 0.4f, 0.4f, 1f), new Runnable() {
-				public void run() {
-					try {
-						SaveManager.loadWorld(f.getName()); // TODO: load world name from JSON file
+		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator + ".mineflat", "saves");
+		if (saveFolder.exists()) {
+			for (final File f : saveFolder.listFiles()) {
+				Button lB = new Button("loadWorld-" + f.getName(), new Vector2i(worldList.getSize().getX() / 2 - 200, 125 + 75 * (buttons + 1)),
+						new Vector2i(400, 50), f.getName(), new Vector4f(0.5f, 0.5f, 0.5f, 1f), new Vector4f(0.8f, 0.4f, 0.4f, 1f), new Runnable() {
+					public void run() {
+						try {
+							SaveManager.loadWorld(f.getName()); // TODO: load world name from JSON file
+						}
+						catch (Exception ex) {
+							System.err.println("Exception occurred while loading world \"" + f.getName() + "\" from disk! " +
+									"The save file may be invalid or corrupt.");
+							ex.printStackTrace();
+						}
+
+						SaveManager.prepareWorld();
+
+						mainMenu.setActive(false);
+
+						Main.state = GameState.INGAME;
 					}
-					catch (Exception ex) {
-						System.err.println("Exception occurred while loading world \"" + f.getName() + "\" from disk! " +
-								"The save file may be invalid or corrupt.");
-						ex.printStackTrace();
-					}
-
-					SaveManager.prepareWorld();
-
-					mainMenu.setActive(false);
-
-					Main.state = GameState.INGAME;
-				}
-			});
-			lB.setActive(false);
-			worldList.addElement(lB);
-			buttons += 1;
+				});
+				lB.setActive(false);
+				worldList.addElement(lB);
+				buttons += 1;
+			}
 		}
 
 		Button bB = new Button("backToMain", new Vector2i(worldList.getSize().getX() / 2 - 200, worldList.getSize().getY() - 50),
