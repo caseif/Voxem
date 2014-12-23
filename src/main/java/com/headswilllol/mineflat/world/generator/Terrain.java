@@ -6,11 +6,8 @@ import java.util.Random;
 
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
-import com.headswilllol.mineflat.world.Location;
+import com.headswilllol.mineflat.world.*;
 import com.headswilllol.mineflat.noise.SimplexNoiseGenerator;
-import com.headswilllol.mineflat.world.Block;
-import com.headswilllol.mineflat.world.Chunk;
-import com.headswilllol.mineflat.world.Level;
 
 public class Terrain {
 
@@ -40,7 +37,8 @@ public class Terrain {
 		for (Level l : Main.world.getLevels()){
 			for (int i = Main.world.getChunkCount() / -2; i <= Main.world.getChunkCount() / 2; i++){
 				if (!l.isChunkGenerated(i) && i != 0){
-					Chunk c = new Chunk(l, i);
+					Biome biome = new Random().nextInt(4) == 0 ? Biome.SNOWY_HILLS : Biome.HILLS;
+					Chunk c = new Chunk(l, i, biome);
 					for (int x = 0; x < Main.world.getChunkLength(); x++){
 						int h = (int)Math.floor((
 								noise.noise(Chunk.getWorldXFromChunkIndex(i, x)) / 2 + 0.5) *
@@ -213,21 +211,21 @@ public class Terrain {
 		System.out.println("Generating caves...");
 		for (Level l : Main.world.getLevels()){
 			for (Chunk c : l.chunks.values()){
-				if (CaveFactory.r.nextInt(2) == 0){
+				if (CaveGenAgent.r.nextInt(2) == 0){
 					int x = (int)Chunk.getWorldXFromChunkIndex(c.getIndex(),
-							CaveFactory.r.nextInt(Main.world.getChunkLength()));
-					new CaveFactory(new Location(l, x, Block.getTop(new Location(l, x, 0)) + 1));
+							CaveGenAgent.r.nextInt(Main.world.getChunkLength()));
+					new CaveGenAgent(new Location(l, x, Block.getTop(new Location(l, x, 0)) + 1));
 				}
 			}
-			while (CaveFactory.caveFactories.size() > 0){
-				for (int i = 0; i < CaveFactory.caveFactories.size(); i++)
-					CaveFactory.caveFactories.get(i).dig();
-				for (CaveFactory cf : CaveFactory.deactivate)
-					CaveFactory.caveFactories.remove(cf);
-				CaveFactory.deactivate.clear();
+			while (CaveGenAgent.caveFactories.size() > 0){
+				for (int i = 0; i < CaveGenAgent.caveFactories.size(); i++)
+					CaveGenAgent.caveFactories.get(i).dig();
+				for (CaveGenAgent cf : CaveGenAgent.deactivate)
+					CaveGenAgent.caveFactories.remove(cf);
+				CaveGenAgent.deactivate.clear();
 			}
-			CaveFactory.caveFactories.clear();
-			CaveFactory.caveFactories = null;
+			CaveGenAgent.caveFactories.clear();
+			CaveGenAgent.caveFactories = null;
 			// analyze and improve cave systems
 			for (Chunk c : l.chunks.values()){
 				for (int xx = 0; xx < Main.world.getChunkLength(); xx++){

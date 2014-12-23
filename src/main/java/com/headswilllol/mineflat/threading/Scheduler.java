@@ -12,6 +12,8 @@ public class Scheduler {
 	private static List<Integer> asyncTasksToRun = new ArrayList<Integer>();
 	private static HashMap<Integer, Thread> asyncRunningTasks = new HashMap<Integer, Thread>();
 
+	private static final Object ASYNC_LOCK = new Object();
+
 	public static Task runTask(Runnable runnable){
 		return runTaskLater(runnable, 0);
 	}
@@ -23,6 +25,7 @@ public class Scheduler {
 		return t;
 	}
 
+	//TODO: make this method actually async
 	public static Task runAsyncTask(Runnable runnable){
 		return runTaskLater(runnable, 0);
 	}
@@ -30,7 +33,9 @@ public class Scheduler {
 	public static Task runAsyncTaskLater(Runnable runnable, int delay){
 		Task t = new Task(runnable, delay);
 		tasks.put(t.getTaskId(), t);
-		asyncTasksToRun.add(t.getTaskId());
+		synchronized(ASYNC_LOCK){
+			asyncTasksToRun.add(t.getTaskId());
+		}
 		return t;
 	}
 
@@ -45,24 +50,26 @@ public class Scheduler {
 		}
 		tasksToRun.removeAll(tRemove);
 		List<Integer> atRemove = new ArrayList<Integer>();
-		for (Integer i : asyncTasksToRun) {
-			if (System.currentTimeMillis() - tasks.get(i).getTimeScheduled() >= tasks.get(i).getDelay()) {
-				atRemove.add(i);
-				Thread t = new Thread(tasks.get(i).getRunnable());
-				t.start();
-				asyncRunningTasks.put(i, t);
+		synchronized(ASYNC_LOCK){
+			for (Integer i : asyncTasksToRun){
+				if (System.currentTimeMillis() - tasks.get(i).getTimeScheduled() >= tasks.get(i).getDelay()){
+					atRemove.add(i);
+					Thread t = new Thread(tasks.get(i).getRunnable());
+					t.start();
+					asyncRunningTasks.put(i, t);
+				}
 			}
-		}
-		asyncTasksToRun.removeAll(atRemove);
-		List<Integer> artRemove = new ArrayList<Integer>();
-		for (Integer i : asyncRunningTasks.keySet()){
-			if (!asyncRunningTasks.get(i).isAlive()){
-				artRemove.add(i);
-				tasks.remove(i);
+			asyncTasksToRun.removeAll(atRemove);
+			List<Integer> artRemove = new ArrayList<Integer>();
+			for (Integer i : asyncRunningTasks.keySet()){
+				if (!asyncRunningTasks.get(i).isAlive()){
+					artRemove.add(i);
+					tasks.remove(i);
+				}
 			}
-		}
-		for (Integer i : artRemove){
-			asyncRunningTasks.remove(i);
+			for (Integer i : artRemove){
+				asyncRunningTasks.remove(i);
+			}
 		}
 	}
 

@@ -8,19 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CaveFactory {
+public class CaveGenAgent {
 
 	public static final Random r = new Random(Main.world.seed);
-	public static List<CaveFactory> caveFactories = new ArrayList<CaveFactory>();
-	public static final List<CaveFactory> deactivate = new ArrayList<CaveFactory>(); // dem CMEs :P
+	public static List<CaveGenAgent> caveFactories = new ArrayList<CaveGenAgent>();
+	public static final List<CaveGenAgent> deactivate = new ArrayList<CaveGenAgent>(); // dem CMEs :P
 	public static final int UP_BIAS = 3, DOWN_BIAS = 2, LEFT_BIAS = 2, RIGHT_BIAS = 2;
 	public static final int SPAWN_CHANCE = 130;
 
 	private Location l;
 
-	public CaveFactory(Location location){
+	public CaveGenAgent(Location location){
 		this.l = location;
-		CaveFactory.caveFactories.add(this);
+		CaveGenAgent.caveFactories.add(this);
 	}
 
 	public void dig(){
@@ -54,7 +54,7 @@ public class CaveFactory {
 			destroy.destroy(); // destroy *overdrive intensifies*
 			int chance = (int)((SPAWN_CHANCE - l.getY()) / 2);
 			if (r.nextInt(chance) == 0)
-				new CaveFactory(l);
+				new CaveGenAgent(l);
 		}
 
 	}

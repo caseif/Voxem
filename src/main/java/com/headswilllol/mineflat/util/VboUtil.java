@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.headswilllol.mineflat.*;
+import com.headswilllol.mineflat.world.Biome;
 import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.world.Chunk;
 import com.headswilllol.mineflat.world.Level;
@@ -61,211 +62,221 @@ public class VboUtil {
 	 */
 	public static void updateChunkArray(Level level, int chunk){
 		//System.out.println("[VboUtil] update chunk " + chunk);
-		Chunk c = level.getChunk(chunk);
-		if (c != null){
-			List<Float> cValues = new ArrayList<Float>();
-			for (int x = 0; x < Main.world.getChunkLength(); x++){
-				for (int y = 0; y < Main.world.getChunkHeight(); y++){
-					Block b = c.getBlock(x, y);
-					if (!Block.isAir(b)){
-						Texture t = Texture.getTexture(b);
-						float tX = t.getAtlasX();
-						float tY = t.getAtlasY();
+		synchronized(chunkArrays){
+			Chunk c = level.getChunk(chunk);
+			if (c != null){
+				List<Float> cValues = new ArrayList<Float>();
+				for (int x = 0; x < Main.world.getChunkLength(); x++){
+					for (int y = 0; y < Main.world.getChunkHeight(); y++){
+						Block b = c.getBlock(x, y);
+						if (!Block.isAir(b)){
+							Texture t = Texture.getTexture(b);
+							float tX = t.getAtlasX();
+							float tY = t.getAtlasY();
 
-						// this whole bit takes care of smooth lighting
-						List<Integer> s = new ArrayList<Integer>();
-						// 1
-						if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1).getLightLevel());
-						else
-							s.add(Block.maxLight);
-						// 2
-						if (Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getLightLevel());
-						else
-							s.add(Block.maxLight);
-						// 3
-						if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1).getLightLevel());
-						else
-							s.add(Block.maxLight);
-						// 4
-						if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()).getLightLevel());
-						else
-							s.add(Block.maxLight);
-						// 5
-						if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()).getLightLevel());
-						else
-							s.add(Block.maxLight);
-						// 6
-						if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1).getLightLevel());
-						else
-							s.add(Block.maxLight);
-						// 7
-						if (Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1).getLightLevel());
-						else
-							s.add(Block.maxLight);
-						// 8
-						if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1) != null)
-							s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1).getLightLevel());
-						else
-							s.add(Block.maxLight);
+							// this whole bit takes care of smooth lighting
+							List<Integer> s = new ArrayList<Integer>();
+							// 1
+							if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1).getLightLevel());
+							else
+								s.add(Block.maxLight);
+							// 2
+							if (Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getLightLevel());
+							else
+								s.add(Block.maxLight);
+							// 3
+							if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1).getLightLevel());
+							else
+								s.add(Block.maxLight);
+							// 4
+							if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()).getLightLevel());
+							else
+								s.add(Block.maxLight);
+							// 5
+							if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()).getLightLevel());
+							else
+								s.add(Block.maxLight);
+							// 6
+							if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1).getLightLevel());
+							else
+								s.add(Block.maxLight);
+							// 7
+							if (Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1).getLightLevel());
+							else
+								s.add(Block.maxLight);
+							// 8
+							if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1) != null)
+								s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1).getLightLevel());
+							else
+								s.add(Block.maxLight);
 
-						float l1 = (float)(b.getLightLevel() + s.get(0) + s.get(1) + s.get(3))
-								/ 4 / Block.maxLight;
-						float l2 = (float)(b.getLightLevel() + s.get(1) + s.get(2) + s.get(4))
-								/ 4 / Block.maxLight;
-						float l3 = (float)(b.getLightLevel() + s.get(4) + s.get(6) + s.get(7))
-								/ 4 / Block.maxLight;
-						float l4 = (float)(b.getLightLevel() + s.get(3) + s.get(5) + s.get(6))
-								/ 4 / Block.maxLight;
+							float l1 = (float)(b.getLightLevel() + s.get(0) + s.get(1) + s.get(3))
+									/ 4 / Block.maxLight;
+							float l2 = (float)(b.getLightLevel() + s.get(1) + s.get(2) + s.get(4))
+									/ 4 / Block.maxLight;
+							float l3 = (float)(b.getLightLevel() + s.get(4) + s.get(6) + s.get(7))
+									/ 4 / Block.maxLight;
+							float l4 = (float)(b.getLightLevel() + s.get(3) + s.get(5) + s.get(6))
+									/ 4 / Block.maxLight;
 
-						// top left
-						// vertex
-						cValues.add((float)b.getLocation().getPixelX());
-						cValues.add((float)b.getLocation().getPixelY());
-						// light
-						for (int i = 0; i < 3; i++)
-							cValues.add(l1); // rgb
-						cValues.add(1f); // alpha
-						// texture
-						cValues.add(tX);
-						cValues.add(tY);
-
-						// top right
-						// vertex
-						cValues.add((float)b.getLocation().getPixelX() +
-								Block.length);
-						cValues.add((float)b.getLocation().getPixelY());
-						// light
-						for (int i = 0; i < 3; i++)
-							cValues.add(l2); // rgb
-						cValues.add(1f); // alpha
-						// texture
-						cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
-						cValues.add(tY);
-
-						// bottom right
-						// vertex
-						cValues.add((float)b.getLocation().getPixelX() +
-								Block.length);
-						cValues.add((float)b.getLocation().getPixelY() +
-								Block.length);
-						// light
-						for (int i = 0; i < 3; i++)
-							cValues.add(l3); // rgb
-						cValues.add(1f); // alpha
-						// texture
-						cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
-						//cValues.add(tY + 1 / (Texture.atlasSize / Block.length));
-						cValues.add(1f);
-
-						// bottom left
-						// vertex
-						cValues.add((float)b.getLocation().getPixelX());
-						cValues.add((float)b.getLocation().getPixelY() +
-								Block.length);
-						// light
-						for (int i = 0; i < 3; i++)
-							cValues.add(l4); // rgb
-						cValues.add(1f); // alpha
-						// texture
-						cValues.add(tX);
-						//cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
-						cValues.add(1f);
-
-						if (!Block.isAir(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
-
-							//TODO: make this more flexible (less awful)
-							if (b.getType() == Material.GRASS){
-								Texture t2 = Texture.getTexture(Material.GRASS_TOP);
-								tX = t2.getAtlasX();
-								tY = t2.getAtlasY();
-							}
-							else if (b.getType() == Material.LOG){
-								Texture t2 = Texture.getTexture(Material.LOG_TOP);
-								tX = t2.getAtlasX();
-								tY = t2.getAtlasY();
-							}
-							else if (b.getType() == Material.PUMPKIN){
-								Texture t2 = Texture.getTexture(Material.PUMPKIN_TOP);
+							if (c.getBiome() == Biome.SNOWY_HILLS && b.getType() == Material.GRASS){
+								Texture t2 = Texture.getTexture(Material.SNOW_GRASS);
 								tX = t2.getAtlasX();
 								tY = t2.getAtlasY();
 							}
 
-							// front left
+							// top left
 							// vertex
 							cValues.add((float)b.getLocation().getPixelX());
 							cValues.add((float)b.getLocation().getPixelY());
 							// light
 							for (int i = 0; i < 3; i++)
-								cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+								cValues.add(l1); // rgb
 							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX);
-							//cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
-							cValues.add(1f);
+							cValues.add(tY);
 
-							// front right
+							// top right
 							// vertex
 							cValues.add((float)b.getLocation().getPixelX() +
 									Block.length);
 							cValues.add((float)b.getLocation().getPixelY());
 							// light
 							for (int i = 0; i < 3; i++)
-								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+								cValues.add(l2); // rgb
+							cValues.add(1f); // alpha
+							// texture
+							cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
+							cValues.add(tY);
+
+							// bottom right
+							// vertex
+							cValues.add((float)b.getLocation().getPixelX() +
+									Block.length);
+							cValues.add((float)b.getLocation().getPixelY() +
+									Block.length);
+							// light
+							for (int i = 0; i < 3; i++)
+								cValues.add(l3); // rgb
 							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
 							//cValues.add(tY + 1 / (Texture.atlasSize / Block.length));
 							cValues.add(1f);
 
-							// back right
-							// vertex
-							cValues.add((float)b.getLocation().getPixelX() +
-									Block.length);
-							cValues.add((float)b.getLocation().getPixelY() -
-									Block.length / Block.horAngle);
-							// light
-							for (int i = 0; i < 3; i++)
-								cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
-							cValues.add(1f); // alpha
-							// texture
-							cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
-							cValues.add(tY);
-
-							// back left
+							// bottom left
 							// vertex
 							cValues.add((float)b.getLocation().getPixelX());
-							cValues.add((float)b.getLocation().getPixelY() -
-									Block.length / Block.horAngle);
+							cValues.add((float)b.getLocation().getPixelY() +
+									Block.length);
 							// light
 							for (int i = 0; i < 3; i++)
-								cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
-										l1 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+								cValues.add(l4); // rgb
 							cValues.add(1f); // alpha
 							// texture
 							cValues.add(tX);
-							cValues.add(tY);
+							//cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
+							cValues.add(1f);
 
+							if (!Block.isAir(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
+
+								//TODO: make this more flexible (less awful)
+								if (b.getType() == Material.GRASS){
+									Texture t2 = Texture.getTexture(c.getBiome() == Biome.SNOWY_HILLS ?
+											Material.SNOW :
+											Material.GRASS_TOP);
+									tX = t2.getAtlasX();
+									tY = t2.getAtlasY();
+								}
+								else if (b.getType() == Material.LOG){
+									Texture t2 = Texture.getTexture(Material.LOG_TOP);
+									tX = t2.getAtlasX();
+									tY = t2.getAtlasY();
+								}
+								else if (b.getType() == Material.PUMPKIN){
+									Texture t2 = Texture.getTexture(Material.PUMPKIN_TOP);
+									tX = t2.getAtlasX();
+									tY = t2.getAtlasY();
+								}
+
+								// front left
+								// vertex
+								cValues.add((float)b.getLocation().getPixelX());
+								cValues.add((float)b.getLocation().getPixelY());
+								// light
+								for (int i = 0; i < 3; i++)
+									cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+											l1 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+								cValues.add(1f); // alpha
+								// texture
+								cValues.add(tX);
+								//cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
+								cValues.add(1f);
+
+								// front right
+								// vertex
+								cValues.add((float)b.getLocation().getPixelX() +
+										Block.length);
+								cValues.add((float)b.getLocation().getPixelY());
+								// light
+								for (int i = 0; i < 3; i++)
+									cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+											l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+								cValues.add(1f); // alpha
+								// texture
+								cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
+								//cValues.add(tY + 1 / (Texture.atlasSize / Block.length));
+								cValues.add(1f);
+
+								// back right
+								// vertex
+								cValues.add((float)b.getLocation().getPixelX() +
+										Block.length);
+								cValues.add((float)b.getLocation().getPixelY() -
+										Block.length / Block.horAngle);
+								// light
+								for (int i = 0; i < 3; i++)
+									cValues.add(l2 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+											l2 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+								cValues.add(1f); // alpha
+								// texture
+								cValues.add(tX + 1 / (Texture.atlasSize / Block.length));
+								cValues.add(tY);
+
+								// back left
+								// vertex
+								cValues.add((float)b.getLocation().getPixelX());
+								cValues.add((float)b.getLocation().getPixelY() -
+										Block.length / Block.horAngle);
+								// light
+								for (int i = 0; i < 3; i++)
+									cValues.add(l1 - Block.horShadow > Block.minLight / (float)Block.maxLight ?
+											l1 - Block.horShadow : Block.minLight / (float)Block.maxLight); // rgb
+								cValues.add(1f); // alpha
+								// texture
+								cValues.add(tX);
+								cValues.add(tY);
+
+							}
 						}
 					}
 				}
-			}
 
-			chunkArrays.remove(c.getIndex());
-			Float[] cArray = cValues.toArray(new Float[cValues.size()]);
-			chunkArrays.put(c.getIndex(), cArray);
+				chunkArrays.remove(c.getIndex());
+				Float[] cArray = cValues.toArray(new Float[cValues.size()]);
+				chunkArrays.put(c.getIndex(), cArray);
+			}
+			else
+				chunkArrays.remove(chunk);
 		}
-		else
-			chunkArrays.remove(chunk);
 
 		recreateArray();
 	}
@@ -301,17 +312,19 @@ public class VboUtil {
 	 */
 	public static void recreateArray(){
 		//System.out.println("[VboUtil] recreate");
-		int length = 0;
-		for (Float[] f : chunkArrays.values())
-			length += f.length;
-		float[] newArray = new float[length];
-		int elements = 0;
-		for (Float[] f : chunkArrays.values()){
-			for (int i = 0; i < f.length; i++)
-				newArray[elements + i] = f[i];
-			elements += f.length;
+		synchronized(chunkArrays){
+			int length = 0;
+			for (Float[] f : chunkArrays.values())
+				length += f.length;
+			float[] newArray = new float[length];
+			int elements = 0;
+			for (Float[] f : chunkArrays.values()){
+				for (int i = 0; i < f.length; i++)
+					newArray[elements + i] = f[i];
+				elements += f.length;
+			}
+			vertexArray = newArray;
 		}
-		vertexArray = newArray;
 	}
 
 	/**

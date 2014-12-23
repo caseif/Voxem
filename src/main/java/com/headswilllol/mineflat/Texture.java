@@ -108,7 +108,7 @@ public class Texture {
 	}
 
 	public static Texture getTexture(Block block){
-		return getTexture(block.getType(), block.getData());
+		 return getTexture(block.getType(), block.getData());
 	}
 
 }

@@ -6,6 +6,8 @@ public enum Material {
 	DIRT,
 	GRASS,
 	GRASS_TOP,
+	SNOW_GRASS,
+	SNOW,
 	LOG("log_oak"),
 	LOG_TOP("log_oak_top"),
 	LEAVES("leaves_oak"),

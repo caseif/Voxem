@@ -18,6 +18,8 @@ public class Chunk {
 
 	private Block[][] blocks;
 
+	private Biome biome = Biome.HILLS;
+
 	// the player's position when the game last tried to load new chunks
 	private static float lastX = Float.NaN;
 	// when the game last tried to load new chunks
@@ -27,11 +29,16 @@ public class Chunk {
 
 	private static final int CHUNKS_TO_LOAD = 5; // the number of chunks to keep loaded at a time (will be incremented if even)
 
-	public Chunk(Level level, int num){
+	public Chunk(Level level, int num, Biome biome){
 		this.level = level;
 		this.index = num;
+		this.biome = biome;
 		blocks = new Block[Main.world.getChunkLength()][Main.world.getChunkHeight()];
 		level.chunks.put(num, this);
+	}
+
+	public Chunk(Level level, int num){
+		this(level, num, Biome.SNOWY_HILLS);
 	}
 
 	public Level getLevel(){
@@ -54,6 +61,14 @@ public class Chunk {
 
 	public void setBlock(int x, int y, Block b){
 		blocks[x][y] = b;
+	}
+
+	public Biome getBiome(){
+		return this.biome;
+	}
+
+	public void setBiome(Biome biome){
+		this.biome = biome;
 	}
 
 	public void updateLight(){

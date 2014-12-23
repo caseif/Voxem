@@ -141,7 +141,8 @@ public class SaveManager {
 				.get(Integer.toString(level.getIndex()))))
 				.get("chunks")).get(Integer.toString(chunk));
 		if (jChunk != null) {
-			Chunk c = new Chunk(level, chunk);
+			Biome biome = Biome.getById(jChunk.get("biome").toString());
+			Chunk c = new Chunk(level, chunk, biome);
 			for (Object blockObj : (JSONArray)jChunk.get("blocks")) {
 				JSONObject block = (JSONObject)blockObj;
 				Material type = Material.valueOf((String)block.get("type"));
@@ -248,6 +249,7 @@ public class SaveManager {
 				}
 			}
 		}
+		c.put("biome", chunk.getBiome().getId());
 		c.put("blocks", blocks);
 		JSONArray entities = new JSONArray();
 		for (Entity entity : chunk.getEntities()){
