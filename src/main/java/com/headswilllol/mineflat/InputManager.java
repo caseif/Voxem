@@ -33,7 +33,7 @@ public class InputManager {
 	private static int mouseY = 0;
 
 	private static long lastAction = 0;
-	private static final long ACTION_WAIT = 350;
+	private static final long ACTION_WAIT = 200;
 
 	public static final ArrayList<Integer> baseKeysToCheck = new ArrayList<Integer>();
 	public static ArrayList<Integer> keysToCheck= new ArrayList<Integer>();
