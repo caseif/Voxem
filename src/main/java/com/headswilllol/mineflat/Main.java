@@ -4,7 +4,6 @@ import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
 import com.headswilllol.mineflat.entity.Player;
-import com.headswilllol.mineflat.gui.Gui;
 import com.headswilllol.mineflat.threading.Scheduler;
 import com.headswilllol.mineflat.util.Timing;
 import com.headswilllol.mineflat.world.Block;

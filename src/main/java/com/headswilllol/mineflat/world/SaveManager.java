@@ -204,6 +204,20 @@ public class SaveManager {
 					Main.player = (Player)e;
 			}
 			c.updateLight();
+			Chunk left = c.getLevel().getChunk(c.getIndex() == 1 ? -1 : c.getIndex() - 1);
+			Chunk right = c.getLevel().getChunk(c.getIndex() == -1 ? 1 : c.getIndex() + 1);
+			if (left != null){
+				for (int y = 0; y < c.getLevel().getWorld().getChunkHeight(); y++){
+					left.getBlock(c.getLevel().getWorld().getChunkLength() - 1, y).updateLight();
+					VboUtil.updateChunkArray(c.getLevel(), left.getIndex());
+				}
+			}
+			if (right != null){
+				for (int y = 0; y < c.getLevel().getWorld().getChunkHeight(); y++){
+					right.getBlock(0, y).updateLight();
+					VboUtil.updateChunkArray(c.getLevel(), right.getIndex());
+				}
+			}
 			System.gc(); //TODO: temporary fix until I have the motivation to find the memory leak
 			return c;
 		}
