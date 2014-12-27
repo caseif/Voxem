@@ -6,13 +6,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+//TODO: phase out this class so all elements are containers
 public class ContainerElement extends GuiElement {
-
-	private Vector2i size;
 
 	private HashMap<String, GuiElement> elements = new HashMap<String, GuiElement>();
 
@@ -25,63 +23,84 @@ public class ContainerElement extends GuiElement {
 		this.color = color;
 	}
 
-	public Vector2i getSize(){
-		return size;
-	}
-
-	public void setSize(Vector2i size){
-		this.size = size;
-	}
-
 	@Override
 	public void setActive(boolean active){
+		setActive(active, true);
+	}
+
+	public void setActive(boolean active, boolean recursive){
 		super.setActive(active);
-		for (GuiElement ge : elements.values()){
-			ge.setActive(active);
+		if (recursive){
+			for (GuiElement ge : elements.values()){
+				ge.setActive(active);
+			}
+		}
+		if (active && getParent().isPresent()){
+			if (getParent().get() instanceof ContainerElement)
+				((ContainerElement)getParent().get()).setActive(active, false);
+			else
+				getParent().get().setActive(active);
 		}
 	}
 
-	public Collection<GuiElement> getElements(){
+	public Collection<GuiElement> getChildren(){
 		return elements.values();
 	}
 
-	public GuiElement getElement(String id){
+	public GuiElement getChild(String id){
 		if (elements.get(id) != null)
 			return elements.get(id);
 		for (GuiElement ge : elements.values()){
 			if (ge instanceof ContainerElement){
-				if (((ContainerElement)ge).getElement(id) != null){
-					return ((ContainerElement)ge).getElement(id);
+				if (((ContainerElement)ge).getChild(id) != null){
+					return ((ContainerElement)ge).getChild(id);
 				}
 			}
 		}
 		return null;
 	}
 
-	public void addElement(GuiElement ge){
+	public void addChild(GuiElement ge){
 		ge.setParent(this);
 		elements.put(ge.getId(), ge);
 	}
 
-	public void removeElement(String id){
+	public void removeChild(String id){
 		elements.remove(id);
 	}
 
-	public void checkButtons(){
+	public void checkInteraction(){
 		for (GuiElement ge : elements.values()){
-			if (ge instanceof Button){
-				if (((Button)ge).contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY()))){
-					((Button)ge).click();
+			if (ge instanceof InteractiveElement){
+				if (ge.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY()))){
+					((InteractiveElement)ge).interact();
 				}
 			}
 			else if (ge instanceof ContainerElement){
-				((ContainerElement)ge).checkButtons();
+				((ContainerElement)ge).checkInteraction();
+			}
+		}
+	}
+
+	public void checkMousePos(){
+		if (isActive()) {
+			for (GuiElement e : getChildren()) {
+				if (e.isActive()) {
+					if (e instanceof InteractiveElement) {
+						if (e.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY()))) {
+							((InteractiveElement)e).interact();
+						}
+					}
+					else if (e instanceof ContainerElement){
+						((ContainerElement)e).checkInteraction();
+					}
+				}
 			}
 		}
 	}
 
 	public void draw(){
-		if (isActive()) {
+		if (isActive()){
 			GL11.glColor4f(color.getX(), color.getY(), color.getZ(), color.getW());
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(position.getX(), position.getY());
@@ -89,7 +108,7 @@ public class ContainerElement extends GuiElement {
 			GL11.glVertex2i(position.getX() + size.getX(), position.getY() + size.getY());
 			GL11.glVertex2i(position.getX(), position.getY() + size.getY());
 			GL11.glEnd();
-			for (GuiElement ge : elements.values()) {
+			for (GuiElement ge : elements.values()){
 				ge.draw();
 			}
 		}

@@ -4,7 +4,10 @@ import static org.lwjgl.input.Keyboard.*;
 
 import java.util.ArrayList;
 
-import com.headswilllol.mineflat.gui.Gui;
+import com.headswilllol.mineflat.gui.ContainerElement;
+import com.headswilllol.mineflat.gui.GuiElement;
+import com.headswilllol.mineflat.gui.GuiFactory;
+import com.headswilllol.mineflat.gui.InteractiveElement;
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
 import org.lwjgl.input.Mouse;
@@ -140,9 +143,9 @@ public class InputManager {
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
 
-		for (Gui gui : GraphicsHandler.guis.values()){
-			if (gui.isActive() && mouse1){
-				gui.checkMousePos();
+		for (GuiElement gui : GuiFactory.guis.values()){
+			if (gui instanceof ContainerElement && gui.isActive() && mouse1){
+				((ContainerElement)gui).checkMousePos();
 			}
 		}
 
@@ -169,33 +172,9 @@ public class InputManager {
 	public static void manage(){
 
 		if (f3 && System.currentTimeMillis() - lastAction >= ACTION_WAIT){
-			GraphicsHandler.guis.get("debug").setActive(!GraphicsHandler.guis.get("debug").isActive());
+			GuiFactory.guis.get("debug").setActive(!GuiFactory.guis.get("debug").isActive());
 			lastAction = System.currentTimeMillis();
 		}
-
-		/*if (isKeyDown(KEY_F11)){
-			if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
-				try {
-					Display.setFullscreen(!Display.isFullscreen());
-				}
-				catch (Exception ex){
-					ex.printStackTrace();
-					System.err.println("Could not change fullscreen mode!");
-				}
-				lastAction = System.currentTimeMillis();
-			}
-		}*/
-
-		/*if (Console.enabled){
-			if (mouse1){
-				if(mouseX > 30 && mouseX < Display.getWidth() - 30 && mouseY < Display.getHeight() - 270 &&
-						mouseY > Display.getHeight() - 290)
-					Console.focused = true;
-				else
-					Console.focused = false;
-			}
-		}
-		else {*/
 		if (mouse1){
 			if (System.currentTimeMillis() - lastAction >= ACTION_WAIT){
 				if (Block.selected != null &&
@@ -207,6 +186,9 @@ public class InputManager {
 				}
 				lastAction = System.currentTimeMillis();
 			}
+		}
+		else if (!InteractiveElement.hasMouseReleased){
+			InteractiveElement.hasMouseReleased = true;
 		}
 
 		if (mouse2){
@@ -266,7 +248,6 @@ public class InputManager {
 				lastAction = System.currentTimeMillis();
 			}
 		}
-		//}
 	}
 
 }

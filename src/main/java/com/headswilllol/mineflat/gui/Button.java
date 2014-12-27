@@ -6,20 +6,25 @@ import com.headswilllol.mineflat.vector.Vector4f;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import static org.lwjgl.opengl.GL11.*;
 
-public class Button extends GuiElement {
+public class Button extends InteractiveElement {
 
 	private Vector2i size;
 	private String text;
 	private Vector4f color;
 	private Vector4f hoverColor;
 
+	private Method handler;
+
 	private Runnable function;
 
 	private TextElement te;
 
-	public Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor, Runnable clickFunction){
+	protected Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor){
 		this.id = id;
 		this.position = position;
 		this.size = size;
@@ -29,8 +34,19 @@ public class Button extends GuiElement {
 		te.setParent(this);
 
 		this.color = color;
-		this.hoverColor = hoverColor;
+		this.hoverColor = hoverColor != null ? hoverColor : color;
+	}
+
+	public Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor,
+	              Runnable clickFunction){
+		this(id, position, size, text, color, hoverColor);
 		this.function = clickFunction;
+	}
+
+	public Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor,
+	              Method clickFunction){
+		this(id, position, size, text, color, hoverColor);
+		this.handler = clickFunction;
 	}
 
 	public Vector2i getSize(){
@@ -79,8 +95,27 @@ public class Button extends GuiElement {
 		return false;
 	}
 
-	public void click(){
-		function.run();
+	@Override
+	public void interact(){
+		if (hasMouseReleased && isActive()){
+			if (function != null)
+				function.run();
+			else if (handler != null){
+				try {
+					handler.invoke(null);
+				}
+				catch (IllegalAccessException | InvocationTargetException ex){
+					System.err.println("Failed to interact with button \"" + id + "\"");
+					ex.printStackTrace();
+				}
+			}
+			hasMouseReleased = false;
+		}
+	}
+
+	public void interact(Object... params){
+		//TODO: params
+		interact();
 	}
 
 }

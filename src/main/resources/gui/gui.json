@@ -1,0 +1,85 @@
+{
+	"menus": {
+		"main": {
+			"titleText": {
+				"type": "text",
+				"text": "MineFlat",
+				"height": "64",
+				"x": "center",
+				"y": "50",
+				"shadow": "true"
+			},
+			"contentPanel": {
+				"width": "50%",
+				"height": "-300",
+				"x": "center",
+				"y": "200",
+				"top": {
+					"handlerClass": "com.headswilllol.mineflat.gui.handlers.TopHandler",
+					"playBtn": {
+						"type": "button",
+						"width": "400",
+						"height": "50",
+						"x": "center",
+						"y": "50",
+						"color": "#808080",
+						"hoverColor": "#CC6666",
+						"text": "Play Game",
+						"handlerMethod": "playGame",
+						"handlerArgs": []
+					},
+					"quitBtn": {
+						"type": "button",
+						"width": "400",
+						"height": "50",
+						"x": "center",
+						"y": "-100",
+						"color": "#808080",
+						"hoverColor": "#CC6666",
+						"text": "Quit Game",
+						"handlerMethod": "quitGame",
+						"handlerArgs": []
+					}
+				},
+				"spMenu": {
+					"handlerClass": "com.headswilllol.mineflat.gui.handlers.SPMenuHandler",
+					"worldListLabel": {
+						"type": "text",
+						"height": "24",
+						"x": "center",
+						"y": "50",
+						"text": "Worlds"
+					},
+					"createWorld": {
+						"type": "button",
+						"width": "400",
+						"height": "50",
+						"x": "center",
+						"y": "125",
+						"color": "#808080",
+						"hoverColor": "#CC6666",
+						"text": "Create a World",
+						"handlerMethod": "createWorld"
+					},
+					"loadWorld": {
+						"width": "100%",
+						"height": "-150",
+						"x": "0",
+						"y": "200"
+					},
+					"back": {
+						"type": "button",
+						"width": "400",
+						"height": "50",
+						"x": "center",
+						"y": "-100",
+						"color": "#808080",
+						"hoverColor": "#CC6666",
+						"text": "Back",
+						"handlerMethod": "back"
+					}
+				}
+			}
+		}
+	}
+}

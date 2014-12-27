@@ -7,7 +7,6 @@ import com.headswilllol.mineflat.vector.Vector2i;
 public class TextElement extends GuiElement {
 
 	private String text;
-	private int height;
 	private boolean dropShadow;
 	private Alignment alignment = Alignment.LEFT;
 
@@ -15,7 +14,7 @@ public class TextElement extends GuiElement {
 		super.id = id;
 		super.position = position;
 		this.text = text;
-		this.height = height;
+		this.size = new Vector2i(GraphicsHandler.getStringLength(text, height), height);
 		this.dropShadow = dropShadow;
 	}
 
@@ -43,14 +42,15 @@ public class TextElement extends GuiElement {
 		if (isActive()) {
 			switch (alignment) {
 				case CENTER:
-					GraphicsHandler.drawString(text, getAbsolutePosition().getX() - GraphicsHandler.getStringLength(text, height) / 2,
-							getAbsolutePosition().getY(), height, dropShadow);
+					GraphicsHandler.drawString(text, getAbsolutePosition().getX() - size.getX() / 2,
+							getAbsolutePosition().getY(), size.getY(), dropShadow);
 					break;
 				//case RIGHT:
 				//	//TODO: actually implement this
 				//	break;
 				default:
-					GraphicsHandler.drawString(text, position.getX(), position.getY(), height, dropShadow);
+					GraphicsHandler.drawString(text, getAbsolutePosition().getX(), getAbsolutePosition().getY(),
+							size.getY(), dropShadow);
 					break;
 			}
 		}
