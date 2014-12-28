@@ -1,6 +1,6 @@
 /*
  * MineFlat
- * Copyright (c) 2014, Maxim Roncacé <http://github.com/mproncace>
+ * Copyright (c) 2014, Maxim Roncacé <mproncace@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
