@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import com.google.gson.JsonObject;
 import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.LivingEntity;
 import com.headswilllol.mineflat.entity.Mob;
-import org.json.simple.JSONObject;
 
 public class Level {
 
@@ -154,7 +154,7 @@ public class Level {
 		}
 	}
 
-	public JSONObject save(){
+	public JsonObject save(){
 		return SaveManager.saveLevel(this);
 	}
 

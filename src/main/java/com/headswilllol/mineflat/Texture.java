@@ -99,11 +99,9 @@ public class Texture {
 			Texture[] tArray = new Texture[m.getTextures().length];
 			int i = 0;
 			for (String t : m.getTextures()) {
-				InputStream is = Texture.class.getClassLoader().getResourceAsStream(
-						"textures/block/" + m.getTexture(i) + ".png");
+				InputStream is = Texture.class.getResourceAsStream("/textures/block/" + m.getTexture(i) + ".png");
 				if (is == null)
-					is = Texture.class.getClassLoader().getResourceAsStream(
-							"textures/block/missing_texture.png");
+					is = Texture.class.getResourceAsStream("/textures/block/missing_texture.png");
 				InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
 						ImageIO.read(is), Block.length, Block.length));
 				BufferedImage b = ImageIO.read(newIs);

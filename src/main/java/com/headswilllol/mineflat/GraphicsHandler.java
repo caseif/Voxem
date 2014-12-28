@@ -123,27 +123,25 @@ public class GraphicsHandler implements Runnable {
 			if (System.getProperty("os.name").startsWith("Windows")){
 				icons = new ByteBuffer[2];
 				BufferedImage icon1 = ImageUtil.scaleImage(
-						ImageIO.read(Main.class.getClassLoader()
-								.getResourceAsStream("textures/block/grass.png")), Block.length, Block.length);
+						ImageIO.read(Main.class.getResourceAsStream("/textures/block/grass.png")),
+						Block.length, Block.length);
 				BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
-						Main.class.getClassLoader()
-								.getResourceAsStream("textures/block/grass.png")), 32, 32);
+						Main.class.getResourceAsStream("/textures/block/grass.png")), 32, 32);
 				icons[0] = BufferUtil.asByteBuffer(icon1);
 				icons[1] = BufferUtil.asByteBuffer(icon2);
 			}
 			else if (System.getProperty("os.name").startsWith("Mac")){
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
-						Main.class.getClassLoader()
-								.getResourceAsStream("textures/block/grass.png")), Main.world.getChunkHeight(),
+						Main.class.getResourceAsStream("/textures/block/grass.png")),
+						Main.world.getChunkHeight(),
 						Main.world.getChunkHeight());
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			else {
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
-						Main.class.getClassLoader()
-								.getResourceAsStream("textures/block/grass.png")), 32, 32);
+						Main.class.getResourceAsStream("/textures/block/grass.png")), 32, 32);
 				icons[0] = BufferUtil.asByteBuffer(icon);
 			}
 			Display.setIcon(icons);
@@ -390,7 +388,7 @@ public class GraphicsHandler implements Runnable {
 
 			// update debug gui, if necessary
 			if (GuiFactory.guis.get("debug").isActive()){
-				ContainerElement debugPanel = ((ContainerElement)GuiFactory.guis.get("debug"));
+				ContainerElement debugPanel = (GuiFactory.guis.get("debug"));
 				((TextElement)debugPanel.getChild("fps"))
 						.setText("fps: " + fps);
 				((TextElement)debugPanel.getChild("delta"))

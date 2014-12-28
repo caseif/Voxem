@@ -28,7 +28,6 @@ ext {
 
 	lwjgl = 'org.lwjgl.lwjgl:lwjgl:2.9.1'
 	gson  = 'com.google.code.gson:gson:2.3'
-	jsonsimple = 'com.googlecode.json-simple:json-simple:1.1.1'
 	guava = 'com.google.guava:guava:18.0'
 	codecjorbis = 'com.paulscode.sound:codecjorbis:0.0.1'
 	librarylwjglopenal = 'com.paulscode.sound:librarylwjglopenal:0.0.1'
@@ -46,7 +45,6 @@ repositories {
 dependencies {
     compile lwjgl
 	compile gson
-	compile jsonsimple
 	compile guava
 	compile codecjorbis
 	compile librarylwjglopenal
@@ -59,12 +57,13 @@ tasks.withType(JavaCompile) {
 }
 
 jar {
+	archiveName = 'mineflat.jar'
 	manifest {
 		attributes(
 				'Implementation-Title': project.name,
 				'Implementation-Version': version,
 				'Main-Class': 'com.headswilllol.mineflat.Main',
-				'Class-Path': 'lib/lwjgl.jar lib/gson.jar lib/json-simple.jar lib/soundsystem/soundsystem.jar ' +
+				'Class-Path': 'lib/lwjgl.jar lib/gson.jar lib/soundsystem/soundsystem.jar ' +
 						'lib/soundsystem/librarylwjglopenal.jar lib/soundsystem/codecjorbis.jar lib/guava.jar'
 		)
 	}

@@ -22,10 +22,7 @@
  */
 package com.headswilllol.mineflat.world;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.headswilllol.mineflat.Direction;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
@@ -33,48 +30,46 @@ import com.headswilllol.mineflat.TickManager;
 import com.headswilllol.mineflat.entity.*;
 import com.headswilllol.mineflat.util.FileUtil;
 import com.headswilllol.mineflat.util.VboUtil;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.util.Map;
 
-@SuppressWarnings("unchecked") //TODO
 public class SaveManager {
+
+	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	/**
 	 * Parses all loaded chunks in a world to a JSON object.
 	 */
 	@SuppressWarnings("unchecked")
-	public static JSONObject saveWorld(World world){
+	public static JsonObject saveWorld(World world){
 
 		System.out.println("Saving chunks...");
 
-		JSONObject save = world.getJSON();
-		save.put("name", Main.world.getName());
-		save.put("createTime", Main.world.creationTime);
-		save.put("modifyTime", System.currentTimeMillis() / 1000L);
-		save.put("chunkCount", Main.world.getChunkCount());
-		save.put("chunkLength", Main.world.getChunkLength());
-		save.put("chunkHeight", Main.world.getChunkHeight());
-		save.put("seed", Main.world.getSeed());
-		save.put("ticks", TickManager.getTicks());
-		save.put("playerLevel", Main.player.getLevel().getIndex());
-		save.put("playerChunk", Main.player.getLocation().getChunk());
+		JsonObject save = world.getJson();
+		save.addProperty("name", Main.world.getName());
+		save.addProperty("createTime", Main.world.creationTime);
+		save.addProperty("modifyTime", System.currentTimeMillis() / 1000L);
+		save.addProperty("chunkCount", Main.world.getChunkCount());
+		save.addProperty("chunkLength", Main.world.getChunkLength());
+		save.addProperty("chunkHeight", Main.world.getChunkHeight());
+		save.addProperty("seed", Main.world.getSeed());
+		save.addProperty("ticks", TickManager.getTicks());
+		save.addProperty("playerLevel", Main.player.getLevel().getIndex());
+		save.addProperty("playerChunk", Main.player.getLocation().getChunk());
 
-		JSONObject levels = (JSONObject)save.get("levels");
+		JsonObject levels = (JsonObject)save.get("levels");
 		if (levels == null)
-			levels = new JSONObject();
+			levels = new JsonObject();
 		for (Level level : world.getLevels()){
-			levels.put(Integer.toString(level.getIndex()), saveLevel(level));
+			levels.add(Integer.toString(level.getIndex()), saveLevel(level));
 		}
-		save.put("levels", levels);
+		save.add("levels", levels);
 		return save;
 	}
 
 	public static void saveWorldToMemory(World world){
-		world.setJSON(saveWorld(world));
+		world.setJson(saveWorld(world));
 	}
 
 	public static void writeWorldToDisk(World world){
@@ -96,7 +91,7 @@ public class SaveManager {
 			saveFile.createNewFile();
 			PrintWriter writer = new PrintWriter(saveFile);
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			JsonElement je = new JsonParser().parse(world.getJSON().toJSONString());
+			JsonElement je = new JsonParser().parse(gson.toJson(world.getJson()));
 			writer.write(gson.toJson(je));
 			writer.close();
 			FileUtil.gzip(saveFile.getAbsolutePath(), zippedFile.getAbsolutePath());
@@ -124,24 +119,24 @@ public class SaveManager {
 			return;
 		FileUtil.ungzip(zippedFile.getAbsolutePath(), saveFile.getAbsolutePath());
 		try {
-			JSONObject save = (JSONObject)new JSONParser().parse(new FileReader(saveFile));
-			Main.world = new World((String)save.get("name"), longToInt((Long)save.get("chunkCount")),
-					longToInt((Long)save.get("chunkLength")), longToInt((Long)save.get("chunkHeight")));
-			Main.world.setJSON(save);
-			Main.world.seed = (Long)save.get("seed");
-			Main.world.creationTime = (Long)save.get("createTime");
-			TickManager.setTicks(longToInt((Long)save.get("ticks")));
-			loadLevel(Main.world, longToInt((Long)save.get("playerLevel")));
+			JsonObject save = (JsonObject)new JsonParser().parse(new FileReader(saveFile));
+			Main.world = new World(
+					save.get("name").getAsString(),
+					longToInt(save.get("chunkCount").getAsLong()),
+					longToInt(save.get("chunkLength").getAsLong()),
+					longToInt(save.get("chunkHeight").getAsLong())
+			);
+			Main.world.setJson(save);
+			Main.world.seed = save.get("seed").getAsLong();
+			Main.world.creationTime = save.get("createTime").getAsLong();
+			TickManager.setTicks(longToInt(save.get("ticks").getAsLong()));
+			loadLevel(Main.world, longToInt(save.get("playerLevel").getAsLong()));
 		}
 		catch (FileNotFoundException ex){
 			ex.printStackTrace();
 			System.err.println("Failed to load world from disk - save file cannot be found!");
 		}
-		catch (IOException ex){
-			ex.printStackTrace();
-			System.err.println("Failed to load world from disk - save file cannot be read!");
-		}
-		catch (ParseException | ClassCastException ex){
+		catch (ClassCastException ex){
 			ex.printStackTrace();
 			System.err.println("Failed to load world from disk - save file is invalid!");
 		}
@@ -152,41 +147,49 @@ public class SaveManager {
 
 	public static Chunk loadChunk(Level level, int chunk){
 		System.out.println("Loading chunk " + chunk);
-		JSONObject jChunk = (JSONObject)((JSONObject)(((JSONObject)((JSONObject)level
-				.getWorld()
-				.getJSON()
-				.get("levels"))
-				.get(Integer.toString(level.getIndex()))))
-				.get("chunks")).get(Integer.toString(chunk));
+		JsonObject jChunk = (level.getWorld().getJson().getAsJsonObject("levels")
+				.getAsJsonObject(Integer.toString(level.getIndex()))
+				.getAsJsonObject("chunks")).get(Integer.toString(chunk)).getAsJsonObject();
 		if (jChunk != null) {
 			Biome biome = Biome.getById(jChunk.get("biome").toString());
 			Chunk c = new Chunk(level, chunk, biome);
-			for (Object blockObj : (JSONArray)jChunk.get("blocks")) {
-				JSONObject block = (JSONObject)blockObj;
-				Material type = Material.valueOf((String)block.get("type"));
+			for (JsonElement blockObj : jChunk.getAsJsonArray("blocks")) {
+				JsonObject block = blockObj.getAsJsonObject();
+				Material type = Material.valueOf(block.get("type").getAsString());
 				if (type == null)
 					type = Material.AIR;
-				int data = block.get("data") != null ? (Integer)block.get("data") : 0;
+				int data = block.get("data") != null ? block.get("data").getAsInt() : 0;
 				Block b = new Block(type, data, new Location(level, Chunk.getWorldXFromChunkIndex(chunk,
-						block.get("x") instanceof Integer ? (Integer)block.get("x") : (Long)block.get("x")),
-						block.get("y") instanceof Integer ? (Integer)block.get("y") : (Long)block.get("y")));
-				JSONObject meta = (JSONObject)block.get("metadata");
-				for (Object key : meta.keySet())
-					b.setMetadata((String)key, meta.get(key));
+						block.get("x").getAsLong()),
+						block.get("y").getAsLong()));
+				JsonObject meta = (JsonObject)block.get("metadata");
+				for (Map.Entry<String, JsonElement> e : meta.entrySet()){
+					JsonPrimitive prim = meta.get(e.getKey()).getAsJsonPrimitive();
+					Object value = null;
+					if (prim.isBoolean())
+						value = prim.getAsBoolean();
+					else if (prim.isNumber())
+						value = prim.getAsNumber();
+					else if (prim.isString())
+						value = prim.getAsString();
+					else
+						value = prim.getAsCharacter();
+					b.setMetadata(e.getKey(), value);
+				}
 				b.addToWorld();
 			}
-			for (Object entityObj : (JSONArray)jChunk.get("entities")) {
-				JSONObject entity = (JSONObject)entityObj;
-				EntityType type = EntityType.valueOf((String)entity.get("type"));
+			for (Object entityObj : jChunk.get("entities").getAsJsonArray()) {
+				JsonObject entity = (JsonObject)entityObj;
+				EntityType type = EntityType.valueOf(entity.get("type").getAsString());
 				float x = Chunk.getWorldXFromChunkIndex(
-						c.getIndex(), Float.valueOf(Double.toString((Double)entity.get("x")))
+						c.getIndex(), Float.valueOf(Double.toString(entity.get("x").getAsDouble()))
 				);
-				float y = Float.valueOf(Double.toString((Double)entity.get("y")));
-				float w = Float.valueOf(Double.toString((Double)entity.get("w")));
-				float h = Float.valueOf(Double.toString((Double)entity.get("h")));
+				float y = Float.valueOf(Double.toString(entity.get("y").getAsDouble()));
+				float w = Float.valueOf(Double.toString(entity.get("w").getAsDouble()));
+				float h = Float.valueOf(Double.toString(entity.get("h").getAsDouble()));
 				Entity e;
-				if (entity.containsKey("living")) {
-					if (entity.containsKey("mob")) {
+				if (entity.has("living")) {
+					if (entity.has("mob")) {
 						switch (type) {
 							case ZOMBIE:
 								e = new Zombie(new Location(level, x, y));
@@ -195,9 +198,9 @@ public class SaveManager {
 								e = new LivingEntity(type, new Location(level, x, y), w, h);
 								break;
 						}
-						((Mob)e).setPlannedWalkDistance((Float)entity.get("pwd"));
-						((Mob)e).setActualWalkDistance((Float)entity.get("awd"));
-						((Mob)e).setLastX((Float)entity.get("lx"));
+						((Mob)e).setPlannedWalkDistance(entity.get("pwd").getAsFloat());
+						((Mob)e).setActualWalkDistance(entity.get("awd").getAsFloat());
+						((Mob)e).setLastX(entity.get("lx").getAsFloat());
 					}
 					else {
 						switch (type) {
@@ -211,14 +214,14 @@ public class SaveManager {
 								e = new LivingEntity(type, new Location(level, x, y), w, h);
 						}
 					}
-					((LivingEntity)e).setFacingDirection(Direction.valueOf((String)entity.get("fd")));
-					((LivingEntity)e).setMovementDirection(Direction.valueOf((String)entity.get("md")));
-					((LivingEntity)e).setJumping((Boolean)entity.get("j"));
+					((LivingEntity)e).setFacingDirection(Direction.valueOf(entity.get("fd").getAsString()));
+					((LivingEntity)e).setMovementDirection(Direction.valueOf(entity.get("md").getAsString()));
+					((LivingEntity)e).setJumping(entity.get("j").getAsBoolean());
 				}
 				else
 					e = new Entity(type, new Location(level, x, y), w, h);
-				e.getVelocity().setX(Float.valueOf(Double.toString((Double)entity.get("xv"))));
-				e.getVelocity().setY(Float.valueOf(Double.toString((Double)entity.get("yv"))));
+				e.getVelocity().setX(Float.valueOf(Double.toString(entity.get("xv").getAsDouble())));
+				e.getVelocity().setY(Float.valueOf(Double.toString(entity.get("yv").getAsDouble())));
 				level.addEntity(e);
 				if (type == EntityType.PLAYER)
 					Main.player = (Player)e;
@@ -247,8 +250,8 @@ public class SaveManager {
 	public static Level loadLevel(World world, int level){
 		Main.world.addLevel(level);
 		Level l = Main.world.getLevel(level);
-		if (longToInt((Long)world.getJSON().get("playerLevel")) == level) {
-			loadChunk(l, longToInt((Long)world.getJSON().get("playerChunk")));
+		if (longToInt(world.getJson().get("playerLevel").getAsLong()) == level) {
+			loadChunk(l, longToInt((Long)world.getJson().get("playerChunk").getAsLong()));
 			Chunk.handleChunkLoading(true);
 		}
 		for (Chunk c : l.chunks.values())
@@ -261,56 +264,69 @@ public class SaveManager {
 	 * @param chunk the chunk to save.
 	 * @return the created JSON object.
 	 */
-	public static JSONObject saveChunk(Chunk chunk){
-		JSONObject c = new JSONObject();
-		JSONArray blocks = new JSONArray();
+	public static JsonObject saveChunk(Chunk chunk){
+		JsonObject c = new JsonObject();
+		JsonArray blocks = new JsonArray();
 		for (int x = 0; x < Main.world.getChunkLength(); x++){
 			for (int y = 0; y < Main.world.getChunkHeight(); y++){
 				Block block = chunk.getBlock(x, y);
 				if (block != null){
-					JSONObject b = new JSONObject();
-					b.put("x", x);
-					b.put("y", y);
-					b.put("type", block.getType().toString());
+					JsonObject b = new JsonObject();
+					b.addProperty("x", x);
+					b.addProperty("y", y);
+					b.addProperty("type", block.getType().toString());
 					if (block.getData() != 0)
-						b.put("data", block.getData());
+						b.addProperty("data", block.getData());
 					blocks.add(b);
-					JSONObject meta = new JSONObject();
-					for (String key : block.getAllMetadata())
-						meta.put(key, block.getMetadata(key));
-					b.put("metadata", meta);
+					JsonObject meta = new JsonObject();
+					for (String key : block.getAllMetadata()){
+						Object data = block.getMetadata(key);
+						if (data instanceof String)
+							meta.addProperty(key, (String)block.getMetadata(key));
+						else if (data instanceof Number)
+							meta.addProperty(key, (Number)block.getMetadata(key));
+						else if (data instanceof Boolean)
+							meta.addProperty(key, (Boolean)block.getMetadata(key));
+						else if (data instanceof Character)
+							meta.addProperty(key, (Character)block.getMetadata(key));
+						else
+							System.err.println("Failed to save metadata \"" + key + "\" for block at " +
+									"{level=" + chunk.getLevel().getIndex() + ", x=" + block.getX() +
+									", y=" + block.getY() + "}");
+					}
+					b.add("metadata", meta);
 				}
 			}
 		}
-		c.put("biome", chunk.getBiome().getId());
-		c.put("blocks", blocks);
-		JSONArray entities = new JSONArray();
+		c.addProperty("biome", chunk.getBiome().getId());
+		c.add("blocks", blocks);
+		JsonArray entities = new JsonArray();
 		for (Entity entity : chunk.getEntities()){
-			JSONObject e = new JSONObject();
-			e.put("type", entity.getType().toString());
-			e.put("x", entity.getLocation().getPosInChunk());
-			e.put("y", entity.getY());
-			e.put("w", entity.width);
-			e.put("h", entity.height);
-			e.put("xv", entity.getVelocity().getX());
-			e.put("yv", entity.getVelocity().getY());
+			JsonObject e = new JsonObject();
+			e.addProperty("type", entity.getType().toString());
+			e.addProperty("x", entity.getLocation().getPosInChunk());
+			e.addProperty("y", entity.getY());
+			e.addProperty("w", entity.width);
+			e.addProperty("h", entity.height);
+			e.addProperty("xv", entity.getVelocity().getX());
+			e.addProperty("yv", entity.getVelocity().getY());
 			if (entity instanceof LivingEntity){
-				e.put("living", true);
+				e.addProperty("living", true);
 				LivingEntity le = (LivingEntity)entity;
-				e.put("fd", le.getFacingDirection().toString());
-				e.put("md", le.getMovementDirection().toString());
-				e.put("j", le.isJumping());
+				e.addProperty("fd", le.getFacingDirection().toString());
+				e.addProperty("md", le.getMovementDirection().toString());
+				e.addProperty("j", le.isJumping());
 				if (le instanceof Mob){
-					e.put("mob", true);
+					e.addProperty("mob", true);
 					Mob m = (Mob)le;
-					e.put("pwd", m.getPlannedWalkDistance());
-					e.put("awd", m.getActualWalkDistance());
-					e.put("lx", m.getLastX());
+					e.addProperty("pwd", m.getPlannedWalkDistance());
+					e.addProperty("awd", m.getActualWalkDistance());
+					e.addProperty("lx", m.getLastX());
 				}
 			}
 			entities.add(e);
 		}
-		c.put("entities", entities);
+		c.add("entities", entities);
 		return c;
 	}
 
@@ -319,55 +335,55 @@ public class SaveManager {
 	 * @param level the chunk to save.
 	 * @return the created JSON object.
 	 */
-	public static JSONObject saveLevel(Level level){
-		JSONObject l = new JSONObject();
-		JSONObject chunks = new JSONObject();
-		JSONObject levels = (JSONObject)level.getWorld().getJSON().get("levels");
+	public static JsonObject saveLevel(Level level){
+		JsonObject l = new JsonObject();
+		JsonObject chunks = new JsonObject();
+		JsonObject levels = (JsonObject)level.getWorld().getJson().get("levels");
 		if (levels != null) {
-			l = (JSONObject)levels.get(Integer.toString(level.getIndex()));
-			chunks = (JSONObject)l.get("chunks");
+			l = levels.get(Integer.toString(level.getIndex())).getAsJsonObject();
+			chunks = l.get("chunks").getAsJsonObject();
 		}
 		for (Chunk chunk : level.chunks.values()){
-			chunks.put(Integer.toString(chunk.getIndex()), saveChunk(chunk));
+			chunks.add(Integer.toString(chunk.getIndex()), saveChunk(chunk));
 		}
-		l.put("chunks", chunks);
+		l.add("chunks", chunks);
 		return l;
 	}
 
 	/**
-	 * Saves a chunk to its world's {@link JSONObject JSON object}
+	 * Saves a chunk to its world's {@link JsonObject JSON object}
 	 * @param chunk the chunk to save.
 	 */
 	public static void saveChunkToMemory(Chunk chunk){
-		JSONObject world = chunk.getLevel().getWorld().getJSON();
-		JSONObject levels = (JSONObject)world.get("levels");
+		JsonObject world = chunk.getLevel().getWorld().getJson();
+		JsonObject levels = world.get("levels").getAsJsonObject();
 		if (levels == null)
-			levels = new JSONObject();
-		JSONObject level = (JSONObject)levels.get(Integer.toString(chunk.getLevel().getIndex()));
+			levels = new JsonObject();
+		JsonObject level = levels.get(Integer.toString(chunk.getLevel().getIndex())).getAsJsonObject();
 		if (level == null)
-			level = new JSONObject();
-		JSONObject chunks = (JSONObject)level.get("chunks");
+			level = new JsonObject();
+		JsonObject chunks = level.get("chunks").getAsJsonObject();
 		if (chunks == null)
-			chunks = new JSONObject();
-		JSONObject jChunk = saveChunk(chunk);
-		chunks.put(Integer.toString(chunk.getIndex()), jChunk);
-		level.put("chunks", chunks);
-		levels.put(Integer.toString(chunk.getLevel().getIndex()), level);
-		world.put("levels", levels);
+			chunks = new JsonObject();
+		JsonObject jChunk = saveChunk(chunk);
+		chunks.add(Integer.toString(chunk.getIndex()), jChunk);
+		level.add("chunks", chunks);
+		levels.add(Integer.toString(chunk.getLevel().getIndex()), level);
+		world.add("levels", levels);
 	}
 
 	/**
-	 * Saves a level to its world's {@link JSONObject JSON object}
+	 * Saves a level to its world's {@link JsonObject JSON object}
 	 * @param level the chunk to save.
 	 */
 	public static void saveLevelToMemory(Level level){
-		JSONObject world = level.getWorld().getJSON();
-		JSONObject levels = (JSONObject)world.get("levels");
+		JsonObject world = level.getWorld().getJson();
+		JsonObject levels = (JsonObject)world.get("levels");
 		if (levels == null)
-			levels = new JSONObject();
-		JSONObject jLevel = saveLevel(level);
-		levels.put(Integer.toString(level.getIndex()), level);
-		world.put("levels", levels);
+			levels = new JsonObject();
+		JsonObject jLevel = saveLevel(level);
+		levels.add(Integer.toString(level.getIndex()), jLevel);
+		world.add("levels", levels);
 	}
 
 	// this saves me a bit of casting and makes the code look nicer

@@ -22,10 +22,10 @@
  */
 package com.headswilllol.mineflat.world;
 
+import com.google.gson.JsonObject;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.util.VboUtil;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -166,7 +166,7 @@ public class Chunk {
 		return entities;
 	}
 
-	public JSONObject save(){
+	public JsonObject save(){
 		return SaveManager.saveChunk(this);
 	}
 
