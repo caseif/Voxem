@@ -28,5 +28,5 @@ public enum EntityType {
 	HUMAN,
 	PLAYER,
 	ZOMBIE
-	
+
 }

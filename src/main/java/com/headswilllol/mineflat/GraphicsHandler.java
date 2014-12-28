@@ -91,7 +91,7 @@ public class GraphicsHandler implements Runnable {
 	// offset of character shadows (duh)
 	private static final float shadowOffset = 1;
 
-	public static final HashMap<Character, Float> specialChars = new HashMap<Character, Float>();
+	public static final HashMap<Character, Float> specialChars = new HashMap<>();
 
 	public static boolean TEXTURES_READY = false;
 
@@ -541,22 +541,5 @@ public class GraphicsHandler implements Runnable {
 		}
 		return (int)Math.ceil(pos * width);
 	}
-
-	/*@SuppressWarnings("unchecked")
-	public static void initializeFont(){
-		float size = 16F;
-		Font awtFont = new Font("Courier New", Font.PLAIN, (int)size);
-		font = new UnicodeFont(awtFont.deriveFont(0, size));
-		font.addAsciiGlyphs();
-		ColorEffect e = new ColorEffect();
-		e.setColor(Color.BLACK);
-		font.getEffects().add(e);
-		try {
-			font.loadGlyphs();
-		}
-		catch (Exception ex){
-			ex.printStackTrace();
-		}
-	}*/
 
 }

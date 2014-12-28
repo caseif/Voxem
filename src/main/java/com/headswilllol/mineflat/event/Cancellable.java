@@ -23,6 +23,12 @@
 package com.headswilllol.mineflat.event;
 
 public interface Cancellable {
+
+	/**
+	 * Determines whether the event is currently cancelled.
+	 * @return whether the event is currently cancelled
+	 */
+	public abstract boolean isCancelled();
 	
 	/**
 	 * Defines whether an event should be cancelled.

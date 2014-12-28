@@ -34,7 +34,7 @@ import java.util.HashMap;
 //TODO: phase out this class so all elements are containers
 public class ContainerElement extends GuiElement {
 
-	private HashMap<String, GuiElement> elements = new HashMap<String, GuiElement>();
+	private HashMap<String, GuiElement> elements = new HashMap<>();
 
 	private Vector4f color;
 

@@ -32,8 +32,6 @@ import java.net.URISyntaxException;
 
 public class DummyMain extends JFrame implements ActionListener {
 
-	private final JFrame f;
-
 	private String[] str = new String[]{
 			"MineFlat cannot be opened as a standalone program. Instead, a special launcher",
 			"must be used to ensure its libraries are properly loaded and it is kept updated.",
@@ -43,11 +41,16 @@ public class DummyMain extends JFrame implements ActionListener {
 	private final Font font = new Font("Arial", Font.BOLD, 16);
 
 	public DummyMain(){
-		f = this;
-		f.addWindowListener(new WindowAdapter(){ public void windowClosing(WindowEvent e){System.exit(0);}});
+		JFrame f = this;
+		f.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e){
+				System.exit(0);
+			}
+		});
 		f.setTitle("MineFlat");
 		f.setSize(800, 600);
-		f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 400, Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 300);
+		f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 400,
+				Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 300);
 		try {
 			f.setIconImage(ImageIO.read(Main.class.getResourceAsStream("/textures/block/grass.png")));
 		}
@@ -112,14 +115,11 @@ public class DummyMain extends JFrame implements ActionListener {
 			try {
 				Desktop.getDesktop().browse(new URI("http://ci.amigocraft.net/job/MineFlat%20Launcher"));
 			}
-			catch (IOException ex) {
+			catch (IOException | URISyntaxException ex) {
 				ex.printStackTrace();
-				str = new String[]{"Failed to open browser! You can still get the launcher manually by going to ci.amigocraft.net."};
-				repaint();
-			}
-			catch (URISyntaxException ex) {
-				ex.printStackTrace();
-				str = new String[]{"Failed to open browser! You can still get the launcher manually by going to ci.amigocraft.net."};
+				str = new String[]{
+						"Failed to open browser! You can still get the launcher manually by going to ci.amigocraft.net."
+				};
 				repaint();
 			}
 		}

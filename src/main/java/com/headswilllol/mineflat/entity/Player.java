@@ -86,9 +86,11 @@ public class Player extends Human {
 					float sideBias = Math.abs(0.5f - Math.abs(Main.player.getX() % 1));
 					float centerBias = 1 - sideBias;
 					light = firstLight * centerBias + secondLight * sideBias;
-				} else
+				}
+				else
 					light = firstLight;
-			} else if (Main.player.getY() > Main.player.getLevel().getWorld().getChunkHeight() - 1)
+			}
+			else if (Main.player.getY() > Main.player.getLevel().getWorld().getChunkHeight() - 1)
 				light = 0f;
 
 			if (light <= 2f / (float) Block.maxLight)
@@ -120,7 +122,6 @@ public class Player extends Human {
 			GraphicsHandler.yOffset =
 					Display.getHeight() / 2 - Main.player.getLocation().getPixelY() +
 							(int)(Display.getHeight() / 2 * scrollTolerance);
-		//GraphicsHandler.yOffset = Display.getHeight() / 2 - MineFlat.player.getLocation().getPixelY();
 
 	}
 

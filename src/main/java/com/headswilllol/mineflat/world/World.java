@@ -32,7 +32,7 @@ public class World {
 
 	public long seed;
 
-	private final HashMap<Integer, Level> levels = new HashMap<Integer, Level>();
+	private final HashMap<Integer, Level> levels = new HashMap<>();
 
 	public long creationTime;
 	

@@ -22,28 +22,21 @@
  */
 package com.headswilllol.mineflat.util;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.headswilllol.mineflat.Main;
-
 public class FileUtil {
 
 	public static String getAppDataFolder(){
-		String OS = System.getProperty("os.name").toUpperCase();
-		if (OS.contains("WIN"))
+		String os = System.getProperty("os.name").toUpperCase();
+		if (os.contains("WIN"))
 			return System.getenv("APPDATA");
-		else if (OS.contains("MAC"))
+		else if (os.contains("MAC"))
 			return System.getProperty("user.home") + "/Library/Application Support";
 		return System.getProperty("user.home");
-		// not sure why I wrote this
-		/*try {return new File(Main.class.getProtectionDomain()
-				.getCodeSource().getLocation().toURI().getPath()).getParent();}
-		catch (Exception ex){ex.printStackTrace();}*/
 	}
 
 	public static void ungzip(String gzipFile, String newFile){

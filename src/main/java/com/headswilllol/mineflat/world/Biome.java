@@ -36,7 +36,11 @@ public enum Biome {
 	}
 
 	public String getId(){
-		return id;
+		return this.id;
+	}
+
+	public String getFriendlyName(){
+		return this.name;
 	}
 
 	public static Biome getById(String id){

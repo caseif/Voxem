@@ -68,7 +68,7 @@ public class Entity {
 	 */
 	public static final int vertOffset = Block.length / Block.horAngle / 2;
 
-	public static final HashMap<EntityType, Integer> sprites = new HashMap<EntityType, Integer>();
+	public static final HashMap<EntityType, Integer> sprites = new HashMap<>();
 
 	protected Location location;
 	protected EntityType type;
@@ -261,7 +261,8 @@ public class Entity {
 							));
 				}
 				catch (Exception ex){
-					System.err.println("Exception occurred while preparing texture for " + et.toString().toLowerCase().replace("_", " ") + " sprite");
+					System.err.println("Exception occurred while preparing texture for " +
+							et.toString().toLowerCase().replace("_", " ") + " sprite");
 					ex.printStackTrace();
 				}
 			}

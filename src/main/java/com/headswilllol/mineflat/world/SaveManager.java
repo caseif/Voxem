@@ -40,6 +40,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 
+@SuppressWarnings("unchecked") //TODO
 public class SaveManager {
 
 	/**
@@ -130,7 +131,6 @@ public class SaveManager {
 			Main.world.seed = (Long)save.get("seed");
 			Main.world.creationTime = (Long)save.get("createTime");
 			TickManager.setTicks(longToInt((Long)save.get("ticks")));
-			//for (Object lKey : ((JSONObject)save.get("levels")).keySet())
 			loadLevel(Main.world, longToInt((Long)save.get("playerLevel")));
 		}
 		catch (FileNotFoundException ex){
@@ -141,11 +141,7 @@ public class SaveManager {
 			ex.printStackTrace();
 			System.err.println("Failed to load world from disk - save file cannot be read!");
 		}
-		catch (ParseException ex){
-			ex.printStackTrace();
-			System.err.println("Failed to load world from disk - save file is invalid!");
-		}
-		catch (ClassCastException ex){
+		catch (ParseException | ClassCastException ex){
 			ex.printStackTrace();
 			System.err.println("Failed to load world from disk - save file is invalid!");
 		}
@@ -182,7 +178,9 @@ public class SaveManager {
 			for (Object entityObj : (JSONArray)jChunk.get("entities")) {
 				JSONObject entity = (JSONObject)entityObj;
 				EntityType type = EntityType.valueOf((String)entity.get("type"));
-				float x = Chunk.getWorldXFromChunkIndex(c.getIndex(), Float.valueOf(Double.toString((Double)entity.get("x"))));
+				float x = Chunk.getWorldXFromChunkIndex(
+						c.getIndex(), Float.valueOf(Double.toString((Double)entity.get("x")))
+				);
 				float y = Float.valueOf(Double.toString((Double)entity.get("y")));
 				float w = Float.valueOf(Double.toString((Double)entity.get("w")));
 				float h = Float.valueOf(Double.toString((Double)entity.get("h")));
@@ -249,7 +247,6 @@ public class SaveManager {
 	public static Level loadLevel(World world, int level){
 		Main.world.addLevel(level);
 		Level l = Main.world.getLevel(level);
-		//for (Object cKey : ((JSONObject)jLevel.get("chunks")).keySet())
 		if (longToInt((Long)world.getJSON().get("playerLevel")) == level) {
 			loadChunk(l, longToInt((Long)world.getJSON().get("playerChunk")));
 			Chunk.handleChunkLoading(true);

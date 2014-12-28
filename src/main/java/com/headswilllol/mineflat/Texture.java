@@ -34,7 +34,7 @@ import java.util.HashMap;
 
 public class Texture {
 
-	public static final HashMap<Material, Texture[]> textures = new HashMap<Material, Texture[]>();
+	public static final HashMap<Material, Texture[]> textures = new HashMap<>();
 	public static int atlas;
 	public static float atlasSize;
 

@@ -104,11 +104,10 @@ public abstract class GuiElement {
 	}
 
 	public boolean contains(Vector2i point){
-		if (point.getX() >= this.getAbsolutePosition().getX() && point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
-				point.getY() >= this.getAbsolutePosition().getY() && point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY()) {
-			return true;
-		}
-		return false;
+		return point.getX() >= this.getAbsolutePosition().getX() &&
+				point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
+				point.getY() >= this.getAbsolutePosition().getY() &&
+				point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY();
 	}
 
 	public abstract void draw();

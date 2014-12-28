@@ -87,7 +87,7 @@ public class VboUtil {
 		synchronized(chunkArrays){
 			Chunk c = level.getChunk(chunk);
 			if (c != null){
-				List<Float> cValues = new ArrayList<Float>();
+				List<Float> cValues = new ArrayList<>();
 				for (int x = 0; x < Main.world.getChunkLength(); x++){
 					for (int y = 0; y < Main.world.getChunkHeight(); y++){
 						Block b = c.getBlock(x, y);
@@ -97,7 +97,7 @@ public class VboUtil {
 							float tY = t.getAtlasY();
 
 							// this whole bit takes care of smooth lighting
-							List<Integer> s = new ArrayList<Integer>();
+							List<Integer> s = new ArrayList<>();
 							// 1
 							if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1) != null)
 								s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1).getLightLevel());
@@ -139,14 +139,14 @@ public class VboUtil {
 							else
 								s.add(Block.maxLight);
 
-							float l1 = (float)(b.getLightLevel() + s.get(0) + s.get(1) + s.get(3))
-									/ 4 / Block.maxLight;
-							float l2 = (float)(b.getLightLevel() + s.get(1) + s.get(2) + s.get(4))
-									/ 4 / Block.maxLight;
-							float l3 = (float)(b.getLightLevel() + s.get(4) + s.get(6) + s.get(7))
-									/ 4 / Block.maxLight;
-							float l4 = (float)(b.getLightLevel() + s.get(3) + s.get(5) + s.get(6))
-									/ 4 / Block.maxLight;
+							float l1 = (float)(b.getLightLevel() + s.get(0) + s.get(1) + s.get(3)) /
+									4 / Block.maxLight;
+							float l2 = (float)(b.getLightLevel() + s.get(1) + s.get(2) + s.get(4)) /
+									4 / Block.maxLight;
+							float l3 = (float)(b.getLightLevel() + s.get(4) + s.get(6) + s.get(7)) /
+									4 / Block.maxLight;
+							float l4 = (float)(b.getLightLevel() + s.get(3) + s.get(5) + s.get(6)) /
+									4 / Block.maxLight;
 
 							if (c.getBiome() == Biome.SNOWY_HILLS && b.getType() == Material.GRASS){
 								Texture t2 = Texture.getTexture(Material.SNOW_GRASS);
@@ -208,7 +208,9 @@ public class VboUtil {
 							//cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
 							cValues.add(1f);
 
-							if (!Block.isAir(b) && (b.getY() == 0 || Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
+							if (!Block.isAir(b) &&
+									(b.getY() == 0 ||
+									Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)){
 
 								//TODO: make this more flexible (less awful)
 								if (b.getType() == Material.GRASS){

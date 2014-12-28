@@ -74,7 +74,7 @@ public class Block {
 
 	public int lastLightUpdate = -1;
 
-	public final HashMap<String, Object> metadata = new HashMap<String, Object>();
+	public final HashMap<String, Object> metadata = new HashMap<>();
 
 	public Block(Material m, int data, Location location){
 		this.type = m;
@@ -313,7 +313,8 @@ public class Block {
 
 	public static boolean isSolid(Level level, float x, float y){
 		return new Location(level, x, y).getBlock() != null && !isAir(level, x, y) &&
-				!(new Location(level, x, y).getBlock().hasMetadata("solid") && !(Boolean)new Location(level, x, y).getBlock().getMetadata("solid"));
+				!(new Location(level, x, y).getBlock().hasMetadata("solid") &&
+						!(Boolean)new Location(level, x, y).getBlock().getMetadata("solid"));
 	}
 
 	public static boolean isSolid(Block b){

@@ -35,7 +35,6 @@
 			<property name="option" value="alone"/>
 			<property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO, STATIC_INIT, INSTANCE_INIT"/>
 		</module>
-		<module name="OneStatementPerLine"/>
 		<module name="ArrayTypeStyle"/>
 		<module name="MissingSwitchDefault"/>
 		<module name="FallThrough"/>

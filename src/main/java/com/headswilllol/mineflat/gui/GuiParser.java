@@ -60,8 +60,7 @@ public class GuiParser {
 			for (GuiElement e : elementsToCenter){
 				e.setPosition(new Vector2i(((e.getParent().isPresent() ?
 						e.getParent().get().getSize().getX() :
-						Display.getWidth())
-						/ 2  - (e.getSize().getX()) / 2), e.getPosition().getY()));
+						Display.getWidth()) / 2  - (e.getSize().getX()) / 2), e.getPosition().getY()));
 			}
 			return gui;
 		}

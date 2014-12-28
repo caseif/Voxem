@@ -107,7 +107,8 @@ public class Terrain {
 			for (Chunk c : l.chunks.values()){
 				for (int x = 0; x < Main.world.getChunkLength(); x++){
 					int h = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0));
-					int leftHeight = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x) - 1, 0));
+					int leftHeight =
+							Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x) - 1, 0));
 					if (leftHeight != -1){
 						h = (h + leftHeight) / 2;
 						if (leftHeight - h >= 3)
@@ -195,7 +196,7 @@ public class Terrain {
 									maxSize = 4;
 								Block.getBlock(l, x, y).setType(vein);
 								for (int i = 1; i < maxSize; i++){
-									List<Block> surrounding = new ArrayList<Block>();
+									List<Block> surrounding = new ArrayList<>();
 									if (y > 0 &&
 											Block.isSolid(l, x, y - 1) &&
 											Block.getBlock(l, x, y - 1).getType() == Material.STONE)
@@ -254,7 +255,7 @@ public class Terrain {
 					int x = (int)Chunk.getWorldXFromChunkIndex(c.getIndex(), xx);
 					for (int y = 0; y < Main.world.getChunkHeight(); y++){
 						if (Block.isSolid(l, x, y)){
-							List<Block> surrounding = new ArrayList<Block>();
+							List<Block> surrounding = new ArrayList<>();
 							if (y > 0 && Block.isSolid(l, x, y - 1))
 								surrounding.add(Block.getBlock(l, x, y - 1));
 							if (y < Main.world.getChunkHeight() - 1 &&
@@ -279,7 +280,7 @@ public class Terrain {
 										vert = true;
 									Block b = surrounding.get(0);
 									boolean strand = false;
-									List<Block> remove = new ArrayList<Block>();
+									List<Block> remove = new ArrayList<>();
 									while (true){
 										if (!vert){
 											if (y <= 0 || Block.isAir(l, b.getX(), y - 1))
@@ -341,7 +342,7 @@ public class Terrain {
 								// remove lonely islands
 							else if (surrounding.size() == 3){
 								for (Block b : surrounding){
-									List<Block> surround = new ArrayList<Block>();
+									List<Block> surround = new ArrayList<>();
 									if (b.getY() > 0  &&
 											!Block.isAir(l, b.getX(), b.getY() - 1))
 										surround.add(Block.getBlock(l, b.getX(), b.getY() - 1));
@@ -404,13 +405,20 @@ public class Terrain {
 						Location lastLoc = null;
 						for (int i = -count / 2; i % 2 == 0 ? i < count / 2 : i <= count / 2; i++){
 							Location loc = new Location(l, (int)Chunk.getWorldXFromChunkIndex(c.getIndex(), x),
-									Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0).add(i, 0)))
+									Block.getTop(
+											new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0).add(i, 0)
+									))
 									.add(i, -1);
 							if (lastLoc == null || Math.abs(lastLoc.subtract(loc).getY()) < 1) {
 								if (loc.getBlock() != null)
 									loc.getBlock().setType(Material.PUMPKIN);
 								else
-									loc.getLevel().getChunk(loc.getChunk()).setBlock((int)loc.getPosInChunk(), (int)loc.getY(), new Block(Material.PUMPKIN, 0, loc));
+									loc.getLevel().getChunk(loc.getChunk()).setBlock(
+											(int)loc.getPosInChunk(),
+											(int)loc.getY(),
+											new Block(Material.PUMPKIN,
+													0,
+													loc));
 								loc.getBlock().setMetadata("solid", false);
 								lastLoc = loc;
 							}

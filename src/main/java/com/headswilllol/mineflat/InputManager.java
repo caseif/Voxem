@@ -60,10 +60,10 @@ public class InputManager {
 	private static long lastAction = 0;
 	private static final long ACTION_WAIT = 200;
 
-	public static final ArrayList<Integer> baseKeysToCheck = new ArrayList<Integer>();
-	public static ArrayList<Integer> keysToCheck= new ArrayList<Integer>();
-	public static final ArrayList<Boolean> keysDownLastFrame = new ArrayList<Boolean>();
-	public static final ArrayList<Boolean> keysPressed = new ArrayList<Boolean>();
+	public static final ArrayList<Integer> baseKeysToCheck = new ArrayList<>();
+	public static ArrayList<Integer> keysToCheck= new ArrayList<>();
+	public static final ArrayList<Boolean> keysDownLastFrame = new ArrayList<>();
+	public static final ArrayList<Boolean> keysPressed = new ArrayList<>();
 
 	private static int kStage = 0;
 
@@ -92,69 +92,48 @@ public class InputManager {
 			if (down) {
 				Event.fireEvent(new KeyPressEvent(key, c));
 				if (kStage < 10){
-					switch (kStage) {
+					int req = -1;
+					switch (kStage){
 						case 0:
-							if (key == KEY_UP)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_UP;
 							break;
 						case 1:
-							if (key == KEY_UP)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_UP;
 							break;
 						case 2:
-							if (key == KEY_DOWN)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_DOWN;
 							break;
 						case 3:
-							if (key == KEY_DOWN)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_DOWN;
 							break;
 						case 4:
-							if (key == KEY_LEFT)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_LEFT;
 							break;
 						case 5:
-							if (key == KEY_RIGHT)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_RIGHT;
 							break;
 						case 6:
-							if (key == KEY_LEFT)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_LEFT;
 							break;
 						case 7:
-							if (key == KEY_RIGHT)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_RIGHT;
 							break;
 						case 8:
-							if (key == KEY_B)
-								kStage += 1;
-							else
-								kStage = 0;
+							req = KEY_B;
 							break;
 						case 9:
-							if (key == KEY_A) {
-								kStage += 1;
-								SoundManager.generateMeme();
-							}
-							else
-								kStage = 0;
+							req = KEY_A;
 							break;
+						default: // wtf happened
+							break;
+					}
+					if (key == req){
+						kStage += 1;
+						if (kStage == 10)
+							SoundManager.generateMeme();
+					}
+					else {
+						kStage = 0;
 					}
 				}
 			}

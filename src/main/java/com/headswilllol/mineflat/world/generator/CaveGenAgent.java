@@ -33,9 +33,13 @@ import java.util.Random;
 public class CaveGenAgent {
 
 	public static final Random r = new Random(Main.world.seed);
-	public static List<CaveGenAgent> caveFactories = new ArrayList<CaveGenAgent>();
-	public static final List<CaveGenAgent> deactivate = new ArrayList<CaveGenAgent>(); // dem CMEs :P
-	public static final int UP_BIAS = 3, DOWN_BIAS = 2, LEFT_BIAS = 2, RIGHT_BIAS = 2;
+	public static List<CaveGenAgent> caveFactories = new ArrayList<>();
+	public static final List<CaveGenAgent> deactivate = new ArrayList<>(); // dem CMEs :P
+	public static final int
+			UP_BIAS = 3,
+			DOWN_BIAS = 2,
+			LEFT_BIAS = 2,
+			RIGHT_BIAS = 2;
 	public static final int SPAWN_CHANCE = 130;
 
 	private Location l;
@@ -46,7 +50,7 @@ public class CaveGenAgent {
 	}
 
 	public void dig(){
-		List<Block> surrounding = new ArrayList<Block>();
+		List<Block> surrounding = new ArrayList<>();
 		if (l.getY() > 0 &&
 				Block.isSolid(l.getLevel(), l.getX(), l.getY())){
 			for (int i = 0; i < UP_BIAS; i++)

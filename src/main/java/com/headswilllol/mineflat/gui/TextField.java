@@ -75,7 +75,9 @@ public class TextField extends InteractiveElement {
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(getAbsolutePosition().getX(), getAbsolutePosition().getY());
 			GL11.glVertex2i(getAbsolutePosition().getX() + getSize().getX(), getAbsolutePosition().getY());
-			GL11.glVertex2i(getAbsolutePosition().getX() + getSize().getX(), getAbsolutePosition().getY() + getSize().getY());
+			GL11.glVertex2i(
+					getAbsolutePosition().getX() + getSize().getX(), getAbsolutePosition().getY() + getSize().getY()
+			);
 			GL11.glVertex2i(getAbsolutePosition().getX(), getAbsolutePosition().getY() + getSize().getY());
 			GL11.glEnd();
 			GL11.glColor4f(textColor.getX(), textColor.getY(), textColor.getZ(), textColor.getW());
@@ -83,7 +85,8 @@ public class TextField extends InteractiveElement {
 					getAbsolutePosition().getY() + 3, getSize().getY() - 6, false);
 			if (selected == this){
 				GL11.glBegin(GL11.GL_QUADS);
-				int /* I got 'em foaming from the mouth and I just hit 'em with the */ baseX = getAbsolutePosition().getX() +
+				int /* I got 'em foaming from the mouth and I just hit 'em with the */ baseX =
+						getAbsolutePosition().getX() +
 						GraphicsHandler.getStringLength(getText().substring(0, column + 1), getSize().getY() - 6) + 1;
 				int baseY = getAbsolutePosition().getY() + 1;
 				GL11.glVertex2i(baseX, baseY);

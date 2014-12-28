@@ -39,9 +39,10 @@ public class ListenerData {
 	 * @param listener The instance of the listener class which registered the event.
 	 * @param method The name of the method which will listen to the event.
 	 * @param event The path of the class which is equivalent to the event being fired.
-	 * @param params The parameter types which the method requires (this differs from event in that the method may technically listen to multiple events or simply require arbitrary variables).
+	 * @param params The parameter types which the method requires (this differs from event in that
+	 * the method may technically listen to multiple events or simply require arbitrary variables).
 	 */
-	public ListenerData(Listener listener, String method, String event, String[] params){
+	public ListenerData(Listener listener, String method, String event, String... params){
 		this.listener = listener;
 		this.method = method;
 		this.event = event;

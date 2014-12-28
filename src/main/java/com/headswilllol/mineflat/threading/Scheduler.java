@@ -28,11 +28,11 @@ import java.util.List;
 
 public class Scheduler {
 
-	private static HashMap<Integer, Task> tasks = new HashMap<Integer, Task>();
+	private static HashMap<Integer, Task> tasks = new HashMap<>();
 
-	private static List<Integer> tasksToRun = new ArrayList<Integer>();
-	private static List<Integer> asyncTasksToRun = new ArrayList<Integer>();
-	private static HashMap<Integer, Thread> asyncRunningTasks = new HashMap<Integer, Thread>();
+	private static List<Integer> tasksToRun = new ArrayList<>();
+	private static List<Integer> asyncTasksToRun = new ArrayList<>();
+	private static HashMap<Integer, Thread> asyncRunningTasks = new HashMap<>();
 
 	private static final Object ASYNC_LOCK = new Object();
 
@@ -62,7 +62,7 @@ public class Scheduler {
 	}
 
 	public static void checkTasks(){
-		List<Integer> tRemove = new ArrayList<Integer>();
+		List<Integer> tRemove = new ArrayList<>();
 		for (Integer i : tasksToRun) {
 			if (System.currentTimeMillis() - tasks.get(i).getTimeScheduled() >= tasks.get(i).getDelay()) {
 				tRemove.add(i);
@@ -71,7 +71,7 @@ public class Scheduler {
 			}
 		}
 		tasksToRun.removeAll(tRemove);
-		List<Integer> atRemove = new ArrayList<Integer>();
+		List<Integer> atRemove = new ArrayList<>();
 		synchronized(ASYNC_LOCK){
 			for (Integer i : asyncTasksToRun){
 				if (System.currentTimeMillis() - tasks.get(i).getTimeScheduled() >= tasks.get(i).getDelay()){
@@ -82,7 +82,7 @@ public class Scheduler {
 				}
 			}
 			asyncTasksToRun.removeAll(atRemove);
-			List<Integer> artRemove = new ArrayList<Integer>();
+			List<Integer> artRemove = new ArrayList<>();
 			for (Integer i : asyncRunningTasks.keySet()){
 				if (!asyncRunningTasks.get(i).isAlive()){
 					artRemove.add(i);

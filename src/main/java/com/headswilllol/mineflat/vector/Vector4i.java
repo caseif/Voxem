@@ -90,7 +90,7 @@ public class Vector4i implements Vector4 {
 	public boolean equals(Object o){
 		if (o instanceof Vector4i){
 			Vector4i v = (Vector4i)o;
-			return v.getX() == this.x && v.getY() == this.y && this.z == z && v.getW() == w;
+			return v.getX() == this.x && v.getY() == this.y && this.z == v.getZ() && this.getW() == v.getW();
 		}
 		return false;
 	}

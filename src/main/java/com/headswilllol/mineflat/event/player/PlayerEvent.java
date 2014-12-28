@@ -24,9 +24,7 @@ package com.headswilllol.mineflat.event.player;
 
 import com.headswilllol.mineflat.entity.Human;
 import com.headswilllol.mineflat.entity.Player;
-import com.headswilllol.mineflat.event.Event;
 import com.headswilllol.mineflat.event.human.HumanEvent;
-import com.headswilllol.mineflat.event.human.HumanMoveEvent;
 
 public class PlayerEvent extends HumanEvent {
 

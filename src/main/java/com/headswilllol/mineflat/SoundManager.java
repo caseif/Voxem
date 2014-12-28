@@ -47,13 +47,9 @@ public class SoundManager {
 		soundSystem = new SoundSystem();
 
 		try {
-			//if (!Main.class.getProtectionDomain().getCodeSource().getLocation().getPath().contains("git")) // this makes my life a bit easier while testing
 			soundSystem.backgroundMusic("Infinity",
 					new File(FileUtil.getAppDataFolder() +
 							"/.mineflat/resources/audio/soundtrack", "infinity.ogg").toURI().toURL(), "ogg", true);
-			/*else
-				soundSystem.backgroundMusic("Infinity",
-						new File("C:/Users/Maxim/AppData/Roaming/.mineflat/resources/audio/soundtrack/infinity.ogg").toURI().toURL(), "ogg", true);*/ // this is useless when I test on linux
 		}
 		catch (MalformedURLException ex){
 			ex.printStackTrace();

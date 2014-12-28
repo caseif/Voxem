@@ -19,7 +19,7 @@ ext.projectName = 'MineFlat'
 ext.description = 'A 2D voxel-based game inspired by Terraria.'
 ext.inceptionYear = '2013'
 ext.packaging = 'jar'
-ext.versionSuffix = version.contains('SNAPSHOT') && System.getenv("BUILD_NUMBER") ? '-jnks' + System.getenv("BUILD_NUMBER") : ''
+ext.versionSuffix = version.contains('SNAPSHOT') && System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : ''
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -61,11 +61,11 @@ tasks.withType(JavaCompile) {
 jar {
 	manifest {
 		attributes(
-				"Implementation-Title": project.name,
-				"Implementation-Version": version,
-				"Main-Class": "com.headswilllol.mineflat.Main",
-				"Class-Path": "lib/lwjgl.jar lib/gson.jar lib/json-simple.jar lib/soundsystem/soundsystem.jar " +
-						"lib/soundsystem/librarylwjglopenal.jar lib/soundsystem/codecjorbis.jar lib/guava.jar"
+				'Implementation-Title': project.name,
+				'Implementation-Version': version,
+				'Main-Class': 'com.headswilllol.mineflat.Main',
+				'Class-Path': 'lib/lwjgl.jar lib/gson.jar lib/json-simple.jar lib/soundsystem/soundsystem.jar ' +
+						'lib/soundsystem/librarylwjglopenal.jar lib/soundsystem/codecjorbis.jar lib/guava.jar'
 		)
 	}
 }
@@ -77,7 +77,14 @@ processResources {
 // License header formatting
 license {
 	header file('src/main/resources/LICENSE')
-	excludes(['**/*.json', '**/*.txt', '**/PNGDecoder.java'])
+	excludes([
+			'**/*.json',
+			'**/*.txt',
+			'**/PNGDecoder.java',
+			'**/noise/**',
+			'src/main/resources/*',
+			'src/main/resources/**/*'
+	])
 	sourceSets = project.sourceSets
 	ignoreFailures false
 	strictCheck true
@@ -89,8 +96,10 @@ license {
 // check code style
 checkstyle {
     configProperties = [
-            "name"        : project.name,
-            "year"        : project.inceptionYear
+            'name': project.name,
+            'year': project.inceptionYear
     ]
-    configFile = file("etc/checkstyle.xml")
+    configFile = file('etc/checkstyle.xml')
 }
+
+checkstyleMain.exclude('**/PNGDecoder.java', '**/noise/**')

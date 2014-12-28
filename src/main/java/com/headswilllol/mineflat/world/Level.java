@@ -34,11 +34,11 @@ import org.json.simple.JSONObject;
 
 public class Level {
 
-	public final HashMap<Integer, Chunk> chunks = new HashMap<Integer, Chunk>();
+	public final HashMap<Integer, Chunk> chunks = new HashMap<>();
 
 	private final World world;
 	private final int index;
-	private final Collection<Entity> entities = new ArrayList<Entity>();
+	private final Collection<Entity> entities = new ArrayList<>();
 
 	public Level(World world, int index){
 		this.world = world;
@@ -135,7 +135,8 @@ public class Level {
 			int xx = xCheck[i];
 			int yy = yCheck[i];
 			if (new Location(this, x + xx, y + yy).getBlock() == null ||
-					new Location(this, x + xx, y + yy).getBlock() != null && new Location(this, x + xx, y + yy).getBlock().getType() != Material.AIR)
+					new Location(this, x + xx, y + yy).getBlock() != null &&
+							new Location(this, x + xx, y + yy).getBlock().getType() != Material.AIR)
 				return;
 		}
 

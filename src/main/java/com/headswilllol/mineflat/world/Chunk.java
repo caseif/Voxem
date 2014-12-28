@@ -33,7 +33,7 @@ import java.util.List;
 
 public class Chunk {
 
-	public Object lockAndLoad = new Object(); // hehe
+	public final Object lockAndLoad = new Object(); // hehe
 
 	protected final Level level;
 	protected final int index;
@@ -49,7 +49,8 @@ public class Chunk {
 	// how often the game should try to load new chunks
 	public static final long LOAD_CHECK_INTERVAL = 1000L;
 
-	private static final int CHUNKS_TO_LOAD = 5; // the number of chunks to keep loaded at a time (will be incremented if even)
+	// the number of chunks to keep loaded at a time (will be incremented if even)
+	private static final int CHUNKS_TO_LOAD = 5;
 
 	public Chunk(Level level, int num, Biome biome){
 		this.level = level;
@@ -158,7 +159,7 @@ public class Chunk {
 	}
 
 	public Collection<Entity> getEntities() {
-		List<Entity> entities = new ArrayList<Entity>();
+		List<Entity> entities = new ArrayList<>();
 		for (Entity e : level.getEntities())
 			if (e.getLocation().getChunk() == this.getIndex())
 				entities.add(e);
@@ -207,12 +208,13 @@ public class Chunk {
 				if (lastChunk != currentChunk || lastX != lastX){
 					int minChunk = currentChunk - CHUNKS_TO_LOAD / 2;
 					int maxChunk = currentChunk + CHUNKS_TO_LOAD / 2;
-					if ((minChunk > 0) != (maxChunk > 0)) // range passes through x=0 so we need to compensate for no chunk 0
+					if ((minChunk > 0) != (maxChunk > 0))
+						// range passes through x=0 so we need to compensate for no chunk 0
 						if (Main.player.getX() >= 0)
 							minChunk -= 1;
 						else
 							maxChunk += 1;
-					List<Chunk> unloadChunks = new ArrayList<Chunk>();
+					List<Chunk> unloadChunks = new ArrayList<>();
 					boolean rebind = false;
 					for (Chunk c : Main.player.getLevel().chunks.values()) {
 						if (c.getIndex() < minChunk || c.getIndex() > maxChunk){

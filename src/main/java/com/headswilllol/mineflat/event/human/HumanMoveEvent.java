@@ -30,16 +30,13 @@ import com.headswilllol.mineflat.event.Cancellable;
  * Fired when a player moves from one point in space to another.
  */
 public class HumanMoveEvent extends HumanEvent implements Cancellable {
-	
-	/**
-	 * The location the entity is moving to.
-	 */
+
 	private Location to;
-	/**
-	 * The location of the entity before this event was fired.
-	 */
+
 	private Location from;
-	
+
+	private boolean cancelled;
+
 	/**
 	 * Fired when a human moves from one point in space to another.
 	 * @param entity The entity involved in this event.
@@ -68,7 +65,12 @@ public class HumanMoveEvent extends HumanEvent implements Cancellable {
 		this.from = from;
 	}
 
+	public boolean isCancelled(){
+		return this.cancelled;
+	}
+
 	public void setCancelled(boolean cancelled){
+		this.cancelled = cancelled;
 		if (cancelled){
 			entity.setX(from.getX());
 			entity.setY(from.getY());
@@ -78,5 +80,5 @@ public class HumanMoveEvent extends HumanEvent implements Cancellable {
 			entity.setY(to.getY());
 		}
 	}
-	
+
 }
