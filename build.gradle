@@ -69,10 +69,6 @@ jar {
 	}
 }
 
-processResources {
-  filter { String line -> line.replace('%VERSION%', versionSuffix) }
-}
-
 // License header formatting
 license {
 	header file('src/main/resources/LICENSE')

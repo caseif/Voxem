@@ -146,11 +146,11 @@ public class SaveManager {
 	}
 
 	public static Chunk loadChunk(Level level, int chunk){
-		System.out.println("Loading chunk " + chunk);
-		JsonObject jChunk = (level.getWorld().getJson().getAsJsonObject("levels")
+		JsonObject jChunk = level.getWorld().getJson().getAsJsonObject("levels")
 				.getAsJsonObject(Integer.toString(level.getIndex()))
-				.getAsJsonObject("chunks")).get(Integer.toString(chunk)).getAsJsonObject();
+				.getAsJsonObject("chunks").getAsJsonObject(Integer.toString(chunk));
 		if (jChunk != null) {
+			System.out.println("Loading chunk " + chunk);
 			Biome biome = Biome.getById(jChunk.get("biome").toString());
 			Chunk c = new Chunk(level, chunk, biome);
 			for (JsonElement blockObj : jChunk.getAsJsonArray("blocks")) {
@@ -165,7 +165,7 @@ public class SaveManager {
 				JsonObject meta = (JsonObject)block.get("metadata");
 				for (Map.Entry<String, JsonElement> e : meta.entrySet()){
 					JsonPrimitive prim = meta.get(e.getKey()).getAsJsonPrimitive();
-					Object value = null;
+					Object value;
 					if (prim.isBoolean())
 						value = prim.getAsBoolean();
 					else if (prim.isNumber())
