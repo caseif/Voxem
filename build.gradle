@@ -12,7 +12,7 @@ defaultTasks 'clean', 'licenseFormat', 'build'
 
 // Project information
 group = 'com.headswilllol.mineflat'
-version = '1.2.0'
+version = '1.2.1'
 
 // Extended project information
 ext.projectName = 'MineFlat'
