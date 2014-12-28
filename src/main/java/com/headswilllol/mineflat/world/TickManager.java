@@ -115,7 +115,7 @@ public class TickManager {
 	 * Generates RTEs (Random Tick Events) and basically controls every non-player action that happens in the world
 	 */
 	public static void handleTick(){
-		if (Main.player.getLevel().chunks.size() > 0){
+		if (Main.player.getLevel().getWorld().isTicking() && Main.player.getLevel().chunks.size() > 0){
 			Random r = new Random();
 			if (Main.player.getLevel().getMobCount() < Mob.MOB_CAPACITY){ // check that world isn't full
 				int actualChance = (int)((float)Main.player.getLevel().getMobCount()

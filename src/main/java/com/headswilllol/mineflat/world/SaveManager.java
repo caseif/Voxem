@@ -202,9 +202,9 @@ public class SaveManager {
 								break;
 							case PIG:
 								e = new Pig(new Location(level, x, y));
-							default:
-								e = new Living(type, new Location(level, x, y), w, h);
 								break;
+							default:
+								continue; // ignore it
 						}
 						((Mob)e).setPlannedWalkDistance(entity.get("pwd").getAsFloat());
 						((Mob)e).setActualWalkDistance(entity.get("awd").getAsFloat());
@@ -219,7 +219,7 @@ public class SaveManager {
 								e = new Human(new Location(level, x, y));
 								break;
 							default:
-								e = new Living(type, new Location(level, x, y), w, h);
+								continue; // ignore it
 						}
 					}
 					((Living)e).setFacingDirection(Direction.valueOf(entity.get("fd").getAsString()));

@@ -27,7 +27,7 @@ import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.EntityType;
 import com.headswilllol.mineflat.world.Location;
 
-public class Living extends Entity {
+public abstract class Living extends Entity {
 
 	public static final float jumpPower = 13f;
 
