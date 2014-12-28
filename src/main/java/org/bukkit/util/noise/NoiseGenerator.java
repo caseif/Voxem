@@ -1,4 +1,4 @@
-package com.headswilllol.mineflat.noise;
+package org.bukkit.util.noise;
 
 /**
  * Base class for all noise generators

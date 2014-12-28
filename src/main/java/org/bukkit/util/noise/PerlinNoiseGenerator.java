@@ -1,4 +1,4 @@
-package com.headswilllol.mineflat.noise;
+package org.bukkit.util.noise;
 
 import java.util.Random;
 

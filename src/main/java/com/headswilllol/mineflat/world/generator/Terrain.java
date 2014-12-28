@@ -29,7 +29,7 @@ import java.util.Random;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.world.*;
-import com.headswilllol.mineflat.noise.SimplexNoiseGenerator;
+import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 public class Terrain {
 

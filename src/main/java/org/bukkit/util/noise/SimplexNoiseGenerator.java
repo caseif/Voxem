@@ -1,4 +1,4 @@
-package com.headswilllol.mineflat.noise;
+package org.bukkit.util.noise;
 
 import java.util.Random;
 
@@ -7,6 +7,7 @@ import java.util.Random;
  * <p>
  * This is a modified version of the freely published version in the paper by
  * Stefan Gustavson at http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
+ * </p>
  */
 public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
 	protected static final double SQRT_3 = Math.sqrt(3);
