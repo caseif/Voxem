@@ -1,6 +1,8 @@
+.gradle/
 .idea/
 .settings/
 bin/
+build/
 target/
 .classpath
 mineflat.iml
