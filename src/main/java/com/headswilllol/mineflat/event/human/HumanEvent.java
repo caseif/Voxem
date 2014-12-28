@@ -22,7 +22,7 @@
  */
 package com.headswilllol.mineflat.event.human;
 
-import com.headswilllol.mineflat.entity.Human;
+import com.headswilllol.mineflat.entity.living.player.Human;
 import com.headswilllol.mineflat.event.Event;
 
 public class HumanEvent extends Event {

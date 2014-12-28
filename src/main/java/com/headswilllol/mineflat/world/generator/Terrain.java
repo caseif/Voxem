@@ -51,6 +51,7 @@ public class Terrain {
 		plantGrass();
 		plantStuff();
 		lightTerrain();
+		Main.world.setTicking(true);
 	}
 
 	public static void generateChunks(){

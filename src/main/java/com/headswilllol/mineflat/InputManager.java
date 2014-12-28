@@ -151,15 +151,15 @@ public class InputManager {
 
 		if (Main.player != null) {
 			if ((isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) && (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)))
-				Main.player.setMovementDirection(Direction.STATIONARY);
+				Main.player.getVelocity().setX(0f);
 			else if (isKeyDown(LEFT_1) || isKeyDown(LEFT_2)) {
 				Main.player.setFacingDirection(Direction.LEFT);
-				Main.player.setMovementDirection(Direction.LEFT);
+				Main.player.getVelocity().setX(-Main.player.getSpeed());
 			} else if (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)) {
 				Main.player.setFacingDirection(Direction.RIGHT);
-				Main.player.setMovementDirection(Direction.RIGHT);
+				Main.player.getVelocity().setX(Main.player.getSpeed());
 			} else
-				Main.player.setMovementDirection(Direction.STATIONARY);
+				Main.player.getVelocity().setX(0f);
 			if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3))
 				Main.player.setJumping(true);
 			else

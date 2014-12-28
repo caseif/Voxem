@@ -23,13 +23,13 @@
 package com.headswilllol.mineflat;
 
 import com.headswilllol.mineflat.entity.Entity;
-import com.headswilllol.mineflat.entity.LivingEntity;
-import com.headswilllol.mineflat.entity.Mob;
-import com.headswilllol.mineflat.entity.Player;
+import com.headswilllol.mineflat.entity.living.Mob;
+import com.headswilllol.mineflat.entity.living.player.Player;
 import com.headswilllol.mineflat.threading.Scheduler;
 import com.headswilllol.mineflat.util.Timing;
 import com.headswilllol.mineflat.world.Block;
 import com.headswilllol.mineflat.world.SaveManager;
+import com.headswilllol.mineflat.world.TickManager;
 import com.headswilllol.mineflat.world.World;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
@@ -38,7 +38,7 @@ public class Main {
 
 	public static World world = null;
 
-	public static Player player = null;
+	public static Player player;
 
 	public static boolean closed = false;
 
@@ -87,10 +87,7 @@ public class Main {
 				Player.calculateLight();
 				TickManager.checkForTick();
 				for (Entity e : player.getLevel().getEntities())
-					if (e instanceof LivingEntity)
-						(e).manageMovement();
-					else
-						e.manageMovement();
+					e.manageMovement();
 				Block.updateSelectedBlock();
 			}
 			Timing.throttleCpu();

@@ -20,8 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.headswilllol.mineflat.entity;
+package com.headswilllol.mineflat.entity.living.player;
 
+import com.headswilllol.mineflat.entity.EntityType;
+import com.headswilllol.mineflat.entity.living.player.Human;
 import com.headswilllol.mineflat.event.Event;
 import com.headswilllol.mineflat.event.player.PlayerMoveEvent;
 import com.headswilllol.mineflat.world.Location;
@@ -37,6 +39,7 @@ import com.headswilllol.mineflat.Material;
  */
 public class Player extends Human {
 
+
 	/**
 	 * Distance from center of screen at which the screen will begin scrolling when the player reaches it
 	 */
@@ -46,7 +49,7 @@ public class Player extends Human {
 
 	public Player(Location location){
 		super(location);
-		this.setType(EntityType.PLAYER);
+		this.type = EntityType.PLAYER;
 	}
 
 	@Override

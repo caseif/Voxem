@@ -20,14 +20,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.headswilllol.mineflat.entity;
+package com.headswilllol.mineflat.entity.living.player;
 
+import com.headswilllol.mineflat.entity.EntityType;
+import com.headswilllol.mineflat.entity.living.Living;
+import com.headswilllol.mineflat.event.Event;
+import com.headswilllol.mineflat.event.human.HumanMoveEvent;
 import com.headswilllol.mineflat.world.Location;
 
-public class Zombie extends Mob {
+/**
+ * Represents a human in the world.
+ */
+public class Human extends Living {
 
-	public Zombie(Location location){
-		super(EntityType.ZOMBIE, location, 0.875f, 2f);
+	public Human(Location location){
+		super(EntityType.HUMAN, location, 0.5f, 2f);
+		speed = 5f;
 	}
-	
+
+	public Location getLocation(){
+		return location;
+	}
+
+	@Override
+	public void setX(float x){
+		Location old = getLocation();
+		super.setX(x);
+		Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
+	}
+
+	@Override
+	public void setY(float y){
+		Location old = getLocation();
+		super.setY(y);
+		Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
+	}
+
 }

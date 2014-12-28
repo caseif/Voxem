@@ -23,7 +23,7 @@
 package com.headswilllol.mineflat.event.player;
 
 import com.headswilllol.mineflat.world.Location;
-import com.headswilllol.mineflat.entity.Player;
+import com.headswilllol.mineflat.entity.living.player.Player;
 import com.headswilllol.mineflat.event.Cancellable;
 import com.headswilllol.mineflat.event.Event;
 import com.headswilllol.mineflat.event.human.HumanMoveEvent;

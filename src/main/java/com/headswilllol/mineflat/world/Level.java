@@ -29,8 +29,9 @@ import java.util.HashMap;
 import com.google.gson.JsonObject;
 import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.entity.Entity;
-import com.headswilllol.mineflat.entity.LivingEntity;
-import com.headswilllol.mineflat.entity.Mob;
+import com.headswilllol.mineflat.entity.living.Living;
+import com.headswilllol.mineflat.entity.living.Mob;
+import com.headswilllol.mineflat.threading.Scheduler;
 
 public class Level {
 
@@ -72,13 +73,17 @@ public class Level {
 	}
 
 	/**
-	 * Removes an entity from the world
+	 * Marks an entity for removal, usually within the next tick.
 	 * @param e The entity to remove
 	 * @return Whether the entity was succesfully removed (returns false if it wasn't in the world to begin with)
 	 */
-	public boolean removeEntity(Entity e){
+	public boolean removeEntity(final Entity e){
 		if (entities.contains(e)){
-			entities.remove(e);
+			Scheduler.runTask(new Runnable() {
+				public void run(){
+					entities.remove(e);
+				}
+			});
 			return true;
 		}
 		return false;
@@ -97,7 +102,7 @@ public class Level {
 	public int getLivingEntityCount(){
 		int count = 0;
 		for (Entity e : entities)
-			if (e instanceof LivingEntity)
+			if (e instanceof Living)
 				count += 1;
 		return count;
 	}

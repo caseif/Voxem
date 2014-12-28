@@ -43,6 +43,8 @@ public class World {
 
 	private JsonObject json = new JsonObject();
 
+	private boolean ticking = false;
+
 	public World(String name, int chunkCount, int chunkLength, int chunkHeight){
 		this.seed = System.currentTimeMillis() * 1337337331;
 		this.name = name;
@@ -99,6 +101,14 @@ public class World {
 
 	public void setJson(JsonObject json){
 		this.json = json;
+	}
+
+	public boolean isTicking(){
+		return ticking;
+	}
+
+	public void setTicking(boolean ticking){
+		this.ticking = ticking;
 	}
 
 }

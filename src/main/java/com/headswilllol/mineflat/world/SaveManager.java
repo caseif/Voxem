@@ -26,8 +26,13 @@ import com.google.gson.*;
 import com.headswilllol.mineflat.Direction;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
-import com.headswilllol.mineflat.TickManager;
 import com.headswilllol.mineflat.entity.*;
+import com.headswilllol.mineflat.entity.living.Living;
+import com.headswilllol.mineflat.entity.living.Mob;
+import com.headswilllol.mineflat.entity.living.hostile.Zombie;
+import com.headswilllol.mineflat.entity.living.passive.Pig;
+import com.headswilllol.mineflat.entity.living.player.Human;
+import com.headswilllol.mineflat.entity.living.player.Player;
 import com.headswilllol.mineflat.util.FileUtil;
 import com.headswilllol.mineflat.util.VboUtil;
 
@@ -131,6 +136,7 @@ public class SaveManager {
 			Main.world.creationTime = save.get("createTime").getAsLong();
 			TickManager.setTicks(longToInt(save.get("ticks").getAsLong()));
 			loadLevel(Main.world, longToInt(save.get("playerLevel").getAsLong()));
+			Main.world.setTicking(true);
 		}
 		catch (FileNotFoundException ex){
 			ex.printStackTrace();
@@ -194,8 +200,10 @@ public class SaveManager {
 							case ZOMBIE:
 								e = new Zombie(new Location(level, x, y));
 								break;
+							case PIG:
+								e = new Pig(new Location(level, x, y));
 							default:
-								e = new LivingEntity(type, new Location(level, x, y), w, h);
+								e = new Living(type, new Location(level, x, y), w, h);
 								break;
 						}
 						((Mob)e).setPlannedWalkDistance(entity.get("pwd").getAsFloat());
@@ -211,12 +219,11 @@ public class SaveManager {
 								e = new Human(new Location(level, x, y));
 								break;
 							default:
-								e = new LivingEntity(type, new Location(level, x, y), w, h);
+								e = new Living(type, new Location(level, x, y), w, h);
 						}
 					}
-					((LivingEntity)e).setFacingDirection(Direction.valueOf(entity.get("fd").getAsString()));
-					((LivingEntity)e).setMovementDirection(Direction.valueOf(entity.get("md").getAsString()));
-					((LivingEntity)e).setJumping(entity.get("j").getAsBoolean());
+					((Living)e).setFacingDirection(Direction.valueOf(entity.get("fd").getAsString()));
+					((Living)e).setJumping(entity.get("j").getAsBoolean());
 				}
 				else
 					e = new Entity(type, new Location(level, x, y), w, h);
@@ -251,7 +258,7 @@ public class SaveManager {
 		Main.world.addLevel(level);
 		Level l = Main.world.getLevel(level);
 		if (longToInt(world.getJson().get("playerLevel").getAsLong()) == level) {
-			loadChunk(l, longToInt((Long)world.getJson().get("playerChunk").getAsLong()));
+			loadChunk(l, longToInt(world.getJson().get("playerChunk").getAsLong()));
 			Chunk.handleChunkLoading(true);
 		}
 		for (Chunk c : l.chunks.values())
@@ -310,11 +317,10 @@ public class SaveManager {
 			e.addProperty("h", entity.height);
 			e.addProperty("xv", entity.getVelocity().getX());
 			e.addProperty("yv", entity.getVelocity().getY());
-			if (entity instanceof LivingEntity){
+			if (entity instanceof Living){
 				e.addProperty("living", true);
-				LivingEntity le = (LivingEntity)entity;
+				Living le = (Living)entity;
 				e.addProperty("fd", le.getFacingDirection().toString());
-				e.addProperty("md", le.getMovementDirection().toString());
 				e.addProperty("j", le.isJumping());
 				if (le instanceof Mob){
 					e.addProperty("mob", true);

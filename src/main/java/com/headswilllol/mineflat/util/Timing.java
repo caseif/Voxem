@@ -47,7 +47,6 @@ public class Timing {
 
 	private static long starttime = getTime();
 
-	// why the hell did I think it was a good idea to have this return a long?
 	public static long getTime(){
 		return System.nanoTime();
 	}

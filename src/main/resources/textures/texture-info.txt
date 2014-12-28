@@ -1,3 +1,4 @@
-Textures are from or based upon R3D.CRAFT, released under the Creative Commons Attribution-NoDerivs 3.0 license.
+Textures are from or based upon Minecraft and the R3D.CRAFT resource pack, the latter being released under the Creative
+Commons Attribution-NoDerivs 3.0 license.
 
-All rights to attributed graphics used within this game belong to Thomas Angeland.
+All rights to attributed graphics used within this game belong respectively to Mojang and Thomas Angeland.

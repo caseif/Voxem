@@ -100,7 +100,6 @@ public class GuiElement {
 			}
 		}
 		if (active && getParent().isPresent()){
-			System.out.println(id + " - " + getParent().get().getId());
 			getParent().get().setActive(active, false);
 		}
 	}

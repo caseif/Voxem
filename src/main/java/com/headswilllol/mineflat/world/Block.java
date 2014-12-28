@@ -28,7 +28,6 @@ import java.util.Set;
 import com.headswilllol.mineflat.GraphicsHandler;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.Material;
-import com.headswilllol.mineflat.TickManager;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 

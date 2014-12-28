@@ -20,15 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.headswilllol.mineflat.entity;
+package com.headswilllol.mineflat.entity.living.passive;
 
-public enum EntityType {
+import com.headswilllol.mineflat.entity.EntityType;
+import com.headswilllol.mineflat.entity.living.Mob;
+import com.headswilllol.mineflat.world.Location;
 
-	ITEM_DROP,
-	HUMAN,
-	PLAYER,
-	ZOMBIE,
-	PIG,
-	UNKNOWN
+public class Pig extends Mob {
 
+	public Pig(Location location){
+		super(EntityType.PIG, location, 1.25f, 1.125f);
+		speed = 2f;
+	}
+	
 }

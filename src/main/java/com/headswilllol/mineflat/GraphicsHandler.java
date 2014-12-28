@@ -42,7 +42,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import com.headswilllol.mineflat.entity.Entity;
-import com.headswilllol.mineflat.entity.Player;
+import com.headswilllol.mineflat.entity.living.player.Player;
 
 //TODO: organize and possibly divide this class
 public class GraphicsHandler implements Runnable {
@@ -133,7 +133,7 @@ public class GraphicsHandler implements Runnable {
 			else if (System.getProperty("os.name").startsWith("Mac")){
 				icons = new ByteBuffer[1];
 				BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
-						Main.class.getResourceAsStream("/textures/block/grass.png")),
+								Main.class.getResourceAsStream("/textures/block/grass.png")),
 						Main.world.getChunkHeight(),
 						Main.world.getChunkHeight());
 				icons[0] = BufferUtil.asByteBuffer(icon);
@@ -332,7 +332,7 @@ public class GraphicsHandler implements Runnable {
 							int startPixel = new Location(Main.player.getLevel(),
 									Chunk.getWorldXFromChunkIndex(
 											Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getIndex(),
-									j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1), 0
+											j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1), 0
 							).add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
 							glBegin(GL_LINES);
 							{
@@ -382,8 +382,10 @@ public class GraphicsHandler implements Runnable {
 				}
 
 				Player.centerPlayer();
-				for (Entity e : Main.player.getLevel().getEntities())
-					e.draw();
+				for (Entity e : Main.player.getLevel().getEntities()){
+					if (!e.isRemoved())
+						e.draw();
+				}
 			}
 
 			// update debug gui, if necessary
@@ -394,13 +396,13 @@ public class GraphicsHandler implements Runnable {
 				((TextElement)debugPanel.getChild("delta"))
 						.setText("delta (ms): " + String.format("%.3f", Timing.displayDelta / 1000000));
 				((TextElement)debugPanel.getChild("playerX"))
-				.setText("x: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getX())));
+						.setText("x: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getX())));
 				((TextElement)debugPanel.getChild("playerY"))
 						.setText("y: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getY())));
 				((TextElement)debugPanel.getChild("playerChunk"))
 						.setText("chunk: " + (Main.player == null ? "???" : Main.player.getLocation().getChunk()));
 				((TextElement)debugPanel.getChild("playerG"))
-						.setText("g: " + (Main.player == null ? "???" : Main.player.ground));
+						.setText("g: " + (Main.player == null ? "???" : Main.player.isOnGround()));
 				((TextElement)debugPanel.getChild("playerLight"))
 						.setText("light level: " +
 								(Main.player == null ? "???" : String.format("%.3f", Player.light * Block.maxLight)));
