@@ -33,10 +33,8 @@ public class TextElement extends GuiElement {
 	private Alignment alignment = Alignment.LEFT;
 
 	public TextElement(String id, Vector2i position, String text, int height, boolean dropShadow){
-		super.id = id;
-		super.position = position;
+		super(id, position, new Vector2i(GraphicsHandler.getStringLength(text, height), height));
 		this.text = text;
-		this.size = new Vector2i(GraphicsHandler.getStringLength(text, height), height);
 		this.dropShadow = dropShadow;
 	}
 
@@ -60,6 +58,7 @@ public class TextElement extends GuiElement {
 		this.alignment = alignment;
 	}
 
+	@Override
 	public void draw(){
 		if (isActive()) {
 			switch (alignment) {

@@ -38,10 +38,7 @@ public class TextField extends InteractiveElement {
 	private int column;
 
 	public TextField(String id, Vector2i position, Vector2i size, Vector4f bgColor, Vector4f textColor){
-		super.id = id;
-		super.position = position;
-		super.size = size;
-		this.bgColor = bgColor;
+		super(id, position, size, bgColor);
 		this.textColor = textColor;
 	}
 
@@ -69,6 +66,7 @@ public class TextField extends InteractiveElement {
 		this.textColor = color;
 	}
 
+	@Override
 	public void draw(){
 		if (isActive()) {
 			GL11.glColor4f(bgColor.getX(), bgColor.getY(), bgColor.getZ(), bgColor.getW());

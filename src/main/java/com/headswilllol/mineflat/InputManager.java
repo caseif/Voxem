@@ -26,7 +26,6 @@ import static org.lwjgl.input.Keyboard.*;
 
 import java.util.ArrayList;
 
-import com.headswilllol.mineflat.gui.ContainerElement;
 import com.headswilllol.mineflat.gui.GuiElement;
 import com.headswilllol.mineflat.gui.GuiFactory;
 import com.headswilllol.mineflat.gui.InteractiveElement;
@@ -145,8 +144,8 @@ public class InputManager {
 		mouseY = Mouse.getY();
 
 		for (GuiElement gui : GuiFactory.guis.values()){
-			if (gui instanceof ContainerElement && gui.isActive() && mouse1){
-				((ContainerElement)gui).checkMousePos();
+			if (gui.isActive() && mouse1){
+				gui.checkMousePos();
 			}
 		}
 

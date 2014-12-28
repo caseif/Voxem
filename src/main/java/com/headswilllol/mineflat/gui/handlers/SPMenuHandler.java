@@ -25,7 +25,6 @@ package com.headswilllol.mineflat.gui.handlers;
 import com.headswilllol.mineflat.GameState;
 import com.headswilllol.mineflat.Main;
 import com.headswilllol.mineflat.entity.Player;
-import com.headswilllol.mineflat.gui.ContainerElement;
 import com.headswilllol.mineflat.gui.GuiFactory;
 import com.headswilllol.mineflat.util.FileUtil;
 import com.headswilllol.mineflat.world.Location;
@@ -61,8 +60,8 @@ public class SPMenuHandler {
 	}
 
 	public static void back(){
-		((ContainerElement)GuiFactory.guis.get("main").getChild("contentPanel")).getChild("spMenu").setActive(false);
-		((ContainerElement)GuiFactory.guis.get("main").getChild("contentPanel")).getChild("top").setActive(true);
+		GuiFactory.guis.get("main").getChild("contentPanel").getChild("spMenu").setActive(false);
+		GuiFactory.guis.get("main").getChild("contentPanel").getChild("top").setActive(true);
 	}
 
 }

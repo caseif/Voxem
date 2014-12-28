@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class GuiParser {
 
-	private static final List<GuiElement> elementsToCenter = new ArrayList<GuiElement>();
+	private static final List<GuiElement> elementsToCenter = new ArrayList<>();
 
 	/**
 	 * Parses a JSON file into a {@link GuiElement} object.
@@ -55,7 +55,7 @@ public class GuiParser {
 			JsonParser parser = new JsonParser();
 			JsonObject json = parser.parse(new InputStreamReader(is)).getAsJsonObject();
 			JsonObject menus = json.getAsJsonObject("menus");
-			GuiElement gui = parseElement("gui", menus, Optional.<ContainerElement>absent());
+			GuiElement gui = parseElement("gui", menus, Optional.<GuiElement>absent());
 			//TODO: this is a terrible way of accomplishing this and should be reconsidered
 			for (GuiElement e : elementsToCenter){
 				e.setPosition(new Vector2i(((e.getParent().isPresent() ?
@@ -67,7 +67,7 @@ public class GuiParser {
 		throw new IllegalArgumentException("Cannot find resource " + path + "!");
 	}
 
-	private static GuiElement parseElement(String id, JsonObject json, Optional<ContainerElement> parent){
+	private static GuiElement parseElement(String id, JsonObject json, Optional<GuiElement> parent){
 		GuiElement element = null; // only remains null if this element can't be parsed
 		int height;
 		if (json.has("height")){
@@ -185,32 +185,30 @@ public class GuiParser {
 					}
 					break;
 				case "panel": // container element
-					element = new ContainerElement(id, new Vector2i(x, y), new Vector2i(width, height), color);
+					element = new GuiElement(id, new Vector2i(x, y), new Vector2i(width, height), color);
 					break;
 				default:
 					// unrecognized element, ignore it
 					System.err.println("Unrecognized element type \"" + type + "\"");
 					// default to container element
-					element = new ContainerElement(id, new Vector2i(x, y), new Vector2i(width, height), color);
+					element = new GuiElement(id, new Vector2i(x, y), new Vector2i(width, height), color);
 					break;
 			}
 		}
 		else {
 			// default to container element
-			element = new ContainerElement(id, new Vector2i(x, y), new Vector2i(width, height), color);
+			element = new GuiElement(id, new Vector2i(x, y), new Vector2i(width, height), color);
 		}
 		if (element != null){
 			if (x == Integer.MAX_VALUE)
 				elementsToCenter.add(element);
 			element.setHandlerClass(handlerClass);
-			if (element instanceof ContainerElement){ // may contain subelements
 				for (Map.Entry<String, JsonElement> e : json.entrySet()){ // iterate subelements
 					if (e.getValue().isJsonObject()){ // assert it's not a value for the current element
 						// recursively parse subelements
-						((ContainerElement)element).addChild(parseElement(e.getKey(), e.getValue().getAsJsonObject(),
-								Optional.of((ContainerElement)element)));
+						element.addChild(parseElement(e.getKey(), e.getValue().getAsJsonObject(),
+								Optional.of(element)));
 					}
-				}
 			}
 		}
 		return element;

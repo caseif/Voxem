@@ -388,7 +388,7 @@ public class GraphicsHandler implements Runnable {
 
 			// update debug gui, if necessary
 			if (GuiFactory.guis.get("debug").isActive()){
-				ContainerElement debugPanel = (GuiFactory.guis.get("debug"));
+				GuiElement debugPanel = GuiFactory.guis.get("debug");
 				((TextElement)debugPanel.getChild("fps"))
 						.setText("fps: " + fps);
 				((TextElement)debugPanel.getChild("delta"))

@@ -47,9 +47,8 @@ public class Scheduler {
 		return t;
 	}
 
-	//TODO: make this method actually async
 	public static Task runAsyncTask(Runnable runnable){
-		return runTaskLater(runnable, 0);
+		return runAsyncTaskLater(runnable, 0);
 	}
 
 	public static Task runAsyncTaskLater(Runnable runnable, int delay){

@@ -37,7 +37,7 @@ import java.util.HashMap;
  */
 public class GuiFactory {
 
-	public static HashMap<String, ContainerElement> guis = new HashMap<>();
+	public static HashMap<String, GuiElement> guis = new HashMap<>();
 
 	public static void construct(){
 		constructMainGui();
@@ -45,17 +45,16 @@ public class GuiFactory {
 	}
 
 	public static void constructMainGui(){
-		ContainerElement mainMenu = (ContainerElement)GuiParser.parseFile("/gui/gui.json");
+		GuiElement mainMenu = GuiParser.parseFile("/gui/gui.json");
 		mainMenu.getChild("titleText").setActive(true);
-		((ContainerElement)((ContainerElement)mainMenu.getChild("main")).getChild("contentPanel"))
-				.getChild("top").setActive(true);
+		mainMenu.getChild("main").getChild("contentPanel").getChild("top").setActive(true);
 		guis.put("main", mainMenu);
 		constructLoadWorldMenu();
 	}
 
 	public static void constructLoadWorldMenu(){
-		final ContainerElement worldList = (ContainerElement)((ContainerElement)((ContainerElement)guis.get("main")
-				.getChild("contentPanel")).getChild("spMenu")).getChild("loadWorld");
+		final GuiElement worldList = guis.get("main").getChild("contentPanel").getChild("spMenu")
+				.getChild("loadWorld");
 		worldList.setActive(false);
 		int buttons = 0;
 		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator + ".mineflat", "saves");
@@ -94,7 +93,7 @@ public class GuiFactory {
 	}
 
 	public static void constructDebugGui(){
-		final ContainerElement debugPanel = new ContainerElement("debugPanel",
+		final GuiElement debugPanel = new GuiElement("debugPanel",
 				new Vector2i(0, 0),
 				new Vector2i(0, 280),
 				new Vector4f(0.2f, 0.2f, 0.2f, 0.3f));

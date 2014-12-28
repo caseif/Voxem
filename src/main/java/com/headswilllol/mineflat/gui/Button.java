@@ -35,9 +35,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Button extends InteractiveElement {
 
-	private Vector2i size;
-	private String text;
-	private Vector4f color;
 	private Vector4f hoverColor;
 
 	private Method handler;
@@ -47,15 +44,12 @@ public class Button extends InteractiveElement {
 	private TextElement te;
 
 	protected Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor){
-		this.id = id;
-		this.position = position;
-		this.size = size;
-		this.text = text;
+		super(id, position, size, color);
+
 		te = new TextElement(id + "-text", new Vector2i(size.getX() / 2, size.getY() / 2 - 8), text, 16);
 		te.setAlignment(Alignment.CENTER);
 		te.setParent(this);
 
-		this.color = color;
 		this.hoverColor = hoverColor != null ? hoverColor : color;
 	}
 
@@ -80,11 +74,11 @@ public class Button extends InteractiveElement {
 	}
 
 	public String getText(){
-		return text;
+		return te.getText();
 	}
 
 	public void setText(String text){
-		this.text = text;
+		te.setText(text);
 	}
 
 	@Override
@@ -93,28 +87,23 @@ public class Button extends InteractiveElement {
 		this.te.setActive(active);
 	}
 
+	@Override
 	public void draw(){
-		if (isActive()) {
-			if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY())))
-				glColor4f(hoverColor.getX(), hoverColor.getY(), hoverColor.getZ(), hoverColor.getW());
-			else
-				glColor4f(color.getX(), color.getY(), color.getZ(), color.getW());
-			glBegin(GL_QUADS);
-			glVertex2f(getAbsolutePosition().getX(), getAbsolutePosition().getY());
-			glVertex2f(getAbsolutePosition().getX() + size.getX(), getAbsolutePosition().getY());
-			glVertex2f(getAbsolutePosition().getX() + size.getX(), getAbsolutePosition().getY() + size.getY());
-			glVertex2f(getAbsolutePosition().getX(), getAbsolutePosition().getY() + size.getY());
-			glEnd();
+		Vector4f oldColor = this.color;
+		if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY())))
+			setColor(hoverColor);
+		super.draw();
+		setColor(oldColor);
+		if (isActive()){
 			te.draw();
 		}
 	}
 
 	public boolean contains(Vector2i point){
-		if (point.getX() >= this.getAbsolutePosition().getX() && point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
-				point.getY() >= this.getAbsolutePosition().getY() && point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY()) {
-			return true;
-		}
-		return false;
+		return point.getX() >= this.getAbsolutePosition().getX() &&
+				point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
+				point.getY() >= this.getAbsolutePosition().getY() &&
+				point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY();
 	}
 
 	@Override
