@@ -183,11 +183,11 @@ public class Block {
 				newLight = Block.minLight;
 		}
 		boolean changed = newLight != getLightLevel();
-		lastLightUpdate = TickManager.getTicks();
+		lastLightUpdate = TickManager.getTotalTicks();
 		if (changed){
 			setLightLevel(newLight);
 			for (Block bl : adjacent)
-				if (bl != null && bl.lastLightUpdate != TickManager.getTicks())
+				if (bl != null && bl.lastLightUpdate < TickManager.getTotalTicks())
 					bl.updateLight();
 		}
 		for (int y = getY() + 1; y < getLevel().getWorld().getChunkHeight(); y++) {

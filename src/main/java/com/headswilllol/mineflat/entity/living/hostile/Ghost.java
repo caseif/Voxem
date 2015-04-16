@@ -26,10 +26,10 @@ import com.headswilllol.mineflat.entity.EntityType;
 import com.headswilllol.mineflat.entity.living.Mob;
 import com.headswilllol.mineflat.world.Location;
 
-public class Zombie extends Mob {
+public class Ghost extends Mob {
 
-	public Zombie(Location location){
-		super(EntityType.ZOMBIE, location, 0.875f, 2f);
+	public Ghost(Location location){
+		super(EntityType.GHOST, location, 1f, (21f / 17f));
 		speed = 2f;
 	}
 	

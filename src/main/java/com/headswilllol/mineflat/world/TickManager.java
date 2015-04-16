@@ -28,8 +28,8 @@ import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.entity.Entity;
 import com.headswilllol.mineflat.entity.EntityType;
 import com.headswilllol.mineflat.entity.living.Mob;
-import com.headswilllol.mineflat.entity.living.hostile.Zombie;
-import com.headswilllol.mineflat.entity.living.passive.Pig;
+import com.headswilllol.mineflat.entity.living.hostile.Ghost;
+import com.headswilllol.mineflat.entity.living.passive.Snail;
 import com.headswilllol.mineflat.util.Timing;
 
 import java.util.Random;
@@ -54,7 +54,7 @@ public class TickManager {
 	/**
 	 * The number of ticks per in-game day
 	 */
-	private static final int TICKS_PER_DAY = 24000;
+	public static final int TICKS_PER_DAY = 24000;
 
 	/**
 	 * Chance a single stagnant entity will begin randomly moving ("wandering") in a given tick
@@ -97,10 +97,19 @@ public class TickManager {
 	public static final float MIN_SKY_BRIGHTNESS = 0.1f;
 
 	/**
-	 * Retrieves the current tick count of the game.
-	 * @return the current tick count of the game.
+	 * Retrieves the current tick count of the day.
+	 * @return The current tick count of the day
 	 */
-	public static int getTicks(){
+	public static int getTicks() {
+		return ticks % TICKS_PER_DAY;
+	}
+
+	/**
+	 * Retrieves the total tick count of the world.
+	 *
+	 * @return The total tick count of the world
+	 */
+	public static int getTotalTicks() {
 		return ticks;
 	}
 
@@ -157,15 +166,15 @@ public class TickManager {
 							second = true;
 					}
 					switch (type){
-						case ZOMBIE:
-							Main.player.getLevel().addEntity(new Zombie(new Location(
+						case GHOST:
+							Main.player.getLevel().addEntity(new Ghost(new Location(
 									Main.player.getLevel(),
 									Chunk.getWorldXFromChunkIndex(c.getIndex(), (int)x),
 									(float)y
 							)));
 							break;
-						case PIG:
-							Main.player.getLevel().addEntity(new Pig(new Location(
+						case SNAIL:
+							Main.player.getLevel().addEntity(new Snail(new Location(
 									Main.player.getLevel(),
 									Chunk.getWorldXFromChunkIndex(c.getIndex(), (int)x),
 									(float)y
@@ -177,17 +186,17 @@ public class TickManager {
 				}
 			}
 			for (Entity e : Main.player.getLevel().getEntities()){
-				synchronized (e){ //TODO: is this a stupid thing to do?
-					if (e instanceof Mob){ // make sure it's not just an item drop or something
+				synchronized (e) {
+					if (e instanceof Mob) { // make sure it's not just an item drop or something
 						Mob m = (Mob)e;
-						if (m.getPlannedWalkDistance() == 0){ // check if entity is already moving
-							if (r.nextInt(MOVE_CHANCE) == 0){ // decide whether entity should move
+						if (m.getPlannedWalkDistance() == 0) { // check if entity is already moving
+							if (r.nextInt(MOVE_CHANCE) == 0) { // decide whether entity should move
 								float distance = r.nextInt(MAX_MOVE_DISTANCE) + 1;
 								if (r.nextInt(2) == 0) // move left if 0, else move right
 									distance *= -1;
 								m.setPlannedWalkDistance(distance); // update
 								// start movement
-								if (distance > 0){
+								if (distance > 0) {
 									m.setFacingDirection(Direction.RIGHT);
 									m.getVelocity().setX(m.getSpeed());
 								}
@@ -201,7 +210,7 @@ public class TickManager {
 						else {
 							// check if entity should still be moving
 							if (Math.abs(m.getActualWalkDistance()) >= Math.abs(m.getPlannedWalkDistance()) ||
-									m.getVelocity().getX() == 0){
+									m.getVelocity().getX() == 0) {
 								m.setPlannedWalkDistance(0); // reset
 								m.setActualWalkDistance(0); // reset
 								m.getVelocity().setX(0); // stop the entity
@@ -214,11 +223,7 @@ public class TickManager {
 					}
 				}
 			}
-			if (ticks < TICKS_PER_DAY)
-				ticks += 1;
-			else
-				ticks = 0;
-			//System.out.println(ticks);
+			ticks += 1;
 			lastTick = Timing.getTime();
 		}
 	}

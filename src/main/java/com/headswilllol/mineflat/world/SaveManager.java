@@ -29,8 +29,8 @@ import com.headswilllol.mineflat.Material;
 import com.headswilllol.mineflat.entity.*;
 import com.headswilllol.mineflat.entity.living.Living;
 import com.headswilllol.mineflat.entity.living.Mob;
-import com.headswilllol.mineflat.entity.living.hostile.Zombie;
-import com.headswilllol.mineflat.entity.living.passive.Pig;
+import com.headswilllol.mineflat.entity.living.hostile.Ghost;
+import com.headswilllol.mineflat.entity.living.passive.Snail;
 import com.headswilllol.mineflat.entity.living.player.Human;
 import com.headswilllol.mineflat.entity.living.player.Player;
 import com.headswilllol.mineflat.util.FileUtil;
@@ -59,7 +59,7 @@ public class SaveManager {
 		save.addProperty("chunkLength", Main.world.getChunkLength());
 		save.addProperty("chunkHeight", Main.world.getChunkHeight());
 		save.addProperty("seed", Main.world.getSeed());
-		save.addProperty("ticks", TickManager.getTicks());
+		save.addProperty("ticks", TickManager.getTotalTicks());
 		save.addProperty("playerLevel", Main.player.getLevel().getIndex());
 		save.addProperty("playerChunk", Main.player.getLocation().getChunk());
 
@@ -197,11 +197,11 @@ public class SaveManager {
 				if (entity.has("living")) {
 					if (entity.has("mob")) {
 						switch (type) {
-							case ZOMBIE:
-								e = new Zombie(new Location(level, x, y));
+							case GHOST:
+								e = new Ghost(new Location(level, x, y));
 								break;
-							case PIG:
-								e = new Pig(new Location(level, x, y));
+							case SNAIL:
+								e = new Snail(new Location(level, x, y));
 								break;
 							default:
 								continue; // ignore it

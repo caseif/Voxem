@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import com.headswilllol.mineflat.entity.living.Living;
 import com.headswilllol.mineflat.entity.living.Mob;
+import com.headswilllol.mineflat.entity.living.player.Player;
 import com.headswilllol.mineflat.vector.Vector2f;
 import com.headswilllol.mineflat.world.Location;
 import com.headswilllol.mineflat.world.Block;
@@ -129,58 +130,63 @@ public class Entity {
 	}
 
 	public void manageMovement(){
-
-		if (!isOnGround()){
-			if (getVelocity().getY() < terminalVelocity){
-				float newFallSpeed = getVelocity().getY() + gravity * Timing.delta / Timing.TIME_RESOLUTION * 2.5f;
-				if (newFallSpeed > terminalVelocity)
-					newFallSpeed = terminalVelocity;
-				getVelocity().setY(newFallSpeed);
-			}
-		}
-
-		float newY = getY() + getVelocity().getY() * (Timing.delta / Timing.TIME_RESOLUTION);
-
-		if (newY > this.getLevel().getWorld().getChunkHeight() && type != EntityType.PLAYER){
-			this.getLevel().removeEntity(this);
-			this.removed = true;
-			return;
-		}
-
-		float pX = getX() >= 0 ? getX() :
-				getX() - 1;
-
-		if (newY >= 0 && newY < Main.world.getChunkHeight()){
-			if (Block.isSolid(getLevel(), pX, (float)Math.floor(newY + vertOffset / (float)Block.length)))
-				getVelocity().setY(0);
-		}
-
-		Block below = getBlockBelow();
-		if (newY - getY() < 1){
-			if (below != null && Block.isSolid(below) && (float)below.getY() - getY() < height){
-				getVelocity().setY(0);
-				setY(below.getY() - height);
-			}
-		}
-		else {
-			for (int y = (int)Math.floor(getY()); y <= newY + height; y++){
-				if (Block.isSolid(getLevel(), pX, y)){
-					getVelocity().setY(0);
-					setY(y - height);
-					break;
+		synchronized (this) {
+			if (!isOnGround()) {
+				if (getVelocity().getY() < terminalVelocity) {
+					float newFallSpeed = getVelocity().getY() + gravity * Timing.delta / Timing.TIME_RESOLUTION * 2.5f;
+					if (newFallSpeed > terminalVelocity)
+						newFallSpeed = terminalVelocity;
+					getVelocity().setY(newFallSpeed);
 				}
 			}
-		}
-		setY(getY() + getVelocity().getY() * (Timing.delta / Timing.TIME_RESOLUTION));
 
-		if (!isXMovementBlocked()){
-			setX(getX() + getVelocity().getX() * (Timing.delta / Timing.TIME_RESOLUTION));
-		}
-		else {
-			getVelocity().setX(0);
-			if (this instanceof Mob){
-				((Mob)this).setPlannedWalkDistance(0);
-				((Mob)this).setActualWalkDistance(0);
+			float newY = getY() + getVelocity().getY() * (Timing.delta / Timing.TIME_RESOLUTION);
+
+			if (newY > this.getLevel().getWorld().getChunkHeight() && type != EntityType.PLAYER) {
+				this.getLevel().removeEntity(this);
+				this.removed = true;
+				return;
+			}
+
+			float pX = getX() >= 0 ? getX() :
+					getX() - 1;
+
+			if (newY >= 0 && newY < Main.world.getChunkHeight()) {
+				if (getVelocity().getY() > 0
+						&& Block.isSolid(getLevel(), pX, (float)Math.floor(newY + vertOffset / (float)Block.length))) {
+					getVelocity().setY(0);
+				}
+			}
+
+			Block below = getBlockBelow();
+			//TODO: take into account potentially two blocks
+			if (newY - getY() < 1) {
+				if (getVelocity().getY() > 0 && below != null && Block.isSolid(below)
+						&& (float)below.getY() - getY() < height) {
+					getVelocity().setY(0);
+					setY(below.getY() - height);
+				}
+			}
+			else {
+				for (int y = (int)Math.floor(getY()); y <= newY + height; y++) {
+					if (Block.isSolid(getLevel(), pX, y)) {
+						getVelocity().setY(0);
+						setY(y - height);
+						break;
+					}
+				}
+			}
+			setY(getY() + getVelocity().getY() * (Timing.delta / Timing.TIME_RESOLUTION));
+
+			if (!isXMovementBlocked()) {
+				setX(getX() + getVelocity().getX() * (Timing.delta / Timing.TIME_RESOLUTION));
+			}
+			else {
+				getVelocity().setX(0);
+				if (this instanceof Mob) {
+					((Mob)this).setPlannedWalkDistance(0);
+					((Mob)this).setActualWalkDistance(0);
+				}
 			}
 		}
 	}
@@ -221,6 +227,7 @@ public class Entity {
 	public boolean isXMovementBlocked(){
 		float newX = getX() >= 0 ? getX() + (getVelocity().getX() * (Timing.delta / Timing.TIME_RESOLUTION)) :
 				getX() - 1 + (getVelocity().getX() * (Timing.delta / Timing.TIME_RESOLUTION));
+		newX += (getVelocity().getX() >= 0 ? width : -width) / 2f * 0.9;
 		int minY = (int)Math.floor(getY());
 		int maxY = (int)Math.ceil(getY() + height - 1);
 		for (int y = minY; y <= maxY; y++)

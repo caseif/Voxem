@@ -160,9 +160,13 @@ public class Chunk {
 
 	public Collection<Entity> getEntities() {
 		List<Entity> entities = new ArrayList<>();
-		for (Entity e : level.getEntities())
-			if (e.getLocation().getChunk() == this.getIndex())
-				entities.add(e);
+		for (Entity e : level.getEntities()) {
+			synchronized (e) {
+				if (e.getLocation().getChunk() == this.getIndex()) {
+					entities.add(e);
+				}
+			}
+		}
 		return entities;
 	}
 

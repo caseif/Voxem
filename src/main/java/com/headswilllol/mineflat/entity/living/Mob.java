@@ -44,10 +44,10 @@ public abstract class Mob extends Living {
 	}
 	
 	public static void initialize(){
-		mobTypes.add(EntityType.ZOMBIE);
-		light.put(EntityType.ZOMBIE, 8);
-		mobTypes.add(EntityType.PIG);
-		light.put(EntityType.PIG, 16);
+		mobTypes.add(EntityType.GHOST);
+		light.put(EntityType.GHOST, 8);
+		mobTypes.add(EntityType.SNAIL);
+		light.put(EntityType.SNAIL, 16);
 	}
 	
 	public float getPlannedWalkDistance(){

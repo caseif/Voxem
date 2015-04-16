@@ -34,7 +34,7 @@ import com.headswilllol.mineflat.world.Location;
 public class Human extends Living {
 
 	public Human(Location location){
-		super(EntityType.HUMAN, location, 0.5f, 2f);
+		super(EntityType.HUMAN, location, 1f, (7f / 6f));
 		speed = 5f;
 	}
 

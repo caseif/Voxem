@@ -26,10 +26,10 @@ import com.headswilllol.mineflat.entity.EntityType;
 import com.headswilllol.mineflat.entity.living.Mob;
 import com.headswilllol.mineflat.world.Location;
 
-public class Pig extends Mob {
+public class Snail extends Mob {
 
-	public Pig(Location location){
-		super(EntityType.PIG, location, 1.25f, 1.125f);
+	public Snail(Location location){
+		super(EntityType.SNAIL, location, 1f, (2f / 3f));
 		speed = 2f;
 	}
 	

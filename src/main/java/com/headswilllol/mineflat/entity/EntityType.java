@@ -27,8 +27,8 @@ public enum EntityType {
 	ITEM_DROP,
 	HUMAN,
 	PLAYER,
-	ZOMBIE,
-	PIG,
+	GHOST,
+	SNAIL,
 	UNKNOWN
 
 }

@@ -86,8 +86,11 @@ public class Main {
 			if (world != null && player != null) {
 				Player.calculateLight();
 				TickManager.checkForTick();
-				for (Entity e : player.getLevel().getEntities())
-					e.manageMovement();
+				for (Entity e : player.getLevel().getEntities()) {
+					synchronized (e) {
+						e.manageMovement();
+					}
+				}
 				Block.updateSelectedBlock();
 			}
 			Timing.throttleCpu();

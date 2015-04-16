@@ -158,12 +158,15 @@ public class InputManager {
 			} else if (isKeyDown(RIGHT_1) || isKeyDown(RIGHT_2)) {
 				Main.player.setFacingDirection(Direction.RIGHT);
 				Main.player.getVelocity().setX(Main.player.getSpeed());
-			} else
+			} else {
 				Main.player.getVelocity().setX(0f);
-			if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3))
+			}
+			if (isKeyDown(JUMP_1) || isKeyDown(JUMP_2) || isKeyDown(JUMP_3)) {
 				Main.player.setJumping(true);
-			else
+			}
+			else {
 				Main.player.setJumping(false);
+			}
 		}
 		f3 = isKeyDown(KEY_F3);
 

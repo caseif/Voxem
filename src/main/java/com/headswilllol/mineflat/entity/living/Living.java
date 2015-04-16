@@ -49,11 +49,13 @@ public abstract class Living extends Entity {
 
 	@Override
 	public void manageMovement(){
-
 		super.manageMovement();
 
-		if(jump && isOnGround())
-			getVelocity().setY(-jumpPower);
+		synchronized (this) {
+			if (isJumping() && isOnGround()) {
+				getVelocity().setY(-jumpPower);
+			}
+		}
 
 	}
 

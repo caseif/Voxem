@@ -382,9 +382,12 @@ public class GraphicsHandler implements Runnable {
 				}
 
 				Player.centerPlayer();
-				for (Entity e : Main.player.getLevel().getEntities()){
-					if (!e.isRemoved())
-						e.draw();
+				for (Entity e : Main.player.getLevel().getEntities()) {
+					synchronized (e) {
+						if (!e.isRemoved()) {
+							e.draw();
+						}
+					}
 				}
 			}
 
