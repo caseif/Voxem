@@ -74,6 +74,7 @@ license {
 	header file('src/main/resources/LICENSE')
 	excludes([
 			'**/*.json',
+			'**/*.png',
 			'**/*.txt',
 			'**/PNGDecoder.java',
 			'**/noise/**',
