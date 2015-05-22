@@ -61,7 +61,7 @@ jar {
 		attributes(
 				'Implementation-Title': project.name,
 				'Implementation-Version': version,
-				'Main-Class': 'Main',
+				'Main-Class': 'net.caseif.voxem.Main',
 				'Class-Path': 'lib/lwjgl.jar lib/gson.jar lib/soundsystem/soundsystem.jar ' +
 						'lib/soundsystem/librarylwjglopenal.jar lib/soundsystem/codecjorbis.jar lib/guava.jar'
 		)
