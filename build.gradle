@@ -11,11 +11,11 @@ apply plugin: 'checkstyle'
 defaultTasks 'clean', 'licenseFormat', 'build'
 
 // Project information
-group = 'com.headswilllol.mineflat'
+group = 'net.caseif.voxem'
 version = '1.4.0'
 
 // Extended project information
-ext.projectName = 'MineFlat'
+ext.projectName = 'Voxem'
 ext.description = 'A 2D voxel-based game inspired by Terraria.'
 ext.inceptionYear = '2013'
 ext.packaging = 'jar'
@@ -37,7 +37,7 @@ ext {
 // Project repositories
 repositories {
 	mavenCentral()
-	maven { url 'http://repo.amigocraft.net/content/groups/public/' }
+	maven { url 'http://repo.caseif.net/content/groups/public/' }
 	maven { url 'http://ooo-maven.googlecode.com/hg/repository/' }
 }
 
@@ -57,12 +57,11 @@ tasks.withType(JavaCompile) {
 }
 
 jar {
-	archiveName = 'mineflat.jar'
 	manifest {
 		attributes(
 				'Implementation-Title': project.name,
 				'Implementation-Version': version,
-				'Main-Class': 'com.headswilllol.mineflat.Main',
+				'Main-Class': 'Main',
 				'Class-Path': 'lib/lwjgl.jar lib/gson.jar lib/soundsystem/soundsystem.jar ' +
 						'lib/soundsystem/librarylwjglopenal.jar lib/soundsystem/codecjorbis.jar lib/guava.jar'
 		)
@@ -99,3 +98,7 @@ checkstyle {
 }
 
 checkstyleMain.exclude('**/PNGDecoder.java', '**/noise/**')
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
