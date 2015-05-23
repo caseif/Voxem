@@ -22,43 +22,41 @@
  */
 package net.caseif.voxem.event.block;
 
-import net.caseif.voxem.world.Location;
-import net.caseif.voxem.world.Block;
 import net.caseif.voxem.util.VboUtil;
+import net.caseif.voxem.world.Block;
+import net.caseif.voxem.world.Location;
 
 public class BlockBreakEvent extends BlockEvent {
 
-	public BlockBreakEvent(Location l, Block block){
-		this.location = l;
-		this.oldBlock = block;
-		this.newBlock = null;
-		block.getLocation().getChunk();
-		block.destroy();
-		block.updateLight();
-		VboUtil.updateChunkArray(l.getLevel(), l.getChunk());
-		if (l.getChunk() == 1){
-			if (l.getLevel().isChunkGenerated(l.getChunk() - 2)){
-				VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 2);
-			}
-		}
-		else {
-			if (l.getLevel().isChunkGenerated(l.getChunk() - 1)){
-				VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 1);
-			}
-		}
-		if (l.getChunk() == -1){
-			if (l.getLevel().isChunkGenerated(l.getChunk() + 2)){
-				VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 2);
-			}
-		}
-		else {
-			if (l.getLevel().isChunkGenerated(l.getChunk() + 1)){
-				VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 1);
-			}
-		}
-		VboUtil.prepareBindArray();
-	}
+    public BlockBreakEvent(Location l, Block block) {
+        this.location = l;
+        this.oldBlock = block;
+        this.newBlock = null;
+        block.getLocation().getChunk();
+        block.destroy();
+        block.updateLight();
+        VboUtil.updateChunkArray(l.getLevel(), l.getChunk());
+        if (l.getChunk() == 1) {
+            if (l.getLevel().isChunkGenerated(l.getChunk() - 2)) {
+                VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 2);
+            }
+        } else {
+            if (l.getLevel().isChunkGenerated(l.getChunk() - 1)) {
+                VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 1);
+            }
+        }
+        if (l.getChunk() == -1) {
+            if (l.getLevel().isChunkGenerated(l.getChunk() + 2)) {
+                VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 2);
+            }
+        } else {
+            if (l.getLevel().isChunkGenerated(l.getChunk() + 1)) {
+                VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 1);
+            }
+        }
+        VboUtil.prepareBindArray();
+    }
 
-	//TODO: Implement Cancellable
+    //TODO: Implement Cancellable
 
 }

@@ -28,26 +28,26 @@ import net.caseif.voxem.event.human.HumanEvent;
 
 public class PlayerEvent extends HumanEvent {
 
-	/**
-	 * The player involved in this event.
-	 */
-	protected Player entity;
+    /**
+     * The player involved in this event.
+     */
+    protected Player entity;
 
-	@Override
-	public Player getEntity(){
-		return entity;
-	}
+    @Override
+    public Player getEntity() {
+        return entity;
+    }
 
-	public void setEntity(Player entity){
-		this.entity = entity;
-	}
+    public void setEntity(Player entity) {
+        this.entity = entity;
+    }
 
-	@Override
-	public void setEntity(Human entity){
-		if (entity instanceof Player)
-			super.setEntity(entity);
-		else
-			throw new IllegalArgumentException("Entity must be a player!");
-	}
-	
+    @Override
+    public void setEntity(Human entity) {
+        if (entity instanceof Player)
+            super.setEntity(entity);
+        else
+            throw new IllegalArgumentException("Entity must be a player!");
+    }
+
 }

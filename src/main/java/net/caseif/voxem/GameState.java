@@ -24,6 +24,6 @@ package net.caseif.voxem;
 
 public enum GameState {
 
-	INGAME, PAUSED, MAIN_MENU
-	
+    INGAME, PAUSED, MAIN_MENU
+
 }

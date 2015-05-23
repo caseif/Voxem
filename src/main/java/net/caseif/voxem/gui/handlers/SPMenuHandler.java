@@ -36,32 +36,32 @@ import java.io.File;
 
 public class SPMenuHandler {
 
-	public static void createWorld(){
-		//Main.world = new World(((TextField)createWorldPanel.getElement("worldNameField")).getText(), 8, 16, 128);
-		File save = new File(
-				FileUtil.getAppDataFolder() + File.separator + ".voxem" + File.separator + "saves", "world"
-		);
-		if (save.exists()){ //TODO: disallow world creation
-			save.delete();
-			System.out.println("Deleted existing world");
-		}
-		Main.world = new World("world", 8, 16, 128);
-		Main.world.creationTime = System.currentTimeMillis() / 1000L;
-		Main.world.addLevel(0);
-		Main.player = new Player(new Location(Main.world.getLevel(0), 0, 0));
-		Main.world.getLevel(0).addEntity(Main.player);
-		Terrain.generateTerrain();
-		SaveManager.saveWorldToMemory(Main.world);
+    public static void createWorld() {
+        //Main.world = new World(((TextField)createWorldPanel.getElement("worldNameField")).getText(), 8, 16, 128);
+        File save = new File(
+                FileUtil.getAppDataFolder() + File.separator + ".voxem" + File.separator + "saves", "world"
+        );
+        if (save.exists()) { //TODO: disallow world creation
+            save.delete();
+            System.out.println("Deleted existing world");
+        }
+        Main.world = new World("world", 8, 16, 128);
+        Main.world.creationTime = System.currentTimeMillis() / 1000L;
+        Main.world.addLevel(0);
+        Main.player = new Player(new Location(Main.world.getLevel(0), 0, 0));
+        Main.world.getLevel(0).addEntity(Main.player);
+        Terrain.generateTerrain();
+        SaveManager.saveWorldToMemory(Main.world);
 
-		GuiFactory.guis.get("main").setActive(false);
+        GuiFactory.guis.get("main").setActive(false);
 
-		SaveManager.prepareWorld();
-		Main.state = GameState.INGAME;
-	}
+        SaveManager.prepareWorld();
+        Main.state = GameState.INGAME;
+    }
 
-	public static void back(){
-		GuiFactory.guis.get("main").getChild("contentPanel").getChild("spMenu").setActive(false);
-		GuiFactory.guis.get("main").getChild("contentPanel").getChild("top").setActive(true);
-	}
+    public static void back() {
+        GuiFactory.guis.get("main").getChild("contentPanel").getChild("spMenu").setActive(false);
+        GuiFactory.guis.get("main").getChild("contentPanel").getChild("top").setActive(true);
+    }
 
 }

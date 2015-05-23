@@ -24,11 +24,11 @@ package net.caseif.voxem.entity;
 
 public enum EntityType {
 
-	ITEM_DROP,
-	HUMAN,
-	PLAYER,
-	GHOST,
-	SNAIL,
-	UNKNOWN
+    ITEM_DROP,
+    HUMAN,
+    PLAYER,
+    GHOST,
+    SNAIL,
+    UNKNOWN
 
 }

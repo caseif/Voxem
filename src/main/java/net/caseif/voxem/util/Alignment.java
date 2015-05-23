@@ -24,6 +24,6 @@ package net.caseif.voxem.util;
 
 public enum Alignment {
 
-	LEFT, RIGHT, CENTER;
+    LEFT, RIGHT, CENTER;
 
 }

@@ -29,49 +29,49 @@ import net.caseif.voxem.world.Location;
 
 public abstract class Living extends Entity {
 
-	public static final float jumpPower = 13f;
+    public static final float jumpPower = 13f;
 
-	protected float speed = 3f;
-	protected Direction facing = Direction.LEFT;
-	protected boolean jump = false;
+    protected float speed = 3f;
+    protected Direction facing = Direction.LEFT;
+    protected boolean jump = false;
 
-	public Living(EntityType type, Location location, float width, float height){
-		super(type, location, width, height);
-	}
+    public Living(EntityType type, Location location, float width, float height) {
+        super(type, location, width, height);
+    }
 
-	public Direction getFacingDirection(){
-		return facing;
-	}
+    public Direction getFacingDirection() {
+        return facing;
+    }
 
-	public void setFacingDirection(Direction facing){
-		this.facing = facing;
-	}
+    public void setFacingDirection(Direction facing) {
+        this.facing = facing;
+    }
 
-	@Override
-	public void manageMovement(){
-		super.manageMovement();
+    @Override
+    public void manageMovement() {
+        super.manageMovement();
 
-		synchronized (this) {
-			if (isJumping() && isOnGround()) {
-				getVelocity().setY(-jumpPower);
-			}
-		}
+        synchronized (this) {
+            if (isJumping() && isOnGround()) {
+                getVelocity().setY(-jumpPower);
+            }
+        }
 
-	}
+    }
 
-	public boolean isJumping(){
-		return jump;
-	}
+    public boolean isJumping() {
+        return jump;
+    }
 
-	public void setJumping(boolean jump){
-		this.jump = jump;
-	}
+    public void setJumping(boolean jump) {
+        this.jump = jump;
+    }
 
-	public float getSpeed(){
-		return speed;
-	}
+    public float getSpeed() {
+        return speed;
+    }
 
-	public void setSpeed(float speed){
-		this.speed = speed;
-	}
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
 }

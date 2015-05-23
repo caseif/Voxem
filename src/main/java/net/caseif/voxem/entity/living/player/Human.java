@@ -33,27 +33,27 @@ import net.caseif.voxem.world.Location;
  */
 public class Human extends Living {
 
-	public Human(Location location){
-		super(EntityType.HUMAN, location, 1f, (7f / 6f));
-		speed = 5f;
-	}
+    public Human(Location location) {
+        super(EntityType.HUMAN, location, 1f, (7f / 6f));
+        speed = 5f;
+    }
 
-	public Location getLocation(){
-		return location;
-	}
+    public Location getLocation() {
+        return location;
+    }
 
-	@Override
-	public void setX(float x){
-		Location old = getLocation();
-		super.setX(x);
-		Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
-	}
+    @Override
+    public void setX(float x) {
+        Location old = getLocation();
+        super.setX(x);
+        Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
+    }
 
-	@Override
-	public void setY(float y){
-		Location old = getLocation();
-		super.setY(y);
-		Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
-	}
+    @Override
+    public void setY(float y) {
+        Location old = getLocation();
+        super.setY(y);
+        Event.fireEvent(new HumanMoveEvent(this, getLocation(), old));
+    }
 
 }

@@ -24,16 +24,18 @@ package net.caseif.voxem.event;
 
 public interface Cancellable {
 
-	/**
-	 * Determines whether the event is currently cancelled.
-	 * @return whether the event is currently cancelled
-	 */
-	public abstract boolean isCancelled();
-	
-	/**
-	 * Defines whether an event should be cancelled.
-	 * @param cancelled When true, the event will be cancelled.
-	 */
-	public abstract void setCancelled(boolean cancelled);
-	
+    /**
+     * Determines whether the event is currently cancelled.
+     *
+     * @return whether the event is currently cancelled
+     */
+    public abstract boolean isCancelled();
+
+    /**
+     * Defines whether an event should be cancelled.
+     *
+     * @param cancelled When true, the event will be cancelled.
+     */
+    public abstract void setCancelled(boolean cancelled);
+
 }

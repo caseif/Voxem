@@ -22,52 +22,50 @@
  */
 package net.caseif.voxem;
 
-import java.io.File;
-import java.net.MalformedURLException;
-
 import net.caseif.voxem.util.FileUtil;
+
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.SoundSystemException;
 import paulscode.sound.codecs.CodecJOrbis;
 import paulscode.sound.libraries.LibraryLWJGLOpenAL;
 
+import java.io.File;
+import java.net.MalformedURLException;
+
 public class SoundManager {
 
-	static SoundSystem soundSystem = null;
+    static SoundSystem soundSystem = null;
 
-	public static void initialize(){
-		try {
-			SoundSystemConfig.addLibrary(LibraryLWJGLOpenAL.class);
-			SoundSystemConfig.setCodec("ogg", CodecJOrbis.class);
-		}
-		catch (SoundSystemException ex){
-			System.err.println("An exception occurred while linking the Codec-JOrbis plugin");
-		}
-		soundSystem = new SoundSystem();
+    public static void initialize() {
+        try {
+            SoundSystemConfig.addLibrary(LibraryLWJGLOpenAL.class);
+            SoundSystemConfig.setCodec("ogg", CodecJOrbis.class);
+        } catch (SoundSystemException ex) {
+            System.err.println("An exception occurred while linking the Codec-JOrbis plugin");
+        }
+        soundSystem = new SoundSystem();
 
-		try {
-			soundSystem.backgroundMusic("Infinity",
-					new File(FileUtil.getAppDataFolder() +
-							"/.voxem/resources/audio/soundtrack", "infinity.ogg").toURI().toURL(), "ogg", true);
-		}
-		catch (MalformedURLException ex){
-			ex.printStackTrace();
-			System.err.println("Failed to initialize audio stream!");
-		}
-	}
+        try {
+            soundSystem.backgroundMusic("Infinity",
+                    new File(FileUtil.getAppDataFolder() +
+                            "/.voxem/resources/audio/soundtrack", "infinity.ogg").toURI().toURL(), "ogg", true);
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+            System.err.println("Failed to initialize audio stream!");
+        }
+    }
 
-	public static void generateMeme(){
-		try {
-			soundSystem.stop("Infinity");
-			soundSystem.backgroundMusic("Sandstorm",
-					new File(FileUtil.getAppDataFolder() +
-							"/.voxem/resources/audio/soundtrack", "dss.ogg").toURI().toURL(), "ogg", true);
-		}
-		catch (MalformedURLException ex){
-			ex.printStackTrace();
-			System.err.println("Failed to initialize audio stream!");
-		}
-	}
+    public static void generateMeme() {
+        try {
+            soundSystem.stop("Infinity");
+            soundSystem.backgroundMusic("Sandstorm",
+                    new File(FileUtil.getAppDataFolder() +
+                            "/.voxem/resources/audio/soundtrack", "dss.ogg").toURI().toURL(), "ogg", true);
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+            System.err.println("Failed to initialize audio stream!");
+        }
+    }
 
 }

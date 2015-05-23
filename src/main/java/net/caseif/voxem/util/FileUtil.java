@@ -30,54 +30,52 @@ import java.util.zip.GZIPOutputStream;
 
 public class FileUtil {
 
-	public static String getAppDataFolder(){
-		String os = System.getProperty("os.name").toUpperCase();
-		if (os.contains("WIN"))
-			return System.getenv("APPDATA");
-		else if (os.contains("MAC"))
-			return System.getProperty("user.home") + "/Library/Application Support";
-		return System.getProperty("user.home");
-	}
+    public static String getAppDataFolder() {
+        String os = System.getProperty("os.name").toUpperCase();
+        if (os.contains("WIN"))
+            return System.getenv("APPDATA");
+        else if (os.contains("MAC"))
+            return System.getProperty("user.home") + "/Library/Application Support";
+        return System.getProperty("user.home");
+    }
 
-	public static void ungzip(String gzipFile, String newFile){
-		try {
-			FileInputStream fis = new FileInputStream(gzipFile);
-			GZIPInputStream gis = new GZIPInputStream(fis);
-			FileOutputStream fos = new FileOutputStream(newFile);
-			byte[] buffer = new byte[1024];
-			int len;
-			while((len = gis.read(buffer)) != -1){
-				fos.write(buffer, 0, len);
-			}
-			//close resources
-			fos.close();
-			gis.close();
-		}
-		catch (IOException ex){
-			ex.printStackTrace();
-		}
+    public static void ungzip(String gzipFile, String newFile) {
+        try {
+            FileInputStream fis = new FileInputStream(gzipFile);
+            GZIPInputStream gis = new GZIPInputStream(fis);
+            FileOutputStream fos = new FileOutputStream(newFile);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gis.read(buffer)) != -1) {
+                fos.write(buffer, 0, len);
+            }
+            //close resources
+            fos.close();
+            gis.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-	}
+    }
 
-	public static void gzip(String file, String gzipFile){
-		try {
-			FileInputStream fis = new FileInputStream(file);
-			FileOutputStream fos = new FileOutputStream(gzipFile);
-			GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
-			byte[] buffer = new byte[1024];
-			int len;
-			while((len=fis.read(buffer)) != -1){
-				gzipOS.write(buffer, 0, len);
-			}
-			//close resources
-			gzipOS.close();
-			fos.close();
-			fis.close();
-		}
-		catch (IOException ex){
-			ex.printStackTrace();
-		}
+    public static void gzip(String file, String gzipFile) {
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            FileOutputStream fos = new FileOutputStream(gzipFile);
+            GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) != -1) {
+                gzipOS.write(buffer, 0, len);
+            }
+            //close resources
+            gzipOS.close();
+            fos.close();
+            fis.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-	}
+    }
 
 }

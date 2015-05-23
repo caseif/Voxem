@@ -22,63 +22,63 @@
  */
 package net.caseif.voxem.event.human;
 
-import net.caseif.voxem.world.Location;
 import net.caseif.voxem.entity.living.player.Human;
 import net.caseif.voxem.event.Cancellable;
+import net.caseif.voxem.world.Location;
 
 /**
  * Fired when a player moves from one point in space to another.
  */
 public class HumanMoveEvent extends HumanEvent implements Cancellable {
 
-	private Location to;
+    private Location to;
 
-	private Location from;
+    private Location from;
 
-	private boolean cancelled;
+    private boolean cancelled;
 
-	/**
-	 * Fired when a human moves from one point in space to another.
-	 * @param entity The entity involved in this event.
-	 * @param to The location the player is moving to.
-	 * @param from The location of the player before this event was fired.
-	 */
-	public HumanMoveEvent(Human entity, Location to, Location from){
-		this.entity = entity;
-		this.to = to;
-		this.from = from;
-	}
+    /**
+     * Fired when a human moves from one point in space to another.
+     *
+     * @param entity The entity involved in this event.
+     * @param to     The location the player is moving to.
+     * @param from   The location of the player before this event was fired.
+     */
+    public HumanMoveEvent(Human entity, Location to, Location from) {
+        this.entity = entity;
+        this.to = to;
+        this.from = from;
+    }
 
-	public Location getTo(){
-		return to;
-	}
+    public Location getTo() {
+        return to;
+    }
 
-	public void setTo(Location to){
-		this.to = to;
-	}
+    public void setTo(Location to) {
+        this.to = to;
+    }
 
-	public Location getFrom(){
-		return from;
-	}
+    public Location getFrom() {
+        return from;
+    }
 
-	public void setFrom(Location from){
-		this.from = from;
-	}
+    public void setFrom(Location from) {
+        this.from = from;
+    }
 
-	public boolean isCancelled(){
-		return this.cancelled;
-	}
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
 
-	public void setCancelled(boolean cancelled){
-		this.cancelled = cancelled;
-		if (cancelled){
-			entity.setX(from.getX());
-			entity.setY(from.getY());
-		}
-		else {
-			entity.setX(to.getX());
-			entity.setY(to.getY());
-		}
-	}
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+        if (cancelled) {
+            entity.setX(from.getX());
+            entity.setY(from.getY());
+        } else {
+            entity.setX(to.getX());
+            entity.setY(to.getY());
+        }
+    }
 
 }

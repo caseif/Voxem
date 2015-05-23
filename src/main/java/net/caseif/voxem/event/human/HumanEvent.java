@@ -27,14 +27,14 @@ import net.caseif.voxem.event.Event;
 
 public class HumanEvent extends Event {
 
-	protected Human entity;
+    protected Human entity;
 
-	public Human getEntity(){
-		return entity;
-	}
+    public Human getEntity() {
+        return entity;
+    }
 
-	public void setEntity(Human entity){
-		this.entity = entity;
-	}
+    public void setEntity(Human entity) {
+        this.entity = entity;
+    }
 
 }

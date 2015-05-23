@@ -28,9 +28,9 @@ import net.caseif.voxem.world.Location;
 
 public class Ghost extends Mob {
 
-	public Ghost(Location location){
-		super(EntityType.GHOST, location, 1f, (21f / 17f));
-		speed = 2f;
-	}
-	
+    public Ghost(Location location) {
+        super(EntityType.GHOST, location, 1f, (21f / 17f));
+        speed = 2f;
+    }
+
 }

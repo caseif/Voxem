@@ -27,13 +27,13 @@ import net.caseif.voxem.gui.GuiFactory;
 
 public class TopHandler {
 
-	public static void playGame(){
-		GuiFactory.guis.get("main").getChild("contentPanel").getChild("top").setActive(false);
-		GuiFactory.guis.get("main").getChild("contentPanel").getChild("spMenu").setActive(true);
-	}
+    public static void playGame() {
+        GuiFactory.guis.get("main").getChild("contentPanel").getChild("top").setActive(false);
+        GuiFactory.guis.get("main").getChild("contentPanel").getChild("spMenu").setActive(true);
+    }
 
-	public static void quitGame(){
-		Main.closed = true;
-	}
+    public static void quitGame() {
+        Main.closed = true;
+    }
 
 }

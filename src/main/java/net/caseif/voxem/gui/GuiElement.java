@@ -24,6 +24,7 @@ package net.caseif.voxem.gui;
 
 import net.caseif.voxem.vector.Vector2i;
 import net.caseif.voxem.vector.Vector4f;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -36,181 +37,180 @@ import java.util.Optional;
 // implement anything directly
 public class GuiElement {
 
-	private HashMap<String, GuiElement> children = new HashMap<>();
+    private HashMap<String, GuiElement> children = new HashMap<>();
 
-	protected String id;
-	protected Vector2i position;
-	protected Vector2i size;
-	protected Vector4f color;
+    protected String id;
+    protected Vector2i position;
+    protected Vector2i size;
+    protected Vector4f color;
 
-	protected Optional<Class<?>> handlerClass = Optional.empty();
+    protected Optional<Class<?>> handlerClass = Optional.empty();
 
-	protected Optional<GuiElement> parent = Optional.empty();
+    protected Optional<GuiElement> parent = Optional.empty();
 
-	protected boolean active = false;
+    protected boolean active = false;
 
-	public GuiElement(String id, Vector2i position, Vector2i size, Vector4f color){
-		this.id = id;
-		this.position = position;
-		this.size = size;
-		this.color = color;
-	}
+    public GuiElement(String id, Vector2i position, Vector2i size, Vector4f color) {
+        this.id = id;
+        this.position = position;
+        this.size = size;
+        this.color = color;
+    }
 
-	public GuiElement(String id, Vector2i position, Vector2i size){
-		this(id, position, size, new Vector4f(0f, 0f, 0f, 0f));
-	}
+    public GuiElement(String id, Vector2i position, Vector2i size) {
+        this(id, position, size, new Vector4f(0f, 0f, 0f, 0f));
+    }
 
-	public String getId(){
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public Vector2i getPosition(){
-		return position;
-	}
+    public Vector2i getPosition() {
+        return position;
+    }
 
-	public void setPosition(Vector2i position){
-		this.position = position;
-	}
+    public void setPosition(Vector2i position) {
+        this.position = position;
+    }
 
-	public Vector2i getAbsolutePosition(){
-		return parent.isPresent() ? parent.get().getAbsolutePosition().add(position) : getPosition();
-	}
+    public Vector2i getAbsolutePosition() {
+        return parent.isPresent() ? parent.get().getAbsolutePosition().add(position) : getPosition();
+    }
 
-	public Vector2i getSize(){
-		return size;
-	}
+    public Vector2i getSize() {
+        return size;
+    }
 
-	public void setSize(Vector2i size){
-		this.size = size;
-	}
+    public void setSize(Vector2i size) {
+        this.size = size;
+    }
 
-	public boolean isActive(){
-		return active;
-	}
+    public boolean isActive() {
+        return active;
+    }
 
-	public void setActive(boolean active){
-		setActive(active, true);
-	}
+    public void setActive(boolean active) {
+        setActive(active, true);
+    }
 
-	public void setActive(boolean active, boolean recursive){
-		this.active = active;
-		if (recursive){
-			for (GuiElement ge : children.values()){
-				ge.setActive(active);
-			}
-		}
-		if (active && getParent().isPresent()){
-			getParent().get().setActive(active, false);
-		}
-	}
+    public void setActive(boolean active, boolean recursive) {
+        this.active = active;
+        if (recursive) {
+            for (GuiElement ge : children.values()) {
+                ge.setActive(active);
+            }
+        }
+        if (active && getParent().isPresent()) {
+            getParent().get().setActive(active, false);
+        }
+    }
 
-	public Vector4f getColor(){
-		return this.color;
-	}
+    public Vector4f getColor() {
+        return this.color;
+    }
 
-	public void setColor(Vector4f color){
-		this.color = color;
-	}
+    public void setColor(Vector4f color) {
+        this.color = color;
+    }
 
-	public Optional<GuiElement> getParent(){
-		return parent;
-	}
+    public Optional<GuiElement> getParent() {
+        return parent;
+    }
 
-	public void setParent(GuiElement element){
-		this.parent = element != null ? Optional.of(element) : Optional.<GuiElement>empty();
-	}
+    public void setParent(GuiElement element) {
+        this.parent = element != null ? Optional.of(element) : Optional.<GuiElement>empty();
+    }
 
-	public Optional<Class<?>> getHandlerClass(){
-		if (handlerClass.isPresent() || !parent.isPresent())
-			return handlerClass;
-		else
-			return parent.get().getHandlerClass();
-	}
+    public Optional<Class<?>> getHandlerClass() {
+        if (handlerClass.isPresent() || !parent.isPresent())
+            return handlerClass;
+        else
+            return parent.get().getHandlerClass();
+    }
 
-	public void setHandlerClass(Class<?> clazz){
-		handlerClass = clazz != null ? Optional.<Class<?>>of(clazz) : Optional.<Class<?>>empty();
-	}
+    public void setHandlerClass(Class<?> clazz) {
+        handlerClass = clazz != null ? Optional.<Class<?>>of(clazz) : Optional.<Class<?>>empty();
+    }
 
-	public void setHandlerClass(String className){
-		try {
-			handlerClass = className != null ?
-					Optional.<Class<?>>of(Class.forName(className)) :
-					Optional.<Class<?>>empty();
-		}
-		catch (ClassNotFoundException ex){
-			handlerClass = Optional.empty();
-			System.err.println("Invalid handler class \"" + className + "\" for GUI element " + id  + "!");
-		}
-	}
+    public void setHandlerClass(String className) {
+        try {
+            handlerClass = className != null ?
+                    Optional.<Class<?>>of(Class.forName(className)) :
+                    Optional.<Class<?>>empty();
+        } catch (ClassNotFoundException ex) {
+            handlerClass = Optional.empty();
+            System.err.println("Invalid handler class \"" + className + "\" for GUI element " + id + "!");
+        }
+    }
 
-	public boolean contains(Vector2i point){
-		return point.getX() >= this.getAbsolutePosition().getX() &&
-				point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
-				point.getY() >= this.getAbsolutePosition().getY() &&
-				point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY();
-	}
+    public boolean contains(Vector2i point) {
+        return point.getX() >= this.getAbsolutePosition().getX() &&
+                point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
+                point.getY() >= this.getAbsolutePosition().getY() &&
+                point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY();
+    }
 
-	public Collection<GuiElement> getChildren(){
-		return children.values();
-	}
+    public Collection<GuiElement> getChildren() {
+        return children.values();
+    }
 
-	public GuiElement getChild(String id){
-		if (children.get(id) != null)
-			return children.get(id);
-		for (GuiElement ge : children.values()){
-			if (ge.getChild(id) != null){
-				return ge.getChild(id);
-			}
-		}
-		return null;
-	}
+    public GuiElement getChild(String id) {
+        if (children.get(id) != null)
+            return children.get(id);
+        for (GuiElement ge : children.values()) {
+            if (ge.getChild(id) != null) {
+                return ge.getChild(id);
+            }
+        }
+        return null;
+    }
 
-	public void addChild(GuiElement ge){
-		ge.setParent(this);
-		children.put(ge.getId(), ge);
-	}
+    public void addChild(GuiElement ge) {
+        ge.setParent(this);
+        children.put(ge.getId(), ge);
+    }
 
-	public void removeChild(String id){
-		children.remove(id);
-	}
+    public void removeChild(String id) {
+        children.remove(id);
+    }
 
-	public void checkInteraction(){
-		if (this instanceof InteractiveElement){
-			if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY()))){
-				((InteractiveElement)this).interact();
-			}
-		}
-		for (GuiElement ge : children.values()){
-			ge.checkInteraction();
-		}
-	}
+    public void checkInteraction() {
+        if (this instanceof InteractiveElement) {
+            if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY()))) {
+                ((InteractiveElement) this).interact();
+            }
+        }
+        for (GuiElement ge : children.values()) {
+            ge.checkInteraction();
+        }
+    }
 
-	public void checkMousePos(){
-		if (isActive()) {
-			if (this instanceof InteractiveElement) {
-				if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY()))) {
-					((InteractiveElement)this).interact();
-				}
-			}
-			for (GuiElement e : getChildren()) {
-				e.checkInteraction();
-			}
-		}
-	}
+    public void checkMousePos() {
+        if (isActive()) {
+            if (this instanceof InteractiveElement) {
+                if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY()))) {
+                    ((InteractiveElement) this).interact();
+                }
+            }
+            for (GuiElement e : getChildren()) {
+                e.checkInteraction();
+            }
+        }
+    }
 
-	public void draw(){
-		if (isActive()){
-			GL11.glColor4f(color.getX(), color.getY(), color.getZ(), color.getW());
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(getAbsolutePosition().getX(), getAbsolutePosition().getY());
-			GL11.glVertex2i(getAbsolutePosition().getX() + size.getX(), getAbsolutePosition().getY());
-			GL11.glVertex2i(getAbsolutePosition().getX() + size.getX(), getAbsolutePosition().getY() + size.getY());
-			GL11.glVertex2i(getAbsolutePosition().getX(), getAbsolutePosition().getY() + size.getY());
-			GL11.glEnd();
-			for (GuiElement ge : children.values()){
-				ge.draw();
-			}
-		}
-	}
+    public void draw() {
+        if (isActive()) {
+            GL11.glColor4f(color.getX(), color.getY(), color.getZ(), color.getW());
+            GL11.glBegin(GL11.GL_QUADS);
+            GL11.glVertex2i(getAbsolutePosition().getX(), getAbsolutePosition().getY());
+            GL11.glVertex2i(getAbsolutePosition().getX() + size.getX(), getAbsolutePosition().getY());
+            GL11.glVertex2i(getAbsolutePosition().getX() + size.getX(), getAbsolutePosition().getY() + size.getY());
+            GL11.glVertex2i(getAbsolutePosition().getX(), getAbsolutePosition().getY() + size.getY());
+            GL11.glEnd();
+            for (GuiElement ge : children.values()) {
+                ge.draw();
+            }
+        }
+    }
 
 }

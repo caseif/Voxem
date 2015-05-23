@@ -28,9 +28,9 @@ import net.caseif.voxem.world.Location;
 
 public class Snail extends Mob {
 
-	public Snail(Location location){
-		super(EntityType.SNAIL, location, 1f, (2f / 3f));
-		speed = 2f;
-	}
-	
+    public Snail(Location location) {
+        super(EntityType.SNAIL, location, 1f, (2f / 3f));
+        speed = 2f;
+    }
+
 }

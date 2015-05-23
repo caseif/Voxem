@@ -25,41 +25,41 @@ package net.caseif.voxem.util;
 import java.util.concurrent.locks.LockSupport;
 
 public class Timing {
-	
-	public static final long TIME_RESOLUTION = 1000000000L;
 
-	/**
-	 * The variable used to determine the duration of each iteration so as to move ingame objects
-	 * at a constant speed
-	 */
-	public static float delta = 0;
-	public static double displayDelta = 0;
+    public static final long TIME_RESOLUTION = 1000000000L;
 
-	/**
-	 * Used in the calculation of delta
-	 */
-	public static long time = getTime();
+    /**
+     * The variable used to determine the duration of each iteration so as to move ingame objects
+     * at a constant speed
+     */
+    public static float delta = 0;
+    public static double displayDelta = 0;
 
-	/**
-	 * Used in the calculation of delta
-	 */
-	public static long lastTime = getTime();
+    /**
+     * Used in the calculation of delta
+     */
+    public static long time = getTime();
 
-	private static long starttime = getTime();
+    /**
+     * Used in the calculation of delta
+     */
+    public static long lastTime = getTime();
 
-	public static long getTime(){
-		return System.nanoTime();
-	}
-	
-	public static void calculateDelta(){
-		time = getTime();
-		delta = time - lastTime;
-		lastTime = time;
-	}
-	
-	public static void throttleCpu(){
-		starttime += ((1000 / 60) * TIME_RESOLUTION / 1000);
-		LockSupport.parkNanos((Math.max(0, starttime - getTime() + 1)));
-	}
+    private static long starttime = getTime();
+
+    public static long getTime() {
+        return System.nanoTime();
+    }
+
+    public static void calculateDelta() {
+        time = getTime();
+        delta = time - lastTime;
+        lastTime = time;
+    }
+
+    public static void throttleCpu() {
+        starttime += ((1000 / 60) * TIME_RESOLUTION / 1000);
+        LockSupport.parkNanos((Math.max(0, starttime - getTime() + 1)));
+    }
 
 }

@@ -27,12 +27,12 @@ import net.caseif.voxem.vector.Vector4f;
 
 public abstract class InteractiveElement extends GuiElement {
 
-	public static boolean hasMouseReleased = true;
+    public static boolean hasMouseReleased = true;
 
-	public InteractiveElement(String id, Vector2i position, Vector2i size, Vector4f color){
-		super(id, position, size, color);
-	}
+    public InteractiveElement(String id, Vector2i position, Vector2i size, Vector4f color) {
+        super(id, position, size, color);
+    }
 
-	public abstract void interact();
+    public abstract void interact();
 
 }

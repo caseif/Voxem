@@ -22,22 +22,22 @@
  */
 package net.caseif.voxem.event.input;
 
-import net.caseif.voxem.gui.Button;
 import net.caseif.voxem.event.Event;
+import net.caseif.voxem.gui.Button;
 
 public class ButtonClickEvent extends Event {
-	
-	private final Button button;
-	
-	public ButtonClickEvent(Button button){
-		this.button = button;
-	}
-	
-	/**
-	 * @return The button involved in this event
-	 */
-	public Button getButton(){
-		return button;
-	}
+
+    private final Button button;
+
+    public ButtonClickEvent(Button button) {
+        this.button = button;
+    }
+
+    /**
+     * @return The button involved in this event
+     */
+    public Button getButton() {
+        return button;
+    }
 
 }

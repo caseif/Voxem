@@ -22,26 +22,26 @@
  */
 package net.caseif.voxem.event.block;
 
-import net.caseif.voxem.world.Location;
-import net.caseif.voxem.world.Block;
 import net.caseif.voxem.event.Event;
+import net.caseif.voxem.world.Block;
+import net.caseif.voxem.world.Location;
 
 public class BlockEvent extends Event {
 
-	protected Location location;
-	protected Block oldBlock;
-	protected Block newBlock;
-	
-	public Block getBlock(){
-		return location.getBlock();
-	}
-	
-	public Location getLocation(){
-		return location;
-	}
-	
-	public Block getOldBlock(){
-		return oldBlock;
-	}
+    protected Location location;
+    protected Block oldBlock;
+    protected Block newBlock;
+
+    public Block getBlock() {
+        return location.getBlock();
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public Block getOldBlock() {
+        return oldBlock;
+    }
 
 }

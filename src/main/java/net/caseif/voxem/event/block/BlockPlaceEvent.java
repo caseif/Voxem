@@ -22,31 +22,29 @@
  */
 package net.caseif.voxem.event.block;
 
-import net.caseif.voxem.world.Location;
-import net.caseif.voxem.world.Block;
 import net.caseif.voxem.util.VboUtil;
+import net.caseif.voxem.world.Block;
+import net.caseif.voxem.world.Location;
 
 public class BlockPlaceEvent extends BlockEvent {
 
-	public BlockPlaceEvent(Location l, Block b){
-		this.location = l;
-		this.oldBlock = null;
-		this.newBlock = b;
-		b.updateLight();
-		VboUtil.updateChunkArray(l.getLevel(), l.getChunk());
-		if (l.getChunk() == 1 && l.getLevel().isChunkGenerated(l.getChunk() - 2)){
-			VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 2);
-		}
-		else if (l.getLevel().isChunkGenerated(l.getChunk() - 1)){
-			VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 1);
-		}
-		if (l.getChunk() == -1 && l.getLevel().isChunkGenerated(l.getChunk() + 2)){
-			VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 2);
-		}
-		else if (l.getLevel().isChunkGenerated(l.getChunk() + 1)){
-			VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 1);
-		}
-		VboUtil.prepareBindArray();
-	}
+    public BlockPlaceEvent(Location l, Block b) {
+        this.location = l;
+        this.oldBlock = null;
+        this.newBlock = b;
+        b.updateLight();
+        VboUtil.updateChunkArray(l.getLevel(), l.getChunk());
+        if (l.getChunk() == 1 && l.getLevel().isChunkGenerated(l.getChunk() - 2)) {
+            VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 2);
+        } else if (l.getLevel().isChunkGenerated(l.getChunk() - 1)) {
+            VboUtil.updateChunkArray(l.getLevel(), l.getChunk() - 1);
+        }
+        if (l.getChunk() == -1 && l.getLevel().isChunkGenerated(l.getChunk() + 2)) {
+            VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 2);
+        } else if (l.getLevel().isChunkGenerated(l.getChunk() + 1)) {
+            VboUtil.updateChunkArray(l.getLevel(), l.getChunk() + 1);
+        }
+        VboUtil.prepareBindArray();
+    }
 
 }

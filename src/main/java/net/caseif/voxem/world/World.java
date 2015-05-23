@@ -30,85 +30,85 @@ import java.util.List;
 
 public class World {
 
-	public long seed;
+    public long seed;
 
-	private final HashMap<Integer, Level> levels = new HashMap<>();
+    private final HashMap<Integer, Level> levels = new HashMap<>();
 
-	public long creationTime;
-	
-	private final String name;
-	private final int chunkCount;
-	private final int chunkLength;
-	private final int chunkHeight;
+    public long creationTime;
 
-	private JsonObject json = new JsonObject();
+    private final String name;
+    private final int chunkCount;
+    private final int chunkLength;
+    private final int chunkHeight;
 
-	private boolean ticking = false;
+    private JsonObject json = new JsonObject();
 
-	public World(String name, int chunkCount, int chunkLength, int chunkHeight){
-		this.seed = System.currentTimeMillis() * 1337337331;
-		this.name = name;
-		this.chunkCount = chunkCount;
-		this.chunkLength = chunkLength;
-		this.chunkHeight = chunkHeight;
-	}
-	
-	public long getSeed(){
-		return seed;
-	}
-	
-	public String getName(){
-		return name;
-	}
-	
-	public Level getLevel(int index){
-		return levels.get(index);
-	}
-	
-	public List<Level> getLevels(){
-		java.util.Collection<Level> var = levels.values();
-		return Arrays.asList(var.toArray(new Level[var.size()]));
-	}
-	
-	public void addLevel(int index){
-		levels.put(index, new Level(this, index));
-	}
+    private boolean ticking = false;
 
-	/**
-	 * @return The number of chunks in the world
-	 */
-	public int getChunkCount(){
-		return chunkCount;
-	}
+    public World(String name, int chunkCount, int chunkLength, int chunkHeight) {
+        this.seed = System.currentTimeMillis() * 1337337331;
+        this.name = name;
+        this.chunkCount = chunkCount;
+        this.chunkLength = chunkLength;
+        this.chunkHeight = chunkHeight;
+    }
 
-	/**
-	 * @return The length of chunks in the world
-	 */
-	public int getChunkLength(){
-		return chunkLength;
-	}
+    public long getSeed() {
+        return seed;
+    }
 
-	/**
-	 * @return The height of chunks in the world
-	 */
-	public int getChunkHeight(){
-		return chunkHeight;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public JsonObject getJson(){
-		return json;
-	}
+    public Level getLevel(int index) {
+        return levels.get(index);
+    }
 
-	public void setJson(JsonObject json){
-		this.json = json;
-	}
+    public List<Level> getLevels() {
+        java.util.Collection<Level> var = levels.values();
+        return Arrays.asList(var.toArray(new Level[var.size()]));
+    }
 
-	public boolean isTicking(){
-		return ticking;
-	}
+    public void addLevel(int index) {
+        levels.put(index, new Level(this, index));
+    }
 
-	public void setTicking(boolean ticking){
-		this.ticking = ticking;
-	}
+    /**
+     * @return The number of chunks in the world
+     */
+    public int getChunkCount() {
+        return chunkCount;
+    }
+
+    /**
+     * @return The length of chunks in the world
+     */
+    public int getChunkLength() {
+        return chunkLength;
+    }
+
+    /**
+     * @return The height of chunks in the world
+     */
+    public int getChunkHeight() {
+        return chunkHeight;
+    }
+
+    public JsonObject getJson() {
+        return json;
+    }
+
+    public void setJson(JsonObject json) {
+        this.json = json;
+    }
+
+    public boolean isTicking() {
+        return ticking;
+    }
+
+    public void setTicking(boolean ticking) {
+        this.ticking = ticking;
+    }
 
 }

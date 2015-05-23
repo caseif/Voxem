@@ -25,6 +25,7 @@ package net.caseif.voxem.gui;
 import net.caseif.voxem.util.Alignment;
 import net.caseif.voxem.vector.Vector2i;
 import net.caseif.voxem.vector.Vector4f;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -33,98 +34,97 @@ import java.lang.reflect.Method;
 
 public class Button extends InteractiveElement {
 
-	private Vector4f hoverColor;
+    private Vector4f hoverColor;
 
-	private Method handler;
+    private Method handler;
 
-	private Runnable function;
+    private Runnable function;
 
-	private TextElement te;
+    private TextElement te;
 
-	protected Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor){
-		super(id, position, size, color);
+    protected Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor) {
+        super(id, position, size, color);
 
-		te = new TextElement(id + "-text", new Vector2i(size.getX() / 2, size.getY() / 2 - 8), text, 16);
-		te.setAlignment(Alignment.CENTER);
-		te.setParent(this);
+        te = new TextElement(id + "-text", new Vector2i(size.getX() / 2, size.getY() / 2 - 8), text, 16);
+        te.setAlignment(Alignment.CENTER);
+        te.setParent(this);
 
-		this.hoverColor = hoverColor != null ? hoverColor : color;
-	}
+        this.hoverColor = hoverColor != null ? hoverColor : color;
+    }
 
-	public Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor,
-	              Runnable clickFunction){
-		this(id, position, size, text, color, hoverColor);
-		this.function = clickFunction;
-	}
+    public Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor,
+                  Runnable clickFunction) {
+        this(id, position, size, text, color, hoverColor);
+        this.function = clickFunction;
+    }
 
-	public Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor,
-	              Method clickFunction){
-		this(id, position, size, text, color, hoverColor);
-		this.handler = clickFunction;
-	}
+    public Button(String id, Vector2i position, Vector2i size, String text, Vector4f color, Vector4f hoverColor,
+                  Method clickFunction) {
+        this(id, position, size, text, color, hoverColor);
+        this.handler = clickFunction;
+    }
 
-	public Vector2i getSize(){
-		return size;
-	}
+    public Vector2i getSize() {
+        return size;
+    }
 
-	public void setSize(Vector2i size){
-		this.size = size;
-	}
+    public void setSize(Vector2i size) {
+        this.size = size;
+    }
 
-	public String getText(){
-		return te.getText();
-	}
+    public String getText() {
+        return te.getText();
+    }
 
-	public void setText(String text){
-		te.setText(text);
-	}
+    public void setText(String text) {
+        te.setText(text);
+    }
 
-	@Override
-	public void setActive(boolean active){
-		super.setActive(active);
-		this.te.setActive(active);
-	}
+    @Override
+    public void setActive(boolean active) {
+        super.setActive(active);
+        this.te.setActive(active);
+    }
 
-	@Override
-	public void draw(){
-		Vector4f oldColor = this.color;
-		if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY())))
-			setColor(hoverColor);
-		super.draw();
-		setColor(oldColor);
-		if (isActive()){
-			te.draw();
-		}
-	}
+    @Override
+    public void draw() {
+        Vector4f oldColor = this.color;
+        if (this.contains(new Vector2i(Mouse.getX(), Display.getHeight() - Mouse.getY())))
+            setColor(hoverColor);
+        super.draw();
+        setColor(oldColor);
+        if (isActive()) {
+            te.draw();
+        }
+    }
 
-	public boolean contains(Vector2i point){
-		return point.getX() >= this.getAbsolutePosition().getX() &&
-				point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
-				point.getY() >= this.getAbsolutePosition().getY() &&
-				point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY();
-	}
+    public boolean contains(Vector2i point) {
+        return point.getX() >= this.getAbsolutePosition().getX() &&
+                point.getX() <= this.getAbsolutePosition().getX() + this.getSize().getX() &&
+                point.getY() >= this.getAbsolutePosition().getY() &&
+                point.getY() <= this.getAbsolutePosition().getY() + this.getSize().getY();
+    }
 
-	@Override
-	public void interact(){
-		if (hasMouseReleased && isActive()){
-			if (function != null)
-				function.run();
-			else if (handler != null){
-				try {
-					handler.invoke(null);
-				}
-				catch (IllegalAccessException | InvocationTargetException ex){
-					System.err.println("Failed to interact with button \"" + id + "\"");
-					ex.printStackTrace();
-				}
-			}
-			hasMouseReleased = false;
-		}
-	}
+    @Override
+    public void interact() {
+        if (hasMouseReleased && isActive()) {
+            if (function != null)
+                function.run();
+            else if (handler != null) {
+                try {
+                    handler.invoke(null);
+                } catch (IllegalAccessException | InvocationTargetException ex) {
+                    System.err.println("Failed to interact with button \"" + id + "\"");
+                    ex.printStackTrace();
+                }
+            }
+            hasMouseReleased = false;
+        }
+    }
 
-	public void interact(Object... params){
-		//TODO: params
-		interact();
-	}
+    public void interact(Object... params) {
+        //TODO: params
+        interact();
+    }
 
 }

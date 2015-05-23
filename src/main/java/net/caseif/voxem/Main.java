@@ -31,75 +31,75 @@ import net.caseif.voxem.world.Block;
 import net.caseif.voxem.world.SaveManager;
 import net.caseif.voxem.world.TickManager;
 import net.caseif.voxem.world.World;
-import org.lwjgl.opengl.*;
+
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 public class Main {
 
-	public static World world = null;
+    public static World world = null;
 
-	public static Player player;
+    public static Player player;
 
-	public static boolean closed = false;
+    public static boolean closed = false;
 
-	public static final Object lock = new Object();
+    public static final Object lock = new Object();
 
-	public static GameState state = GameState.MAIN_MENU;
+    public static GameState state = GameState.MAIN_MENU;
 
-	public static int charTexture;
+    public static int charTexture;
 
-	public static void main(String[] args){
+    public static void main(String[] args) {
 
-		boolean launchedProperly = true;
-		try {
-			// verify libraries are present and LWJGL is in path
-			for (DisplayMode mode : Display.getAvailableDisplayModes()){
-				if (mode.getWidth() == Display.getDesktopDisplayMode().getWidth() &&
-						mode.getHeight() == Display.getDesktopDisplayMode()
-								.getHeight() && mode.isFullscreenCapable()){
-					Display.setDisplayMode(mode);
-					break;
-				}
-			}
-			Display.destroy();
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-			launchedProperly = false;
-		}
-		if (!launchedProperly){
-			new DummyMain();
-			return;
-		}
+        boolean launchedProperly = true;
+        try {
+            // verify libraries are present and LWJGL is in path
+            for (DisplayMode mode : Display.getAvailableDisplayModes()) {
+                if (mode.getWidth() == Display.getDesktopDisplayMode().getWidth() &&
+                        mode.getHeight() == Display.getDesktopDisplayMode()
+                                .getHeight() && mode.isFullscreenCapable()) {
+                    Display.setDisplayMode(mode);
+                    break;
+                }
+            }
+            Display.destroy();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            launchedProperly = false;
+        }
+        if (!launchedProperly) {
+            new DummyMain();
+            return;
+        }
 
-		Thread t = new Thread(new GraphicsHandler());
-		t.start();
+        Thread t = new Thread(new GraphicsHandler());
+        t.start();
 
-		InputManager.initialize();
-		Mob.initialize();
-		SoundManager.initialize();
+        InputManager.initialize();
+        Mob.initialize();
+        SoundManager.initialize();
 
-		while (!closed){
-			Timing.calculateDelta();
-			Scheduler.checkTasks();
-			InputManager.manage();
-			if (world != null && player != null) {
-				Player.calculateLight();
-				TickManager.checkForTick();
-				for (Entity e : player.getLevel().getEntities()) {
-					synchronized (e) {
-						e.manageMovement();
-					}
-				}
-				Block.updateSelectedBlock();
-			}
-			Timing.throttleCpu();
-		}
-		SoundManager.soundSystem.cleanup();
-		if (world != null) {
-			SaveManager.writeWorldToDisk(world);
-		}
+        while (!closed) {
+            Timing.calculateDelta();
+            Scheduler.checkTasks();
+            InputManager.manage();
+            if (world != null && player != null) {
+                Player.calculateLight();
+                TickManager.checkForTick();
+                for (Entity e : player.getLevel().getEntities()) {
+                    synchronized (e) {
+                        e.manageMovement();
+                    }
+                }
+                Block.updateSelectedBlock();
+            }
+            Timing.throttleCpu();
+        }
+        SoundManager.soundSystem.cleanup();
+        if (world != null) {
+            SaveManager.writeWorldToDisk(world);
+        }
 
-	}
+    }
 
 }

@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'eclipse'
-	id 'idea'
+    id 'java'
+    id 'eclipse'
+    id 'idea'
 
     id 'com.github.hierynomus.license' version '0.11.0'
 }
@@ -26,67 +26,67 @@ targetCompatibility = 1.7
 
 ext {
 
-	lwjgl = 'org.lwjgl.lwjgl:lwjgl:2.9.3'
-	gson  = 'com.google.code.gson:gson:2.3'
-	guava = 'com.google.guava:guava:18.0'
-	codecjorbis = 'com.paulscode.sound:codecjorbis:0.0.1'
-	librarylwjglopenal = 'com.paulscode.sound:librarylwjglopenal:0.0.1'
-	soundsystem = 'com.paulscode.sound:soundsystem:0.0.1'
+    lwjgl = 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+    gson = 'com.google.code.gson:gson:2.3'
+    guava = 'com.google.guava:guava:18.0'
+    codecjorbis = 'com.paulscode.sound:codecjorbis:0.0.1'
+    librarylwjglopenal = 'com.paulscode.sound:librarylwjglopenal:0.0.1'
+    soundsystem = 'com.paulscode.sound:soundsystem:0.0.1'
 }
 
 // Project repositories
 repositories {
-	mavenCentral()
-	maven { url 'http://repo.caseif.net/content/groups/public/' }
-	maven { url 'http://ooo-maven.googlecode.com/hg/repository/' }
+    mavenCentral()
+    maven { url 'http://repo.caseif.net/content/groups/public/' }
+    maven { url 'http://ooo-maven.googlecode.com/hg/repository/' }
 }
 
 // Project dependencies
 dependencies {
     compile lwjgl
-	compile gson
-	compile guava
-	compile codecjorbis
-	compile librarylwjglopenal
-	compile soundsystem
+    compile gson
+    compile guava
+    compile codecjorbis
+    compile librarylwjglopenal
+    compile soundsystem
 }
 
 // Read source files using UTF-8
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
 jar {
-	archiveName = 'voxem.jar'
-	manifest {
-		attributes(
-				'Implementation-Title': project.name,
-				'Implementation-Version': version,
-				'Main-Class': 'net.caseif.voxem.Main',
-				'Class-Path': 'lib/lwjgl.jar lib/gson.jar lib/soundsystem/soundsystem.jar ' +
-						'lib/soundsystem/librarylwjglopenal.jar lib/soundsystem/codecjorbis.jar lib/guava.jar'
-		)
-	}
+    archiveName = 'voxem.jar'
+    manifest {
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': version,
+                'Main-Class': 'net.caseif.voxem.Main',
+                'Class-Path': 'lib/lwjgl.jar lib/gson.jar lib/soundsystem/soundsystem.jar ' +
+                        'lib/soundsystem/librarylwjglopenal.jar lib/soundsystem/codecjorbis.jar lib/guava.jar'
+        )
+    }
 }
 
 // License header formatting
 license {
-	header file('src/main/resources/LICENSE')
-	excludes([
-			'**/*.json',
-			'**/*.png',
-			'**/*.txt',
-			'**/PNGDecoder.java',
-			'**/noise/**',
-			'src/main/resources/*',
-			'src/main/resources/**/*'
-	])
-	sourceSets = project.sourceSets
-	ignoreFailures false
-	strictCheck true
-	mapping {
-		java = 'SLASHSTAR_STYLE'
-	}
+    header file('src/main/resources/LICENSE')
+    excludes([
+            '**/*.json',
+            '**/*.png',
+            '**/*.txt',
+            '**/PNGDecoder.java',
+            '**/noise/**',
+            'src/main/resources/*',
+            'src/main/resources/**/*'
+    ])
+    sourceSets = project.sourceSets
+    ignoreFailures false
+    strictCheck true
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
 }
 
 // check code style
