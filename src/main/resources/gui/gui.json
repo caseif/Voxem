@@ -3,7 +3,7 @@
 		"main": {
 			"titleText": {
 				"type": "text",
-				"text": "MineFlat",
+				"text": "Voxem",
 				"height": "64",
 				"x": "center",
 				"y": "50",
@@ -15,7 +15,7 @@
 				"x": "center",
 				"y": "200",
 				"top": {
-					"handlerClass": "com.headswilllol.mineflat.gui.handlers.TopHandler",
+					"handlerClass": "net.caseif.voxem.gui.handlers.TopHandler",
 					"playBtn": {
 						"type": "button",
 						"width": "400",
@@ -42,7 +42,7 @@
 					}
 				},
 				"spMenu": {
-					"handlerClass": "com.headswilllol.mineflat.gui.handlers.SPMenuHandler",
+					"handlerClass": "net.caseif.voxem.gui.handlers.SPMenuHandler",
 					"worldListLabel": {
 						"type": "text",
 						"height": "24",

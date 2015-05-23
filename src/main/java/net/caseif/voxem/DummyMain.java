@@ -33,9 +33,9 @@ import java.net.URISyntaxException;
 public class DummyMain extends JFrame implements ActionListener {
 
 	private String[] str = new String[]{
-			"MineFlat cannot be opened as a standalone program. Instead, a special launcher",
+			"Voxem cannot be opened as a standalone program. Instead, a special launcher",
 			"must be used to ensure its libraries are properly loaded and it is kept updated.",
-			"You can grab a copy of MineFlat's launcher from my CI server at ci.amigocraft.net,",
+			"You can grab a copy of Voxem's launcher from my CI server at ci.caseif.net,",
 			"or by clicking the button below."};
 
 	private final Font font = new Font("Arial", Font.BOLD, 16);
@@ -47,7 +47,7 @@ public class DummyMain extends JFrame implements ActionListener {
 				System.exit(0);
 			}
 		});
-		f.setTitle("MineFlat");
+		f.setTitle("Voxem");
 		f.setSize(800, 600);
 		f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 400,
 				Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 300);
@@ -113,7 +113,7 @@ public class DummyMain extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("getLauncher")) {
 			try {
-				Desktop.getDesktop().browse(new URI("http://ci.amigocraft.net/job/MineFlat%20Launcher"));
+				Desktop.getDesktop().browse(new URI("http://ci.caseif.net/job/Voxem%20Launcher"));
 			}
 			catch (IOException | URISyntaxException ex) {
 				ex.printStackTrace();

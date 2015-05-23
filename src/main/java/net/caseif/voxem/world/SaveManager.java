@@ -83,7 +83,7 @@ public class SaveManager {
 		saveWorldToMemory(world);
 		System.out.println("Writing chunks...");
 		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator +
-				".mineflat", "saves");
+				".voxem", "saves");
 		saveFolder = new File(saveFolder, world.getName());
 		if (!saveFolder.exists())
 			saveFolder.mkdirs();
@@ -115,7 +115,7 @@ public class SaveManager {
 	public static void loadWorld(String world) {
 		System.out.println("Loading world \"" + world + "\"");
 		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator +
-				".mineflat", "saves");
+				".voxem", "saves");
 		saveFolder = new File(saveFolder, world);
 		if (!saveFolder.exists())
 			saveFolder.mkdirs();

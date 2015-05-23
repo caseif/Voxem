@@ -57,7 +57,7 @@ public class GuiFactory {
 				.getChild("loadWorld");
 		worldList.setActive(false);
 		int buttons = 0;
-		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator + ".mineflat", "saves");
+		File saveFolder = new File(FileUtil.getAppDataFolder() + File.separator + ".voxem", "saves");
 		if (saveFolder.exists()){
 			for (final File f : saveFolder.listFiles()){
 				Button lB = new Button(

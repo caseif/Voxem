@@ -126,7 +126,7 @@ public class GraphicsHandler implements Runnable {
 				}
 			}
 			Display.setVSyncEnabled(true);
-			Display.setTitle("MineFlat");
+			Display.setTitle("Voxem");
 			Display.setResizable(false);
 			ByteBuffer[] icons;
 			if (System.getProperty("os.name").startsWith("Windows")){

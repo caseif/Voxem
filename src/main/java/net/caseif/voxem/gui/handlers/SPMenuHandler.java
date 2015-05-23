@@ -39,7 +39,7 @@ public class SPMenuHandler {
 	public static void createWorld(){
 		//Main.world = new World(((TextField)createWorldPanel.getElement("worldNameField")).getText(), 8, 16, 128);
 		File save = new File(
-				FileUtil.getAppDataFolder() + File.separator + ".mineflat" + File.separator + "saves", "world"
+				FileUtil.getAppDataFolder() + File.separator + ".voxem" + File.separator + "saves", "world"
 		);
 		if (save.exists()){ //TODO: disallow world creation
 			save.delete();

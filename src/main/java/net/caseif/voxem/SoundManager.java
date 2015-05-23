@@ -49,7 +49,7 @@ public class SoundManager {
 		try {
 			soundSystem.backgroundMusic("Infinity",
 					new File(FileUtil.getAppDataFolder() +
-							"/.mineflat/resources/audio/soundtrack", "infinity.ogg").toURI().toURL(), "ogg", true);
+							"/.voxem/resources/audio/soundtrack", "infinity.ogg").toURI().toURL(), "ogg", true);
 		}
 		catch (MalformedURLException ex){
 			ex.printStackTrace();
@@ -62,7 +62,7 @@ public class SoundManager {
 			soundSystem.stop("Infinity");
 			soundSystem.backgroundMusic("Sandstorm",
 					new File(FileUtil.getAppDataFolder() +
-							"/.mineflat/resources/audio/soundtrack", "dss.ogg").toURI().toURL(), "ogg", true);
+							"/.voxem/resources/audio/soundtrack", "dss.ogg").toURI().toURL(), "ogg", true);
 		}
 		catch (MalformedURLException ex){
 			ex.printStackTrace();
