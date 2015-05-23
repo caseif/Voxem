@@ -115,6 +115,76 @@ public class GraphicsHandler implements Runnable {
 	public static String timeOfDay = "DAY";
 
 	public void run(){
+
+		initDisplay();
+		configureGLContext();
+		GuiFactory.construct();
+
+		//initializeFont();
+
+		try {
+			initializeChars();
+		}
+		catch (Exception ex){
+			System.err.println("Exception occurred while preparing texture for characters");
+			ex.printStackTrace();
+			System.exit(1);
+		}
+		Entity.initialize();
+
+		VboUtil.initialize();
+		VboUtil.prepareBindArray();
+
+		initWorldBorders();
+
+		while (!Main.closed && !Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+			updateDeltas();
+			float skyBrightness = getSkyBrightness();
+
+			glClearColor(
+					0.3f * Math.max(Player.light * skyBrightness, TickManager.MIN_SKY_BRIGHTNESS),
+					0.3f * Math.max(Player.light * skyBrightness, TickManager.MIN_SKY_BRIGHTNESS),
+					0.8f * Math.max(Player.light * skyBrightness, TickManager.MIN_SKY_BRIGHTNESS),
+					1f);
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			InputManager.pollInput();
+
+			if (VboUtil.rebindArray)
+				VboUtil.bindArray();
+			VboUtil.render();
+
+			renderSelectedBlock();
+			drawWorldBorders();
+
+			if (Main.player != null) {
+				Main.player.center();
+				for (Entity e : Main.player.getLevel().getEntities()) {
+					synchronized (e) {
+						if (!e.isRemoved()) {
+							e.draw();
+						}
+					}
+				}
+			}
+
+			updateDebugUI();
+
+			// draw GUIs
+			for (GuiElement gui : GuiFactory.guis.values())
+				gui.draw();
+
+			/*if(Console.enabled)
+				Console.draw();*/
+
+			//Display.sync(60); // already have vsync enabled
+			Display.update();
+		}
+		cleanup();
+	}
+
+	public static void initDisplay() {
 		try {
 			for (DisplayMode mode : Display.getAvailableDisplayModes()){
 				if (mode.getWidth() == Display.getDesktopDisplayMode().getWidth() &&
@@ -167,7 +237,9 @@ public class GraphicsHandler implements Runnable {
 		catch (Exception ex){
 			ex.printStackTrace();
 		}
+	}
 
+	public static void configureGLContext() {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
@@ -195,25 +267,9 @@ public class GraphicsHandler implements Runnable {
 		for (Material m : Material.values())
 			Texture.addTexture(m);
 		TEXTURES_READY = true;
+	}
 
-		GuiFactory.construct();
-
-		//initializeFont();
-
-		try {
-			initializeChars();
-		}
-		catch (Exception ex){
-			System.err.println("Exception occurred while preparing texture for characters");
-			ex.printStackTrace();
-			System.exit(1);
-		}
-
-		Entity.initialize();
-
-		VboUtil.initialize();
-		VboUtil.prepareBindArray();
-
+	public static void initWorldBorders() {
 		Random r = new Random();
 		for (int i = 0; i < Block.length / 2; i++){
 			borderLines[i] = new int[]{
@@ -226,227 +282,6 @@ public class GraphicsHandler implements Runnable {
 					Display.getHeight() / BORDER_LINE_SIZE_DIVIDER,
 					r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) + BORDER_LINE_MIN_SPEED};
 		}
-
-		while (!Main.closed && !Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
-
-			if (Timing.getTime() - lastFpsUpdate >= fpsUpdateTime){
-				fps = (int)Math.floor(Timing.TIME_RESOLUTION / renderDelta);
-				Timing.displayDelta = (int)Timing.delta;
-				lastFpsUpdate = Timing.getTime();
-			}
-
-			renderDelta = Timing.getTime() - lastRenderTime;
-			lastRenderTime = Timing.getTime();
-
-			float timeBrightness = 1f;
-			if (TickManager.getTicks() >= TickManager.DAWN_END && TickManager.getTicks() <= TickManager.DUSK_BEGIN) {
-				timeBrightness = 1f;
-				timeOfDay = "DAY";
-			}
-			else if (TickManager.getTicks() > TickManager.DUSK_END && TickManager.getTicks() < TickManager.DAWN_BEGIN) {
-				timeBrightness = 0;
-				timeOfDay = "NIGHT";
-			}
-			else {
-				if (TickManager.getTicks() > TickManager.DUSK_BEGIN && TickManager.getTicks() < TickManager.DUSK_END){
-					timeBrightness = (TickManager.DUSK_END - TickManager.getTicks()) /
-							(float)(TickManager.DUSK_END - TickManager.DUSK_BEGIN);
-					timeOfDay = "DUSK";
-				}
-				else if (TickManager.getTicks() / 12000 == 0 && TickManager.getTicks() <= TickManager.DAWN_END) {
-					timeBrightness = 1 - (TickManager.DAWN_END - TickManager.getTicks()) /
-							(float)Math.abs(TickManager.DAWN_END - TickManager.DAWN_BEGIN + 24000);
-					timeOfDay = "DAWN";
-				}
-				else if (TickManager.getTicks() / 12000 == 1 && TickManager.getTicks() >= TickManager.DAWN_BEGIN){
-					timeBrightness = 1 - (TickManager.DAWN_END - TickManager.getTicks() + 24000) /
-							(float)Math.abs(TickManager.DAWN_END - TickManager.DAWN_BEGIN + 24000);
-					timeOfDay = "DAWN";
-				}
-			}
-
-			glClearColor(
-					0.3f * Math.max(Player.light * timeBrightness, TickManager.MIN_SKY_BRIGHTNESS),
-					0.3f * Math.max(Player.light * timeBrightness, TickManager.MIN_SKY_BRIGHTNESS),
-					0.8f * Math.max(Player.light * timeBrightness, TickManager.MIN_SKY_BRIGHTNESS),
-					1f);
-
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			InputManager.pollInput();
-
-			if (VboUtil.rebindArray)
-				VboUtil.bindArray();
-			VboUtil.render();
-
-			synchronized (Main.lock) {
-				if (Block.selected != null) {
-					Block.selectedX = Block.selected.getPixelX() + xOffset;
-					Block.selectedY = Block.selected.getPixelY() + yOffset;
-					Block.isSelected = true;
-				}
-				else
-					Block.isSelected = false;
-				if (Block.isSelected && Block.selected != null) {
-					if (Block.selected.getBlock().getLightLevel() < 0.5f)
-						glColor3f(1f, 1f, 1f);
-					else
-						glColor3f(0f, 0f, 0f);
-					glColor3f(0.5f, 0.5f, 0.5f);
-					glBegin(GL_LINES);
-					glVertex2f(Block.selectedX, Block.selectedY);
-					glVertex2f(Block.selectedX + Block.length, Block.selectedY);
-					glVertex2f(Block.selectedX + Block.length, Block.selectedY);
-					glVertex2f(Block.selectedX + Block.length, Block.selectedY + Block.length);
-					glVertex2f(Block.selectedX + Block.length, Block.selectedY + Block.length);
-					glVertex2f(Block.selectedX, Block.selectedY + Block.length);
-					glVertex2f(Block.selectedX, Block.selectedY + Block.length);
-					glVertex2f(Block.selectedX, Block.selectedY);
-					if (Block.selected != null && Block.selected.getY() < 0 ||
-							(Block.selected.getY() < Block.selected.getLevel().getWorld().getChunkHeight() &&
-									Block.isAir(Block.selected.getLevel(), Block.selected.getX(),
-											Block.selected.getY() - 1))) {
-						glVertex2f(Block.selectedX, Block.selectedY);
-						glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
-						glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
-						glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
-						glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
-						glVertex2f(Block.selectedX + Block.length, Block.selectedY);
-					}
-					glEnd();
-				}
-			}
-
-			// draw world borders
-			if (Main.world != null) {
-				int minChunk = -Main.world.getChunkCount() / 2;
-				int maxChunk = Main.world.getChunkCount() / 2;
-				if (borderColor >= 1f)
-					borderColorIncreasing = false;
-				else if (borderColor <= 0f)
-					borderColorIncreasing = true;
-				if (borderColorIncreasing)
-					borderColor += Timing.displayDelta / (Timing.TIME_RESOLUTION / 1000L) /
-							(float)BORDER_COLOR_CHANGE_SPEED;
-				else
-					borderColor -= Timing.displayDelta / (Timing.TIME_RESOLUTION / 1000L) /
-							(float)BORDER_COLOR_CHANGE_SPEED;
-				glColor3f(0f, borderColor * 0.3f + 0.7f, 1f);
-				for (int j = 0; j <= 1; j++) {
-					if ((j == 0 && Main.player.getLevel().getChunk(minChunk) != null) ||
-							(j == 1 && Main.player.getLevel().getChunk(maxChunk) != null)) {
-						synchronized (j == 0 ?
-								Main.player.getLevel().getChunk(minChunk) :
-								Main.player.getLevel().getChunk(maxChunk)) {
-							int startPixel = new Location(Main.player.getLevel(),
-									Chunk.getWorldXFromChunkIndex(
-											Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getIndex(),
-											j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1), 0
-							).add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
-							glBegin(GL_LINES);
-							{
-								for (int i = 0; i < Block.length; i += 2) {
-									int[] lineInfo = borderLines[i / 2];
-									// line 1
-									int y1 = lineInfo[0];
-									int length1 = lineInfo[1];
-									int speed1 = lineInfo[2];
-									glVertex2f(startPixel + i, y1);
-									glVertex2f(startPixel + i, y1 + length1);
-									if (y1 + length1 <= 0) {
-										borderLines[i / 2][0] = Display.getHeight() + length1;
-										borderLines[i / 2][1] =
-												new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER +
-														Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
-										borderLines[i / 2][2] =
-												r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) +
-														BORDER_LINE_MIN_SPEED;
-									}
-									else
-										borderLines[i / 2][0] =
-												(int)(y1 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed1);
-
-									// line 2
-									int y2 = lineInfo[3];
-									int length2 = lineInfo[4];
-									int speed2 = lineInfo[5];
-									glVertex2f(startPixel + i, y2);
-									glVertex2f(startPixel + i, y2 + length2);
-									if (y2 + length2 <= 0) {
-										borderLines[i / 2][3] = Display.getHeight() + length2;
-										borderLines[i / 2][4] =
-												new Random().nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER +
-														Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
-										borderLines[i / 2][5] =
-												r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) +
-														BORDER_LINE_MIN_SPEED;
-									} else
-										borderLines[i / 2][3] =
-												(int)(y2 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed2);
-								}
-							}
-							glEnd();
-						}
-					}
-				}
-
-				Player.centerPlayer();
-				for (Entity e : Main.player.getLevel().getEntities()) {
-					synchronized (e) {
-						if (!e.isRemoved()) {
-							e.draw();
-						}
-					}
-				}
-			}
-
-			// update debug gui, if necessary
-			if (GuiFactory.guis.get("debug").isActive()){
-				GuiElement debugPanel = GuiFactory.guis.get("debug");
-				((TextElement)debugPanel.getChild("fps"))
-						.setText("fps: " + fps);
-				((TextElement)debugPanel.getChild("delta"))
-						.setText("delta (ms): " + String.format("%.3f", Timing.displayDelta / 1000000));
-				((TextElement)debugPanel.getChild("playerX"))
-						.setText("x: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getX())));
-				((TextElement)debugPanel.getChild("playerY"))
-						.setText("y: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getY())));
-				((TextElement)debugPanel.getChild("playerChunk"))
-						.setText("chunk: " + (Main.player == null ? "???" : Main.player.getLocation().getChunk()));
-				((TextElement)debugPanel.getChild("playerG"))
-						.setText("g: " + (Main.player == null ? "???" : Main.player.isOnGround()));
-				((TextElement)debugPanel.getChild("playerLight"))
-						.setText("light level: " +
-								(Main.player == null ? "???" : String.format("%.3f", Player.light * Block.maxLight)));
-				((TextElement)debugPanel.getChild("ticks"))
-						.setText("ticks: " + TickManager.getTicks() + " (" + timeOfDay.toLowerCase() + ")");
-				int mb = 1024 * 1024;
-				Runtime runtime = Runtime.getRuntime();
-				((TextElement)debugPanel.getChild("memory")).setText(runtime.totalMemory() / mb +
-						"mb allocated memory: " + (runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
-						runtime.freeMemory() / mb + "mb free");
-				int maxSize = 0;
-				for (GuiElement ge : debugPanel.getChildren()){
-					if (ge instanceof TextElement){
-						int size = getStringLength(((TextElement)ge).getText(), 16);
-						if (size > maxSize)
-							maxSize = size;
-					}
-				}
-				debugPanel.setSize(new Vector2i(maxSize + 20, debugPanel.getSize().getY()));
-			}
-
-			for (GuiElement gui : GuiFactory.guis.values())
-				gui.draw();
-
-			/*if(Console.enabled)
-				Console.draw();*/
-
-			//Display.sync(60);
-			Display.update();
-		}
-		SoundManager.soundSystem.cleanup();
-		Main.closed = true;
 	}
 
 	public static void initializeChars() {
@@ -467,6 +302,209 @@ public class GraphicsHandler implements Runnable {
 		specialChars.put('+', 6f);
 		specialChars.put('(', 7f);
 		specialChars.put(')', 8f);
+	}
+
+	public static void updateDeltas() {
+		if (Timing.getTime() - lastFpsUpdate >= fpsUpdateTime){
+			fps = (int)Math.floor(Timing.TIME_RESOLUTION / renderDelta);
+			Timing.displayDelta = (int)Timing.delta;
+			lastFpsUpdate = Timing.getTime();
+		}
+
+		renderDelta = Timing.getTime() - lastRenderTime;
+		lastRenderTime = Timing.getTime();
+	}
+
+	public static float getSkyBrightness() {
+		float timeBrightness = 1f;
+		if (TickManager.getTicks() >= TickManager.DAWN_END && TickManager.getTicks() <= TickManager.DUSK_BEGIN) {
+			timeBrightness = 1f;
+			timeOfDay = "DAY";
+		}
+		else if (TickManager.getTicks() > TickManager.DUSK_END && TickManager.getTicks() < TickManager.DAWN_BEGIN) {
+			timeBrightness = 0;
+			timeOfDay = "NIGHT";
+		}
+		else {
+			if (TickManager.getTicks() > TickManager.DUSK_BEGIN && TickManager.getTicks() < TickManager.DUSK_END){
+				timeBrightness = (TickManager.DUSK_END - TickManager.getTicks()) /
+						(float)(TickManager.DUSK_END - TickManager.DUSK_BEGIN);
+				timeOfDay = "DUSK";
+			}
+			else if (TickManager.getTicks() / 12000 == 0 && TickManager.getTicks() <= TickManager.DAWN_END) {
+				timeBrightness = 1 - (TickManager.DAWN_END - TickManager.getTicks()) /
+						(float)Math.abs(TickManager.DAWN_END - TickManager.DAWN_BEGIN + 24000);
+				timeOfDay = "DAWN";
+			}
+			else if (TickManager.getTicks() / 12000 == 1 && TickManager.getTicks() >= TickManager.DAWN_BEGIN){
+				timeBrightness = 1 - (TickManager.DAWN_END - TickManager.getTicks() + 24000) /
+						(float)Math.abs(TickManager.DAWN_END - TickManager.DAWN_BEGIN + 24000);
+				timeOfDay = "DAWN";
+			}
+		}
+		return timeBrightness;
+	}
+
+	public static void renderSelectedBlock() {
+		synchronized (Main.lock) {
+			if (Block.selected != null) {
+				Block.selectedX = Block.selected.getPixelX() + xOffset;
+				Block.selectedY = Block.selected.getPixelY() + yOffset;
+				Block.isSelected = true;
+			}
+			else
+				Block.isSelected = false;
+			if (Block.isSelected && Block.selected != null) {
+				if (Block.selected.getBlock().getLightLevel() < 0.5f)
+					glColor3f(1f, 1f, 1f);
+				else
+					glColor3f(0f, 0f, 0f);
+				glColor3f(0.5f, 0.5f, 0.5f);
+				glBegin(GL_LINES);
+				glVertex2f(Block.selectedX, Block.selectedY);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX + Block.length, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX, Block.selectedY + Block.length);
+				glVertex2f(Block.selectedX, Block.selectedY);
+				if (Block.selected != null && Block.selected.getY() < 0 ||
+						(Block.selected.getY() < Block.selected.getLevel().getWorld().getChunkHeight() &&
+								Block.isAir(Block.selected.getLevel(), Block.selected.getX(),
+										Block.selected.getY() - 1))) {
+					glVertex2f(Block.selectedX, Block.selectedY);
+					glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX + Block.length, Block.selectedY - Block.length / Block.horAngle);
+					glVertex2f(Block.selectedX + Block.length, Block.selectedY);
+				}
+				glEnd();
+			}
+		}
+	}
+
+	public static void drawWorldBorders() {
+		// draw world borders
+		if (Main.world != null) {
+			int minChunk = -Main.world.getChunkCount() / 2;
+			int maxChunk = Main.world.getChunkCount() / 2;
+			if (borderColor >= 1f)
+				borderColorIncreasing = false;
+			else if (borderColor <= 0f)
+				borderColorIncreasing = true;
+			if (borderColorIncreasing)
+				borderColor += Timing.displayDelta / (Timing.TIME_RESOLUTION / 1000L) /
+						(float)BORDER_COLOR_CHANGE_SPEED;
+			else
+				borderColor -= Timing.displayDelta / (Timing.TIME_RESOLUTION / 1000L) /
+						(float)BORDER_COLOR_CHANGE_SPEED;
+			glColor3f(0f, borderColor * 0.3f + 0.7f, 1f);
+			for (int j = 0; j <= 1; j++) {
+				if ((j == 0 && Main.player.getLevel().getChunk(minChunk) != null) ||
+						(j == 1 && Main.player.getLevel().getChunk(maxChunk) != null)) {
+					synchronized (j == 0 ?
+							Main.player.getLevel().getChunk(minChunk) :
+							Main.player.getLevel().getChunk(maxChunk)) {
+						int startPixel = new Location(Main.player.getLevel(),
+								Chunk.getWorldXFromChunkIndex(
+										Main.player.getLevel().getChunk(j == 0 ? minChunk : maxChunk).getIndex(),
+										j == 0 ? 0 : Main.player.getLevel().getWorld().getChunkLength() - 1), 0
+						).add(j == 0 ? -1 : 1, 0).getPixelX() + xOffset;
+						glBegin(GL_LINES);
+						{
+							for (int i = 0; i < Block.length; i += 2) {
+								int[] lineInfo = borderLines[i / 2];
+								// line 1
+								int y1 = lineInfo[0];
+								int length1 = lineInfo[1];
+								int speed1 = lineInfo[2];
+								glVertex2f(startPixel + i, y1);
+								glVertex2f(startPixel + i, y1 + length1);
+								if (y1 + length1 <= 0) {
+									Random r = new Random();
+									borderLines[i / 2][0] = Display.getHeight() + length1;
+									borderLines[i / 2][1] =
+											r.nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER +
+													Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
+									borderLines[i / 2][2] =
+											r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) +
+													BORDER_LINE_MIN_SPEED;
+								}
+								else
+									borderLines[i / 2][0] =
+											(int)(y1 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed1);
+
+								// line 2
+								int y2 = lineInfo[3];
+								int length2 = lineInfo[4];
+								int speed2 = lineInfo[5];
+								glVertex2f(startPixel + i, y2);
+								glVertex2f(startPixel + i, y2 + length2);
+								if (y2 + length2 <= 0) {
+									Random r = new Random();
+									borderLines[i / 2][3] = Display.getHeight() + length2;
+									borderLines[i / 2][4] =
+											r.nextInt(Display.getHeight() / BORDER_LINE_SIZE_DIVIDER +
+													Display.getHeight() / BORDER_LINE_SIZE_DIVIDER);
+									borderLines[i / 2][5] =
+											r.nextInt(BORDER_LINE_MAX_SPEED - BORDER_LINE_MIN_SPEED) +
+													BORDER_LINE_MIN_SPEED;
+								}
+								else
+									borderLines[i / 2][3] =
+											(int)(y2 - Timing.displayDelta / Timing.TIME_RESOLUTION * speed2);
+							}
+						}
+						glEnd();
+					}
+				}
+			}
+		}
+	}
+
+	//TODO: idk why this is in the graphics thread, I might move it at some point
+	public static void updateDebugUI() {
+		if (GuiFactory.guis.get("debug").isActive()){
+			GuiElement debugPanel = GuiFactory.guis.get("debug");
+			((TextElement)debugPanel.getChild("fps"))
+					.setText("fps: " + fps);
+			((TextElement)debugPanel.getChild("delta"))
+					.setText("delta (ms): " + String.format("%.3f", Timing.displayDelta / 1000000));
+			((TextElement)debugPanel.getChild("playerX"))
+					.setText("x: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getX())));
+			((TextElement)debugPanel.getChild("playerY"))
+					.setText("y: " + (Main.player == null ? "???" : String.format("%.3f", Main.player.getY())));
+			((TextElement)debugPanel.getChild("playerChunk"))
+					.setText("chunk: " + (Main.player == null ? "???" : Main.player.getLocation().getChunk()));
+			((TextElement)debugPanel.getChild("playerG"))
+					.setText("g: " + (Main.player == null ? "???" : Main.player.isOnGround()));
+			((TextElement)debugPanel.getChild("playerLight"))
+					.setText("light level: " +
+							(Main.player == null ? "???" : String.format("%.3f", Player.light * Block.maxLight)));
+			((TextElement)debugPanel.getChild("ticks"))
+					.setText("ticks: " + TickManager.getTicks() + " (" + timeOfDay.toLowerCase() + ")");
+			int mb = 1024 * 1024;
+			Runtime runtime = Runtime.getRuntime();
+			((TextElement)debugPanel.getChild("memory")).setText(runtime.totalMemory() / mb +
+					"mb allocated memory: " + (runtime.totalMemory() - runtime.freeMemory()) / mb + "mb used, " +
+					runtime.freeMemory() / mb + "mb free");
+			int maxSize = 0;
+			for (GuiElement ge : debugPanel.getChildren()){
+				if (ge instanceof TextElement){
+					int size = getStringLength(((TextElement)ge).getText(), 16);
+					if (size > maxSize)
+						maxSize = size;
+				}
+			}
+			debugPanel.setSize(new Vector2i(maxSize + 20, debugPanel.getSize().getY()));
+		}
+	}
+
+	public static void cleanup() {
+		SoundManager.soundSystem.cleanup();
+		Main.closed = true;
 	}
 
 	public static void drawString(String str, float x, float y, float height, boolean shadow){

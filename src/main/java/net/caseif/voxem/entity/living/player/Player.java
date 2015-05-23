@@ -100,7 +100,7 @@ public class Player extends Human {
 		}
 	}
 
-	public static void centerPlayer(){
+	public void center(){
 		if (Main.player.getLocation().getPixelX() <
 				Display.getWidth() / 2 - GraphicsHandler.xOffset -
 						(int)(Display.getWidth() / 2 * scrollTolerance))
