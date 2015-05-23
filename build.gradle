@@ -57,6 +57,7 @@ tasks.withType(JavaCompile) {
 }
 
 jar {
+	archiveName = 'voxem.jar'
 	manifest {
 		attributes(
 				'Implementation-Title': project.name,
