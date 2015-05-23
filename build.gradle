@@ -26,7 +26,7 @@ targetCompatibility = 1.7
 
 ext {
 
-	lwjgl = 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+	lwjgl = 'org.lwjgl.lwjgl:lwjgl:2.9.3'
 	gson  = 'com.google.code.gson:gson:2.3'
 	guava = 'com.google.guava:guava:18.0'
 	codecjorbis = 'com.paulscode.sound:codecjorbis:0.0.1'
