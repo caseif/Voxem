@@ -27,6 +27,7 @@ import net.caseif.voxem.entity.living.Mob;
 import net.caseif.voxem.entity.living.player.Player;
 import net.caseif.voxem.threading.Scheduler;
 import net.caseif.voxem.util.Timing;
+import net.caseif.voxem.vector.Vector3f;
 import net.caseif.voxem.world.Block;
 import net.caseif.voxem.world.SaveManager;
 import net.caseif.voxem.world.TickManager;
@@ -48,6 +49,8 @@ public class Main {
     public static GameState state = GameState.MAIN_MENU;
 
     public static int charTexture;
+
+    public static int dank = -1;
 
     public static void main(String[] args) {
 

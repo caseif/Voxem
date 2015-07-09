@@ -155,7 +155,12 @@ public class Block {
         this.light = light;
     }
 
-    public boolean updateLight() {
+    public boolean updateLight(int recursion) {
+        final int MAX_RECURSIVE_CALLS = 100;
+        if (recursion > MAX_RECURSIVE_CALLS) {
+            System.err.println("Recursive calls to updateLight exceeded limit! Refusing to continue recursing.");
+            return false;
+        }
         int newLight;
         Block up = null, down = null, left, right;
         if (getY() > 0)
@@ -189,13 +194,13 @@ public class Block {
             setLightLevel(newLight);
             for (Block bl : adjacent)
                 if (bl != null && bl.lastLightUpdate < TickManager.getTotalTicks())
-                    bl.updateLight();
+                    bl.updateLight(++recursion);
         }
         for (int y = getY() + 1; y < getLevel().getWorld().getChunkHeight(); y++) {
             Block b = Block.getBlock(getLevel(), getX(), y);
             if (b != null) {
                 if (b.lastLightUpdate != TickManager.getTicks()) {
-                    if (!b.updateLight()) { // I don't know wtf this code is for but I might need it later
+                    if (!b.updateLight(recursion)) { // I don't know wtf this code is for but I might need it later
                         break;
                     } else {
                         break;
@@ -204,6 +209,10 @@ public class Block {
             }
         }
         return changed;
+    }
+
+    public boolean updateLight() {
+        return updateLight(0);
     }
 
     public void destroy() {

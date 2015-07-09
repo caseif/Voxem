@@ -50,6 +50,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnableClientState;
 import static org.lwjgl.opengl.GL11.glEnd;
@@ -75,6 +76,7 @@ import net.caseif.voxem.util.NumUtil;
 import net.caseif.voxem.util.Timing;
 import net.caseif.voxem.util.VboUtil;
 import net.caseif.voxem.vector.Vector2i;
+import net.caseif.voxem.vector.Vector3f;
 import net.caseif.voxem.world.Block;
 import net.caseif.voxem.world.Chunk;
 import net.caseif.voxem.world.Location;
@@ -153,6 +155,10 @@ public class GraphicsHandler implements Runnable {
 
     public static String timeOfDay = "DAY";
 
+    private static Vector3f filterColor = new Vector3f(1f, 0f, 0f);
+    private static final float FILTER_OPACITY = 0.3f;
+    private static final float FILTER_STEP = 0.05f;
+
     public void run() {
 
         initDisplay();
@@ -212,6 +218,10 @@ public class GraphicsHandler implements Runnable {
             // draw GUIs
             for (GuiElement gui : GuiFactory.guis.values())
                 gui.draw();
+
+            if (Main.dank >= 0) {
+                drawMemeScreen();
+            }
 
 			/*if(Console.enabled)
                 Console.draw();*/
@@ -489,6 +499,62 @@ public class GraphicsHandler implements Runnable {
                     }
                 }
             }
+        }
+    }
+
+    public static void drawMemeScreen() {
+        glColor4f(filterColor.getX(), filterColor.getY(), filterColor.getZ(), FILTER_OPACITY);
+        glBegin(GL_QUADS);
+        glVertex2f(0f, 0f);
+        glVertex2f(Display.getWidth(), 0f);
+        glVertex2f(Display.getWidth(), Display.getHeight());
+        glVertex2f(0f, Display.getHeight());
+        glEnd();
+
+        // update the filter color
+        switch (Main.dank) {
+            case 0:
+                // add green (transition to orange)
+                filterColor.setY(filterColor.getY() + FILTER_STEP);
+                if (filterColor.getY() >= 1f) {
+                    Main.dank++;
+                }
+                break;
+            case 1:
+                // subtract red (transition to green)
+                filterColor.setX(filterColor.getX() - FILTER_STEP);
+                if (filterColor.getX() <= 0f) {
+                    Main.dank++;
+                }
+                break;
+            case 2:
+                // add blue (transition to aqua)
+                filterColor.setZ(filterColor.getZ() + FILTER_STEP);
+                if (filterColor.getZ() >= 1f) {
+                    Main.dank++;
+                }
+                break;
+            case 3:
+                // subtract green (transition to blue)
+                filterColor.setY(filterColor.getY() - FILTER_STEP);
+                if (filterColor.getY() <= 0f) {
+                    Main.dank++;
+                }
+                break;
+            case 4:
+                // add red (transition to purple)
+                filterColor.setX(filterColor.getX() + FILTER_STEP);
+                if (filterColor.getX() >= 1f) {
+                    Main.dank++;
+                }
+                break;
+            case 5:
+                // subtract blue (transition to red)
+                filterColor.setZ(filterColor.getZ() - FILTER_STEP);
+                if (filterColor.getZ() <= 0f) {
+                    Main.dank = 0;
+                }
+                break;
         }
     }
 

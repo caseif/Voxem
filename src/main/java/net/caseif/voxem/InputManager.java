@@ -143,8 +143,10 @@ public class InputManager {
                     }
                     if (key == req) {
                         kStage += 1;
-                        if (kStage == 10)
+                        if (kStage == 10) {
                             SoundManager.generateMeme();
+                            Main.dank = 0;
+                        }
                     } else {
                         kStage = 0;
                     }
