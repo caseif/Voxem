@@ -187,36 +187,34 @@ public class TickManager {
                 }
             }
             for (Entity e : Main.player.getLevel().getEntities()) {
-                synchronized (e) {
-                    if (e instanceof Mob) { // make sure it's not just an item drop or something
-                        Mob m = (Mob) e;
-                        if (m.getPlannedWalkDistance() == 0) { // check if entity is already moving
-                            if (r.nextInt(MOVE_CHANCE) == 0) { // decide whether entity should move
-                                float distance = r.nextInt(MAX_MOVE_DISTANCE) + 1;
-                                if (r.nextInt(2) == 0) // move left if 0, else move right
-                                    distance *= -1;
-                                m.setPlannedWalkDistance(distance); // update
-                                // start movement
-                                if (distance > 0) {
-                                    m.setFacingDirection(Direction.RIGHT);
-                                    m.getVelocity().setX(m.getSpeed());
-                                } else {
-                                    m.setFacingDirection(Direction.LEFT);
-                                    m.getVelocity().setX(-m.getSpeed());
-                                }
-                                m.setLastX(m.getX());
-                            }
-                        } else {
-                            // check if entity should still be moving
-                            if (Math.abs(m.getActualWalkDistance()) >= Math.abs(m.getPlannedWalkDistance()) ||
-                                    m.getVelocity().getX() == 0) {
-                                m.setPlannedWalkDistance(0); // reset
-                                m.setActualWalkDistance(0); // reset
-                                m.getVelocity().setX(0); // stop the entity
+                if (e instanceof Mob) { // make sure it's not just an item drop or something
+                    Mob m = (Mob) e;
+                    if (m.getPlannedWalkDistance() == 0) { // check if entity is already moving
+                        if (r.nextInt(MOVE_CHANCE) == 0) { // decide whether entity should move
+                            float distance = r.nextInt(MAX_MOVE_DISTANCE) + 1;
+                            if (r.nextInt(2) == 0) // move left if 0, else move right
+                                distance *= -1;
+                            m.setPlannedWalkDistance(distance); // update
+                            // start movement
+                            if (distance > 0) {
+                                m.setFacingDirection(Direction.RIGHT);
+                                m.getVelocity().setX(m.getSpeed());
                             } else {
-                                m.setActualWalkDistance(m.getActualWalkDistance() + Math.abs(m.getX() - m.getLastX())); // update
-                                m.setLastX(m.getX());
+                                m.setFacingDirection(Direction.LEFT);
+                                m.getVelocity().setX(-m.getSpeed());
                             }
+                            m.setLastX(m.getX());
+                        }
+                    } else {
+                        // check if entity should still be moving
+                        if (Math.abs(m.getActualWalkDistance()) >= Math.abs(m.getPlannedWalkDistance()) ||
+                                m.getVelocity().getX() == 0) {
+                            m.setPlannedWalkDistance(0); // reset
+                            m.setActualWalkDistance(0); // reset
+                            m.getVelocity().setX(0); // stop the entity
+                        } else {
+                            m.setActualWalkDistance(m.getActualWalkDistance() + Math.abs(m.getX() - m.getLastX())); // update
+                            m.setLastX(m.getX());
                         }
                     }
                 }

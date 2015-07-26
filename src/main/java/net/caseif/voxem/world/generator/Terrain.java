@@ -22,6 +22,8 @@
  */
 package net.caseif.voxem.world.generator;
 
+import static net.caseif.voxem.world.Block.isAir;
+
 import net.caseif.voxem.Main;
 import net.caseif.voxem.Material;
 import net.caseif.voxem.world.Biome;
@@ -30,6 +32,7 @@ import net.caseif.voxem.world.Chunk;
 import net.caseif.voxem.world.Level;
 import net.caseif.voxem.world.Location;
 
+import com.google.common.base.Optional;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 import java.util.ArrayList;
@@ -111,44 +114,48 @@ public class Terrain {
             for (Chunk c : l.chunks.values()) {
                 for (int x = 0; x < Main.world.getChunkLength(); x++) {
                     int h = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0));
-                    int leftHeight =
-                            Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x) - 1, 0));
+                    int leftHeight = Chunk.getIndexInChunk(x) > 0
+                            ? Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x) - 1, 0))
+                            : -1;
                     if (leftHeight != -1) {
                         h = (h + leftHeight) / 2;
-                        if (leftHeight - h >= 3)
+                        if (leftHeight - h >= 3) {
                             h = leftHeight - 2;
-                        else if (leftHeight - h <= -3)
+                        } else if (leftHeight - h <= -3) {
                             h = leftHeight + 2;
+                        }
                         Material mat = null;
                         for (int y = h; y < Main.world.getChunkHeight(); y++) {
                             if (mat != Material.STONE) {
                                 if (y == h) {
                                     mat = Material.GRASS;
-                                    if (Block.isSolid(l, x, y + 1) &&
-                                            c.getBlock(x, y + 1).getType() == Material.GRASS)
+                                    if (c.getBlock(x, y + 1).getType() == Material.GRASS) {
                                         c.getBlock(x, y + 1).setType(Material.DIRT);
+                                    }
                                 } else if (y < 15) {
                                     mat = Material.DIRT;
                                 } else if (y >= 15 && y < 17) {
                                     if ((int) (noise.noise(
                                             Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y) + 1) == 0)
                                         mat = Material.STONE;
-                                } else if (y >= 17 && y < Main.world.getChunkHeight() - 1)
+                                } else if (y >= 17 && y < Main.world.getChunkHeight() - 1) {
                                     mat = Material.STONE;
+                                }
                             }
                             Block prev = new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y)
                                     .getBlock();
-                            if (Block.isSolid(prev))
+                            if (prev.isSolid()) {
                                 prev.setType(mat);
-                            else {
+                            } else {
                                 Block b = new Block(mat,
                                         new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y));
                                 b.addToWorld();
                             }
                         }
                     }
-                    if (Chunk.getWorldXFromChunkIndex(c.getIndex(), x) == Main.player.getX())
+                    if (Chunk.getWorldXFromChunkIndex(c.getIndex(), x) == Main.player.getX()) {
                         Main.player.setY(h - 2);
+                    }
                 }
             }
         }
@@ -167,23 +174,23 @@ public class Terrain {
                     for (int yy = 0; yy < Main.world.getChunkHeight(); yy++) {
                         int x = (int) Chunk.getWorldXFromChunkIndex(c.getIndex(), xx);
                         int y = yy;
-                        if (Block.isSolid(l, x, y) &&
-                                Block.getBlock(l, x, y).getType() == Material.STONE) {
+                        Optional<Block> b = l.getBlock(x, y);
+                        if (b.isPresent() && b.get().getType() == Material.STONE) {
                             int roll = r.nextInt(10000);
                             Material vein = null;
                             if (roll < coalChance)
                                 vein = Material.COAL_ORE;
-                            else if (roll >= coalChance &&
-                                    roll < coalChance + ironChance &&
-                                    yy >= 0.25 * Main.world.getChunkHeight())
+                            else if (roll >= coalChance
+                                    && roll < coalChance + ironChance
+                                    && yy >= 0.25 * Main.world.getChunkHeight())
                                 vein = Material.IRON_ORE;
-                            else if (roll >= coalChance + ironChance &&
-                                    roll < coalChance + ironChance + goldChance &&
-                                    yy >= 0.75 * Main.world.getChunkHeight())
+                            else if (roll >= coalChance + ironChance
+                                    && roll < coalChance + ironChance + goldChance
+                                    && yy >= 0.75 * Main.world.getChunkHeight())
                                 vein = Material.GOLD_ORE;
-                            else if (roll >= coalChance + ironChance + goldChance &&
-                                    roll < coalChance + ironChance + goldChance +
-                                            diamondChance && yy >= Main.world.getChunkHeight() - 16)
+                            else if (roll >= coalChance + ironChance + goldChance
+                                    && roll < coalChance + ironChance + goldChance + diamondChance
+                                    && yy >= Main.world.getChunkHeight() - 16)
                                 vein = Material.DIAMOND_ORE;
                             if (vein != null) {
                                 int maxSize = 0;
@@ -195,33 +202,34 @@ public class Terrain {
                                     maxSize = 5;
                                 else if (vein == Material.DIAMOND_ORE)
                                     maxSize = 4;
-                                Block.getBlock(l, x, y).setType(vein);
+                                l.getBlock(x, y).get().setType(vein);
                                 for (int i = 1; i < maxSize; i++) {
                                     List<Block> surrounding = new ArrayList<>();
-                                    if (y > 0 &&
-                                            Block.isSolid(l, x, y - 1) &&
-                                            Block.getBlock(l, x, y - 1).getType() == Material.STONE)
-                                        surrounding.add(Block.getBlock(l, x, y - 1));
-                                    if (y < 126 &&
-                                            Block.isSolid(l, x, y + 1) &&
-                                            Block.getBlock(l, x, y + 1).getType() == Material.STONE)
-                                        surrounding.add(Block.getBlock(l, x, y + 1));
-                                    if (x > (Main.world.getChunkCount() / 2 + 1) *
-                                            Main.world.getChunkLength() - 1 &&
-                                            Block.isSolid(l, x - 1, y) &&
-                                            Block.getBlock(l, x - 1, y).getType() == Material.STONE)
-                                        surrounding.add(Block.getBlock(l, x - 1, y));
-                                    if (x < (Main.world.getChunkCount() / 2 + 1) *
-                                            Main.world.getChunkLength() - 1 &&
-                                            Block.isSolid(l, x + 1, y) &&
-                                            Block.getBlock(l, x + 1, y).getType() == Material.STONE)
-                                        surrounding.add(Block.getBlock(l, x + 1, y));
+                                    if (y > 0 && l.getBlock(x, y - 1).isPresent()
+                                            && l.getBlock(x, y - 1).get().getType() == Material.STONE) {
+                                        surrounding.add(l.getBlock(x, y - 1).get());
+                                    }
+                                    if (y < 126 && l.getBlock(x, y + 1).isPresent()
+                                            && l.getBlock(x, y + 1).get().getType() == Material.STONE) {
+                                        surrounding.add(l.getBlock(x, y + 1).get());
+                                    }
+                                    if (x > (Main.world.getChunkCount() / 2 + 1) * Main.world.getChunkLength() - 1
+                                            && l.getBlock(x - 1, y).isPresent()
+                                            && l.getBlock(x - 1, y).get().getType() == Material.STONE) {
+                                        surrounding.add(l.getBlock(x - 1, y).get());
+                                    }
+                                    if (x < (Main.world.getChunkCount() / 2 + 1) * Main.world.getChunkLength() - 1
+                                            && l.getBlock(x + 1, y).isPresent()
+                                            && l.getBlock(x + 1, y).get().getType() == Material.STONE) {
+                                        surrounding.add(l.getBlock(x + 1, y).get());
+                                    }
+                                    surrounding.remove(null);
                                     if (surrounding.size() == 0)
                                         break;
-                                    Block b = surrounding.get(r.nextInt(surrounding.size()));
-                                    x = b.getX();
-                                    y = b.getY();
-                                    b.setType(vein);
+                                    Block bl = surrounding.get(r.nextInt(surrounding.size()));
+                                    x = bl.getX();
+                                    y = bl.getY();
+                                    bl.setType(vein);
                                 }
                             }
                         }
@@ -255,58 +263,59 @@ public class Terrain {
                 for (int xx = 0; xx < Main.world.getChunkLength(); xx++) {
                     int x = (int) Chunk.getWorldXFromChunkIndex(c.getIndex(), xx);
                     for (int y = 0; y < Main.world.getChunkHeight(); y++) {
-                        if (Block.isSolid(l, x, y)) {
+                        if (!isAir(l.getBlock(x, y))) {
                             List<Block> surrounding = new ArrayList<>();
-                            if (y > 0 && Block.isSolid(l, x, y - 1))
-                                surrounding.add(Block.getBlock(l, x, y - 1));
-                            if (y < Main.world.getChunkHeight() - 1 &&
-                                    Block.isSolid(l, x, y + 1))
-                                surrounding.add(Block.getBlock(l, x, y + 1));
-                            if (x > (Main.world.getChunkCount() / 2 + 1) *
-                                    -Main.world.getChunkLength() - 1 &&
-                                    Block.isSolid(l, x - 1, y))
-                                surrounding.add(Block.getBlock(l, x - 1, y));
+                            if (y > 0 && !isAir(l.getBlock(x, y - 1))) {
+                                surrounding.add(l.getBlock(x, y - 1).get());
+                            }
+                            if (y < Main.world.getChunkHeight() - 1 && !isAir(l.getBlock(x, y + 1))) {
+                                surrounding.add(l.getBlock(x, y + 1).get());
+                            }
+                            if (x > (Main.world.getChunkCount() / 2 + 1) * -Main.world.getChunkLength() - 1
+                                    && !isAir(l.getBlock(x - 1, y))) {
+                                surrounding.add(l.getBlock(x - 1, y).get());
+                            }
                             if (x < (Main.world.getChunkCount() / 2 + 1) *
-                                    Main.world.getChunkLength() - 1 &&
-                                    Block.isSolid(l, x + 1, y))
-                                surrounding.add(Block.getBlock(l, x + 1, y));
+                                    Main.world.getChunkLength() - 1
+                                    && !isAir(l.getBlock(x + 1, y)))
+                                surrounding.add(l.getBlock(x + 1, y).get());
                             // remove lonely strands
                             if (surrounding.size() == 1) {
-                                if (surrounding.contains(Block.getBlock(l, x + 1, y)) ||
+                                if (surrounding.contains(l.getBlock(x + 1, y).orNull()) ||
                                         (y < Main.world.getChunkHeight() - 1 &&
-                                                surrounding.contains(Block.getBlock(l, x, y + 1)))) {
+                                                surrounding.contains(l.getBlock(x, y + 1).orNull()))) {
                                     boolean vert = false;
                                     if (y < Main.world.getChunkHeight() - 1 &&
-                                            surrounding.contains(Block.getBlock(l, x, y + 1)))
+                                            surrounding.contains(l.getBlock(x, y + 1).orNull()))
                                         vert = true;
                                     Block b = surrounding.get(0);
                                     boolean strand = false;
                                     List<Block> remove = new ArrayList<>();
                                     while (true) {
                                         if (!vert) {
-                                            if (y <= 0 || Block.isAir(l, b.getX(), y - 1))
+                                            if (y <= 0 || isAir(l.getBlock(b.getX(), y - 1)))
                                                 if (y >= Main.world.getChunkHeight() - 1 ||
-                                                        Block.isAir(l, b.getX(), y + 1)) {
+                                                        isAir(l.getBlock(b.getX(), y + 1))) {
                                                     remove.add(b);
-                                                    if (Block.isAir(l, b.getX() + 1, y)) {
+                                                    if (isAir(l.getBlock(b.getX() + 1, y))) {
                                                         strand = true;
                                                         break;
                                                     } else {
-                                                        b = Block.getBlock(l, b.getX() + 1, y);
+                                                        b = l.getBlock(b.getX() + 1, y).get();
                                                         continue;
                                                     }
                                                 }
                                             break;
                                         } else {
-                                            if (Block.isAir(l, x - 1, b.getY()))
-                                                if (Block.isAir(l, x + 1, b.getY())) {
+                                            if (isAir(l.getBlock(x - 1, b.getY())))
+                                                if (isAir(l.getBlock(x + 1, b.getY()))) {
                                                     remove.add(b);
-                                                    if (y >= Main.world.getChunkHeight() - 1 ||
-                                                            Block.isAir(l, x, b.getY() + 1)) {
+                                                    if (y >= Main.world.getChunkHeight() - 1
+                                                            || isAir(l.getBlock(x, b.getY() + 1))) {
                                                         strand = true;
                                                         break;
                                                     } else {
-                                                        b = Block.getBlock(l, x, b.getY() + 1);
+                                                        b = l.getBlock(x, b.getY() + 1).get();
                                                         continue;
                                                     }
                                                 }
@@ -322,48 +331,55 @@ public class Terrain {
                             }
                             // recalculate because it's easier than actually fixing the problem
                             surrounding.clear();
-                            if (y > 0 && !Block.isAir(l, x, y - 1))
-                                surrounding.add(Block.getBlock(l, x, y - 1));
-                            if (y < Main.world.getChunkHeight() - 1 &&
-                                    !Block.isAir(l, x, y + 1))
-                                surrounding.add(Block.getBlock(l, x, y + 1));
-                            if (x > Main.world.getChunkCount() / 2 * -Main.world.getChunkLength() &&
-                                    !Block.isAir(l, x - 1, y))
-                                surrounding.add(Block.getBlock(l, x - 1, y));
-                            if (x < (Main.world.getChunkCount() / 2 + 1) *
-                                    Main.world.getChunkLength() - 1 &&
-                                    !Block.isAir(l, x + 1, y))
-                                surrounding.add(Block.getBlock(l, x + 1, y));
+                            if (y > 0 && !isAir(l.getBlock(x, y - 1))) {
+                                surrounding.add(l.getBlock(x, y - 1).get());
+                            }
+                            if (y < Main.world.getChunkHeight() - 1 && !isAir(l.getBlock(x, y + 1))){
+                                surrounding.add(l.getBlock(x, y + 1).get());
+                            }
+                            if (x > Main.world.getChunkCount() / 2 * -Main.world.getChunkLength()
+                                    && !isAir(l.getBlock(x - 1, y))) {
+                                surrounding.add(l.getBlock(x - 1, y).get());
+                            }
+                            if (x < (Main.world.getChunkCount() / 2 + 1) * Main.world.getChunkLength() - 1
+                                    && !isAir(l.getBlock(x + 1, y))) {
+                                surrounding.add(l.getBlock(x + 1, y).get());
+                            }
                             // remove lonely blocks
                             if (surrounding.size() == 0)
-                                Block.getBlock(l, x, y).destroy();
+                                l.getBlock(x, y).get().destroy();
                                 // remove lonely islands
                             else if (surrounding.size() == 3) {
                                 for (Block b : surrounding) {
                                     List<Block> surround = new ArrayList<>();
-                                    if (b.getY() > 0 &&
-                                            !Block.isAir(l, b.getX(), b.getY() - 1))
-                                        surround.add(Block.getBlock(l, b.getX(), b.getY() - 1));
-                                    if (b.getY() < Main.world.getChunkHeight() - 1 &&
-                                            !Block.isAir(l, b.getX(), b.getY() + 1))
-                                        surround.add(Block.getBlock(l, b.getX(), b.getY() + 1));
-                                    if (b.getX() > Main.world.getChunkCount() / 2 *
-                                            -Main.world.getChunkLength() &&
-                                            !Block.isAir(l, b.getX() - 1, b.getY()))
-                                        surround.add(Block.getBlock(l, b.getX() - 1, b.getY()));
-                                    if (b.getX() < (Main.world.getChunkCount() / 2 + 1) *
-                                            Main.world.getChunkLength() - 1 &&
-                                            !Block.isAir(l, b.getX() + 1, b.getY()))
-                                        surround.add(Block.getBlock(l, b.getX() + 1, b.getY()));
+                                    if (b.getY() > 0
+                                            && !isAir(l.getBlock(b.getX(), b.getY() - 1))) {
+                                        surround.add(l.getBlock(b.getX(), b.getY() - 1).get());
+                                    }
+                                    if (b.getY() < Main.world.getChunkHeight() - 1
+                                            && !isAir(l.getBlock(b.getX(), b.getY() + 1))) {
+                                        surround.add(l.getBlock(b.getX(), b.getY() + 1).get());
+                                    }
+                                    if (b.getX() > Main.world.getChunkCount() / 2
+                                            * -Main.world.getChunkLength()
+                                            && !isAir(l.getBlock(b.getX() - 1, b.getY()))) {
+                                        surround.add(l.getBlock(b.getX() - 1, b.getY()).get());
+                                    }
+                                    if (b.getX() < (Main.world.getChunkCount() / 2 + 1)
+                                            * Main.world.getChunkLength() - 1
+                                            && !isAir(l.getBlock(b.getX() + 1, b.getY()))) {
+                                        surround.add(l.getBlock(b.getX() + 1, b.getY()).get());
+                                    }
                                     int lonely = 0;
                                     for (Block bl : surround) {
-                                        if (surrounding.contains(bl) || b.equals(Block.getBlock(l, x, y)))
+                                        if (surrounding.contains(bl) || b.equals(l.getBlock(x, y).orNull())) {
                                             lonely += 1;
+                                        }
                                     }
                                     if (lonely == 3) {
                                         for (Block bl : surround)
                                             bl.destroy();
-                                        Block.getBlock(l, x, y).destroy();
+                                        l.getBlock(x, y).get().destroy();
                                     }
                                 }
                             }
@@ -380,7 +396,7 @@ public class Terrain {
             for (Chunk c : l.chunks.values()) {
                 for (int x = 0; x < Main.world.getChunkLength(); x++) {
                     int y = Block.getTop(new Location(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), 0));
-                    Block b = Block.getBlock(l, Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y);
+                    Block b = l.getBlock(Chunk.getWorldXFromChunkIndex(c.getIndex(), x), y).get();
                     if (b.getType() == Material.DIRT)
                         b.setType(Material.GRASS);
                 }

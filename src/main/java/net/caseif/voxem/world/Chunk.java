@@ -34,7 +34,7 @@ import java.util.List;
 
 public class Chunk {
 
-    public final Object lockAndLoad = new Object(); // hehe
+    public final Object lockAndLoad /* hehe */ = new Object();
 
     protected final Level level;
     protected final int index;
@@ -98,25 +98,26 @@ public class Chunk {
     public void updateLight() {
         for (int x = 0; x < Main.world.getChunkLength(); x++)
             for (int y = 0; y < Main.world.getChunkHeight(); y++)
-                if (this.getBlock(x, y) != null && Block.isSolid(level, x, y)) this.getBlock(x, y).setLightLevel(0);
+                if (getBlock(x, y).isSolid()) this.getBlock(x, y).setLightLevel(0);
         for (int i = 0; i < 2; i++) {
-            for (int xx = 0; xx < Main.world.getChunkLength(); xx++)
+            for (int xx = 0; xx < Main.world.getChunkLength(); xx++) {
                 for (int yy = 0; yy < Main.world.getChunkHeight(); yy++) {
                     int x = i == 0 ? xx : 15 - xx;
                     int y = i == 0 ? yy : Main.world.getChunkHeight() - 1 - yy;
                     Block b = this.getBlock(x, y);
                     if (b != null) {
-                        if (b.getY() <= Block.getTop(new Location(level, b.getX(), 0)))
+                        if (b.getY() <= Block.getTop(new Location(level, b.getX(), 0))) {
                             b.setLightLevel(Block.maxLight);
-                        else {
+                        } else {
                             Block up = null, down = null, left, right;
-                            if (b.getY() > 0)
-                                up = Block.getBlock(level, b.getX(), b.getY() - 1);
-                            if (b.getY() < Main.world.getChunkHeight() - 1)
-                                down = Block.getBlock(level, b.getX(), b.getY() +
-                                        1);
-                            left = Block.getBlock(level, b.getX() - 1, b.getY());
-                            right = Block.getBlock(level, b.getX() + 1, b.getY());
+                            if (b.getY() > 0) {
+                                up = level.getBlock(b.getX(), b.getY() - 1).orNull();
+                            }
+                            if (b.getY() < Main.world.getChunkHeight() - 1) {
+                                down = level.getBlock(b.getX(), b.getY() + 1).orNull();
+                            }
+                            left = level.getBlock(b.getX() - 1, b.getY()).orNull();
+                            right = level.getBlock(b.getX() + 1, b.getY()).orNull();
                             Block[] adjacent = new Block[]{up, down, left, right};
                             float average = 0;
                             int total = 0;
@@ -127,15 +128,17 @@ public class Chunk {
                                 }
                             }
                             average /= total;
-                            if (!Block.isSolid(b)) {
+                            if (!b.isSolid()) {
                                 b.setLightLevel((int) Math.floor(average));
                             } else if ((int) Math.floor(average) - Block.lightDistance >= Block.minLight)
                                 b.setLightLevel((int) Math.floor(average) - Block.lightDistance);
-                            else
+                            else {
                                 b.setLightLevel(Block.minLight);
+                            }
                         }
                     }
                 }
+            }
         }
     }
 
@@ -158,13 +161,11 @@ public class Chunk {
         //return Math.abs(x % Main.world.getChunkLength());
     }
 
-    public Collection<Entity> getEntities() {
+    public synchronized Collection<Entity> getEntities() {
         List<Entity> entities = new ArrayList<>();
         for (Entity e : level.getEntities()) {
-            synchronized (e) {
-                if (e.getLocation().getChunk() == this.getIndex()) {
-                    entities.add(e);
-                }
+            if (e.getLocation().getChunk() == this.getIndex()) {
+                entities.add(e);
             }
         }
         return entities;

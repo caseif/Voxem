@@ -22,12 +22,14 @@
  */
 package net.caseif.voxem.world;
 
+import net.caseif.voxem.Main;
 import net.caseif.voxem.Material;
 import net.caseif.voxem.entity.Entity;
 import net.caseif.voxem.entity.living.Living;
 import net.caseif.voxem.entity.living.Mob;
 import net.caseif.voxem.threading.Scheduler;
 
+import com.google.common.base.Optional;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class Level {
 
     private final World world;
     private final int index;
-    private final Collection<Entity> entities = new ArrayList<>();
+    private Collection<Entity> entities = new ArrayList<>();
 
     public Level(World world, int index) {
         this.world = world;
@@ -58,10 +60,24 @@ public class Level {
         return index;
     }
 
+    public Optional<Block> getBlock(int x, int y) {
+        if (y >= 0 && y < Main.world.getChunkHeight()) {
+            Chunk c = getChunk(new Location(this, x, y).getChunk());
+            if (c != null) {
+                return Optional.fromNullable(c.getBlock(Chunk.getIndexInChunk(x), y));
+            }
+        }
+        return Optional.absent();
+    }
+
+    public Optional<Block> getBlock(double x, double y) {
+        return getBlock((int) x, (int) y);
+    }
+
     /**
      * @return A list containing all entities in the world
      */
-    public Collection<Entity> getEntities() {
+    public synchronized Collection<Entity> getEntities() {
         return entities;
     }
 

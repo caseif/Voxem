@@ -205,10 +205,8 @@ public class GraphicsHandler implements Runnable {
             if (Main.player != null) {
                 Main.player.center();
                 for (Entity e : Main.player.getLevel().getEntities()) {
-                    synchronized (e) {
-                        if (!e.isRemoved()) {
-                            e.draw();
-                        }
+                    if (!e.isRemoved()) {
+                        e.draw();
                     }
                 }
             }
@@ -411,8 +409,8 @@ public class GraphicsHandler implements Runnable {
                 glVertex2f(Block.selectedX, Block.selectedY);
                 if (Block.selected != null && Block.selected.getY() < 0 ||
                         (Block.selected.getY() < Block.selected.getLevel().getWorld().getChunkHeight() &&
-                                Block.isAir(Block.selected.getLevel(), Block.selected.getX(),
-                                        Block.selected.getY() - 1))) {
+                                Block.isAir(Block.selected.getLevel().getBlock(Block.selected.getX(),
+                                        Block.selected.getY() - 1)))) {
                     glVertex2f(Block.selectedX, Block.selectedY);
                     glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);
                     glVertex2f(Block.selectedX, Block.selectedY - Block.length / Block.horAngle);

@@ -110,7 +110,7 @@ public class VboUtil {
                 for (int x = 0; x < Main.world.getChunkLength(); x++) {
                     for (int y = 0; y < Main.world.getChunkHeight(); y++) {
                         Block b = c.getBlock(x, y);
-                        if (!Block.isAir(b)) {
+                        if (b.getType() != Material.AIR) {
                             Texture t = Texture.getTexture(b);
                             float tX = t.getAtlasX();
                             float tY = t.getAtlasY();
@@ -118,43 +118,43 @@ public class VboUtil {
                             // this whole bit takes care of smooth lighting
                             List<Integer> s = new ArrayList<>();
                             // 1
-                            if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() - 1).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX() - 1, b.getY() - 1).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX() - 1, b.getY() - 1).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
                             // 2
-                            if (Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX(), b.getY() - 1).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX(), b.getY() - 1).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
                             // 3
-                            if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() - 1).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX() + 1, b.getY() - 1).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX() + 1, b.getY() - 1).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
                             // 4
-                            if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY()).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX() - 1, b.getY()).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX() - 1, b.getY()).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
                             // 5
-                            if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY()).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX() + 1, b.getY()).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX() + 1, b.getY()).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
                             // 6
-                            if (Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX() - 1, b.getY() + 1).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX() - 1, b.getY() + 1).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX() - 1, b.getY() + 1).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
                             // 7
-                            if (Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX(), b.getY() + 1).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX(), b.getY() + 1).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX(), b.getY() + 1).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
                             // 8
-                            if (Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1) != null)
-                                s.add(Block.getBlock(b.getLevel(), b.getX() + 1, b.getY() + 1).getLightLevel());
+                            if (b.getLevel().getBlock(b.getX() + 1, b.getY() + 1).isPresent())
+                                s.add(b.getLevel().getBlock(b.getX() + 1, b.getY() + 1).get().getLightLevel());
                             else
                                 s.add(Block.maxLight);
 
@@ -227,9 +227,8 @@ public class VboUtil {
                             //cValues.add(tY + 1 / ((float)Texture.atlasSize / Block.length));
                             cValues.add(1f);
 
-                            if (!Block.isAir(b) &&
-                                    (b.getY() == 0 ||
-                                            Block.getBlock(b.getLevel(), b.getX(), b.getY() - 1).getType() == Material.AIR)) {
+                            if (b.getType() != Material.AIR
+                                    && (b.getY() == 0 || Block.isAir(b.getLevel().getBlock(b.getX(), b.getY() - 1)))) {
 
                                 //TODO: make this more flexible (less awful)
                                 if (b.getType() == Material.GRASS) {

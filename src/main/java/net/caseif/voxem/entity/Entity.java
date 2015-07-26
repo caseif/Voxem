@@ -47,6 +47,8 @@ import net.caseif.voxem.world.Block;
 import net.caseif.voxem.world.Level;
 import net.caseif.voxem.world.Location;
 
+import com.google.common.base.Optional;
+
 import java.util.HashMap;
 
 public class Entity {
@@ -95,7 +97,7 @@ public class Entity {
         this.height = height;
     }
 
-    public Level getLevel() {
+    public synchronized Level getLevel() {
         return location.getLevel();
     }
 
@@ -163,22 +165,24 @@ public class Entity {
 
             if (newY >= 0 && newY < Main.world.getChunkHeight()) {
                 if (getVelocity().getY() > 0
-                        && Block.isSolid(getLevel(), pX, (float) Math.floor(newY + vertOffset / (float) Block.length))) {
+                        && !Block.isAir(getLevel().getBlock(
+                        pX, (float) Math.floor(newY + vertOffset / (float) Block.length)
+                ))) {
                     getVelocity().setY(0);
                 }
             }
 
-            Block below = getBlockBelow();
+            Block below = getBlockBelow().orNull();
             //TODO: take into account potentially two blocks
             if (newY - getY() < 1) {
-                if (getVelocity().getY() > 0 && below != null && Block.isSolid(below)
+                if (getVelocity().getY() > 0 && below != null && below.isSolid()
                         && (float) below.getY() - getY() < height) {
                     getVelocity().setY(0);
                     setY(below.getY() - height);
                 }
             } else {
                 for (int y = (int) Math.floor(getY()); y <= newY + height; y++) {
-                    if (Block.isSolid(getLevel(), pX, y)) {
+                    if (!Block.isAir(getLevel().getBlock(pX, y))) {
                         getVelocity().setY(0);
                         setY(y - height);
                         break;
@@ -200,8 +204,8 @@ public class Entity {
     }
 
     public boolean isOnGround() {
-        Block below = getBlockBelow();
-        if (below != null && Block.isSolid(below)) {
+        Block below = getBlockBelow().orNull();
+        if (below != null && below.isSolid()) {
             ground = true;
             return true;
         } else {
@@ -219,15 +223,15 @@ public class Entity {
         return removed;
     }
 
-    public Block getBlockBelow() {
-        Block below = null;
+    public Optional<Block> getBlockBelow() {
+        Optional<Block> below = Optional.absent();
         if (Math.floor(getY() + height) < Main.world.getChunkHeight()) {
             float x = (Math.abs(getX()) % 1 >= width / 2 && getX() > 0) || (Math.abs(getX()) % 1 <= width / 2 &&
                     getX() < 0) ? getX() - width / 4 : getX() + width / 4;
             if (x < 0)
                 x -= 1;
             if (getY() >= -height)
-                below = Block.getBlock(getLevel(), x, (float) Math.floor(getY() + height));
+                below = getLevel().getBlock(x, (float) Math.floor(getY() + height));
         }
         return below;
     }
@@ -239,7 +243,7 @@ public class Entity {
         int minY = (int) Math.floor(getY());
         int maxY = (int) Math.ceil(getY() + height - 1);
         for (int y = minY; y <= maxY; y++)
-            if (Block.isSolid(getLevel(), newX, y)) {
+            if (!Block.isAir(getLevel().getBlock(newX, y))) {
                 return true;
             }
         return !getLevel().isChunkGenerated(new Location(getLevel(), newX, minY).getChunk());

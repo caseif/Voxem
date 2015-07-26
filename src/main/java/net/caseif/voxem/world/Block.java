@@ -25,7 +25,9 @@ package net.caseif.voxem.world;
 import net.caseif.voxem.GraphicsHandler;
 import net.caseif.voxem.Main;
 import net.caseif.voxem.Material;
+import net.caseif.voxem.world.generator.Terrain;
 
+import com.google.common.base.Optional;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -82,7 +84,7 @@ public class Block {
         this.location = location;
         this.chunk = location.getChunk();
         for (int i = (int) location.getY() - 1; i >= 0; i--) {
-            Block b = Block.getBlock(getLevel(), (int) location.getX(), i);
+            Block b = getLevel().getBlock((int) location.getX(), i).orNull();
             if (b != null) {
                 light = b.getLightLevel() - lightDistance;
                 break;
@@ -155,21 +157,15 @@ public class Block {
         this.light = light;
     }
 
-    public boolean updateLight(int recursion) {
-        final int MAX_RECURSIVE_CALLS = 100;
-        if (recursion > MAX_RECURSIVE_CALLS) {
-            System.err.println("Recursive calls to updateLight exceeded limit! Refusing to continue recursing.");
-            return false;
-        }
+    public boolean updateLight() {
         int newLight;
         Block up = null, down = null, left, right;
         if (getY() > 0)
-            up = Block.getBlock(getLevel(), getX(), getY() - 1);
+            up = getLevel().getBlock(getX(), getY() - 1).orNull();
         if (getY() < Main.world.getChunkHeight() - 1)
-            down = Block.getBlock(getLevel(), getX(), getY() +
-                    1);
-        left = Block.getBlock(getLevel(), getX() - 1, getY());
-        right = Block.getBlock(getLevel(), getX() + 1, getY());
+            down = getLevel().getBlock(getX(), getY() + 1).orNull();
+        left = getLevel().getBlock(getX() - 1, getY()).orNull();
+        right = getLevel().getBlock(getX() + 1, getY()).orNull();
         Block[] adjacent = new Block[]{up, down, left, right};
         if (getY() <= Block.getTop(location))
             newLight = Block.maxLight;
@@ -193,26 +189,27 @@ public class Block {
         if (changed) {
             setLightLevel(newLight);
             for (Block bl : adjacent)
-                if (bl != null && bl.lastLightUpdate < TickManager.getTotalTicks())
-                    bl.updateLight(++recursion);
+                if (bl != null && bl.lastLightUpdate < TickManager.getTotalTicks()) {
+                    try {
+                        bl.updateLight();
+                    } catch (StackOverflowError ignored) {} //TODO: Handle this properly
+                }
         }
         for (int y = getY() + 1; y < getLevel().getWorld().getChunkHeight(); y++) {
-            Block b = Block.getBlock(getLevel(), getX(), y);
+            Block b = getLevel().getBlock(getX(), y).orNull();
             if (b != null) {
                 if (b.lastLightUpdate != TickManager.getTicks()) {
-                    if (!b.updateLight(recursion)) { // I don't know wtf this code is for but I might need it later
-                        break;
-                    } else {
-                        break;
-                    }
+                    try {
+                        if (!b.updateLight()) { // I don't know wtf this code is for but I might need it later
+                            break;
+                        } else {
+                            break;
+                        }
+                    } catch (StackOverflowError ignored) {} //TODO: Handle this properly
                 }
             }
         }
         return changed;
-    }
-
-    public boolean updateLight() {
-        return updateLight(0);
     }
 
     public void destroy() {
@@ -226,24 +223,19 @@ public class Block {
     //TODO: make this faster
     public static int getTop(Location location) {
         for (int yy = 0; yy < Main.world.getChunkHeight(); yy++) {
-            if (isSolid(location.getLevel(), location.getX(), yy)) {
-                return yy;
+            try {
+                Block b = location.getLevel().getBlock(location.getX(), yy).orNull();
+                if (b == null) { // column does not exist
+                    return -1;
+                }
+                if (b.isSolid()) {
+                    return yy;
+                }
+            } catch (NullPointerException ex) {
+                int i = 0;
             }
         }
         return -1;
-    }
-
-    public static Block getBlock(Level level, int x, int y) {
-        if (y >= 0 && y < Main.world.getChunkHeight()) {
-            Chunk c = level.getChunk(new Location(level, x, y).getChunk());
-            if (c != null)
-                return c.getBlock(Chunk.getIndexInChunk(x), y);
-        }
-        return null;
-    }
-
-    public static Block getBlock(Level level, float x, float y) {
-        return Block.getBlock(level, (int) x, (int) y);
     }
 
     public static void updateSelectedBlock() {
@@ -261,7 +253,7 @@ public class Block {
             int blockY = (int) Math.floor(Main.player.getY() + yAdd);
             synchronized (Main.lock) {
                 if (blockY >= 0 && blockY <= Main.world.getChunkHeight() - 1) {
-                    if (!Block.isAir(Main.player.getLevel(), blockX, blockY)) {
+                    if (!isAir(Main.player.getLevel().getBlock(blockX, blockY))) {
                         //TODO: verfiy that player isn't peeking through blocks
                         Block.selected = new Location(Main.player.getLevel(), blockX, blockY);
                         found = true;
@@ -274,66 +266,8 @@ public class Block {
             Block.selected = null;
     }
 
-    /**
-     * Checks whether the block at the given coordinates is air. Please only use this in cases where
-     * the block might actually be null. Otherwise, just check if it's air. :)
-     *
-     * @param level the level containing the block.
-     * @param x     The x-coordinate of the block
-     * @param y     The y-coordinate of the block
-     * @return Whether the block is air
-     */
-    public static boolean isAir(Level level, int x, int y) {
-        if (Block.getBlock(level, x, y) != null)
-            if (Block.getBlock(level, x, y).getType() != Material.AIR)
-                return false;
-        return true;
-    }
-
-    /**
-     * Checks whether the block at the given coordinates is air. Please only use this in cases where
-     * the block might actually be null. Otherwise, just check if it's air. :)
-     *
-     * @param level the level containing the block.
-     * @param x     The x-coordinate of the block
-     * @param y     The y-coordinate of the block
-     * @return Whether the block is air
-     */
-    public static boolean isAir(Level level, float x, float y) {
-        return Block.isAir(level, (int) x, (int) y);
-    }
-
-    /**
-     * Checks whether the given block is air. Please only use this in cases where
-     * the block might actually be null. Otherwise, just check if it's air. :)
-     *
-     * @param b The block to check
-     * @return Whether the block is air
-     */
-    public static boolean isAir(Block b) {
-        return b == null || Block.isAir(b.getLevel(), b.getX(), b.getY());
-    }
-
-    public static boolean isAir(Location l) {
-        return Block.isAir(l.getLevel(), l.getX(), l.getY());
-    }
-
-    public static boolean isSolid(Level level, int x, int y) {
-        return isSolid(level, (float) x, (float) y);
-    }
-
-    public static boolean isSolid(Level level, float x, float y) {
-        return new Location(level, x, y).getBlock() != null && !isAir(level, x, y) &&
-                !(new Location(level, x, y).getBlock().hasMetadata("solid") &&
-                        !(Boolean) new Location(level, x, y).getBlock().getMetadata("solid"));
-    }
-
-    public static boolean isSolid(Block b) {
-        return isSolid(b.getLevel(), b.getX(), b.getY());
-    }
-
-    public static boolean isSolid(Location l) {
-        return isSolid(l.getLevel(), l.getX(), l.getY());
+    public boolean isSolid() {
+        return getType() != Material.AIR && !(hasMetadata("solid") && !(Boolean) getMetadata("solid"));
     }
 
     public Set<String> getAllMetadata() {
@@ -351,4 +285,9 @@ public class Block {
     public void setMetadata(String key, Object value) {
         metadata.put(key, value);
     }
+
+    public static boolean isAir(Optional<Block> block) {
+        return !block.isPresent() || block.get().getType() == Material.AIR;
+    }
+
 }

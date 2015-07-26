@@ -90,9 +90,7 @@ public class Main {
                 Player.calculateLight();
                 TickManager.checkForTick();
                 for (Entity e : player.getLevel().getEntities()) {
-                    synchronized (e) {
-                        e.manageMovement();
-                    }
+                    e.manageMovement();
                 }
                 Block.updateSelectedBlock();
             }

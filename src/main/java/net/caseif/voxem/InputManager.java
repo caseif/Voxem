@@ -188,7 +188,6 @@ public class InputManager {
     }
 
     public static void manage() {
-
         if (f3 && System.currentTimeMillis() - lastAction >= ACTION_WAIT) {
             GuiFactory.guis.get("debug").setActive(!GuiFactory.guis.get("debug").isActive());
             lastAction = System.currentTimeMillis();
@@ -196,10 +195,10 @@ public class InputManager {
         if (mouse1) {
             if (System.currentTimeMillis() - lastAction >= ACTION_WAIT) {
                 if (Block.selected != null &&
-                        !Block.isAir((Block.selected.getBlock())) &&
+                        Block.selected.getBlock().getType() != Material.AIR &&
                         Block.selected.getBlock().getType() != Material.BEDROCK) {
-                    Block b = Block.getBlock(Main.player.getLevel(), (int) Math.floor(Block.selected.getX()),
-                            (int) Math.floor(Block.selected.getY()));
+                    Block b = Main.player.getLevel().getBlock(Math.floor(Block.selected.getX()),
+                            Math.floor(Block.selected.getY())).get();
                     Event.fireEvent(new BlockBreakEvent(Block.selected, b));
                 }
                 lastAction = System.currentTimeMillis();
@@ -240,7 +239,7 @@ public class InputManager {
                             y -= 1;
                         l = new Location(Main.player.getLevel(), Block.selected.getX(), y);
                     }
-                    if (l != null && Block.isAir(l)) {
+                    if (l != null && l.getBlock().getType() == Material.AIR) {
                         if ((int) playerY == y)
                             playerY -= 1;
                         boolean pBlock = false;
@@ -256,8 +255,7 @@ public class InputManager {
                                 l.getY() < Main.world.getChunkHeight()) {
                             Block block = new Block(Material.WOOD, l);
                             block.addToWorld();
-                            Event.fireEvent(
-                                    new BlockPlaceEvent(l, block));
+                            Event.fireEvent(new BlockPlaceEvent(l, block));
                         }
                     }
                 }

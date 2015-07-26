@@ -22,6 +22,8 @@
  */
 package net.caseif.voxem.world.generator;
 
+import static net.caseif.voxem.world.Block.isAir;
+
 import net.caseif.voxem.Main;
 import net.caseif.voxem.world.Block;
 import net.caseif.voxem.world.Location;
@@ -52,25 +54,26 @@ public class CaveGenAgent {
     public void dig() {
         List<Block> surrounding = new ArrayList<>();
         if (l.getY() > 0 &&
-                Block.isSolid(l.getLevel(), l.getX(), l.getY())) {
+                !isAir(l.getLevel().getBlock(l.getX(), l.getY()))) {
             for (int i = 0; i < UP_BIAS; i++)
-                surrounding.add(Block.getBlock(l.getLevel(), l.getX(), l.getY() - 1));
+                surrounding.add(l.getLevel().getBlock(l.getX(), l.getY() - 1).orNull());
         }
         if (l.getY() < Main.world.getChunkHeight() - 2 &&
-                Block.isSolid(l.getLevel(), l.getX(), l.getY() + 1)) {
+                !isAir(l.getLevel().getBlock(l.getX(), l.getY() + 1))) {
             for (int i = 0; i < DOWN_BIAS; i++)
-                surrounding.add(Block.getBlock(l.getLevel(), l.getX(), l.getY() + 1));
+                surrounding.add(l.getLevel().getBlock(l.getX(), l.getY() + 1).orNull());
         }
         if (l.getX() > Main.world.getChunkCount() / 2 * -Main.world.getChunkLength() &&
-                Block.isSolid(l.getLevel(), l.getX() - 1, l.getY())) {
+                !isAir(l.getLevel().getBlock(l.getX() - 1, l.getY()))) {
             for (int i = 0; i < LEFT_BIAS; i++)
-                surrounding.add(Block.getBlock(l.getLevel(), l.getX() - 1, l.getY()));
+                surrounding.add(l.getLevel().getBlock(l.getX() - 1, l.getY()).orNull());
         }
         if (l.getX() < (Main.world.getChunkCount() / 2 + 1) * Main.world.getChunkLength() - 1 &&
-                Block.isSolid(l.getLevel(), l.getX() + 1, l.getY())) {
+                !isAir(l.getLevel().getBlock(l.getX() + 1, l.getY()))) {
             for (int i = 0; i < RIGHT_BIAS; i++)
-                surrounding.add(Block.getBlock(l.getLevel(), l.getX() + 1, l.getY()));
+                surrounding.add(l.getLevel().getBlock(l.getX() + 1, l.getY()).orNull());
         }
+        surrounding.remove(null);
         if (surrounding.size() == 0)
             this.deactivate();
         else {
