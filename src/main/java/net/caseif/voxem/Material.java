@@ -41,7 +41,8 @@ public enum Material {
     GOLD_ORE,
     DIAMOND_ORE,
     PUMPKIN,
-    PUMPKIN_TOP;
+    PUMPKIN_TOP,
+    JONAH_HILL;
 
     private String[] textures;
 

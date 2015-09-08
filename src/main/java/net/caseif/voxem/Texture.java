@@ -100,9 +100,10 @@ public class Texture {
             Texture[] tArray = new Texture[m.getTextures().length];
             int i = 0;
             for (String t : m.getTextures()) {
-                InputStream is = Texture.class.getResourceAsStream("/textures/block/" + m.getTexture(i) + ".png");
+                InputStream is = Texture.class.getResourceAsStream("/textures/block/" + m.getTexture(i)
+                        + ".png");
                 if (is == null)
-                    is = Texture.class.getResourceAsStream("/textures/block/missing_texture.png");
+                    is = Texture.class.getResourceAsStream("/textures/block/" + m.getTexture(i) + ".png");
                 InputStream newIs = ImageUtil.asInputStream(ImageUtil.scaleImage(
                         ImageIO.read(is), Block.length, Block.length));
                 BufferedImage b = ImageIO.read(newIs);
@@ -118,6 +119,7 @@ public class Texture {
     }
 
     public static Texture getTexture(Material material, int data) {
+        if (Main.dank >= 0) material = Material.JONAH_HILL;
         if (textures.get(material).length >= data - 1)
             return textures.get(material)[data];
         return textures.get(material)[0];

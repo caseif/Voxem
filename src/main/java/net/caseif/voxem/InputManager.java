@@ -46,6 +46,7 @@ import net.caseif.voxem.event.input.KeyPressEvent;
 import net.caseif.voxem.gui.GuiElement;
 import net.caseif.voxem.gui.GuiFactory;
 import net.caseif.voxem.gui.InteractiveElement;
+import net.caseif.voxem.util.VboUtil;
 import net.caseif.voxem.world.Block;
 import net.caseif.voxem.world.Location;
 
@@ -146,6 +147,9 @@ public class InputManager {
                         if (kStage == 10) {
                             SoundManager.generateMeme();
                             Main.dank = 0;
+                            VboUtil.updateArray();
+                            VboUtil.prepareBindArray();
+                            VboUtil.bindArray();
                         }
                     } else {
                         kStage = 0;

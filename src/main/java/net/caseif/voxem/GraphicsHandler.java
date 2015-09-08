@@ -245,26 +245,27 @@ public class GraphicsHandler implements Runnable {
             Display.setTitle("Voxem");
             Display.setResizable(false);
             ByteBuffer[] icons;
+            String iconPath = "/textures/block/grass.png";
             if (System.getProperty("os.name").startsWith("Windows")) {
                 icons = new ByteBuffer[2];
                 BufferedImage icon1 = ImageUtil.scaleImage(
-                        ImageIO.read(Main.class.getResourceAsStream("/textures/block/grass.png")),
+                        ImageIO.read(Main.class.getResourceAsStream(iconPath)),
                         Block.length, Block.length);
                 BufferedImage icon2 = ImageUtil.scaleImage(ImageIO.read(
-                        Main.class.getResourceAsStream("/textures/block/grass.png")), 32, 32);
+                        Main.class.getResourceAsStream(iconPath)), 32, 32);
                 icons[0] = BufferUtil.asByteBuffer(icon1);
                 icons[1] = BufferUtil.asByteBuffer(icon2);
             } else if (System.getProperty("os.name").startsWith("Mac")) {
                 icons = new ByteBuffer[1];
                 BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
-                                Main.class.getResourceAsStream("/textures/block/grass.png")),
+                                Main.class.getResourceAsStream(iconPath)),
                         Main.world.getChunkHeight(),
                         Main.world.getChunkHeight());
                 icons[0] = BufferUtil.asByteBuffer(icon);
             } else {
                 icons = new ByteBuffer[1];
                 BufferedImage icon = ImageUtil.scaleImage(ImageIO.read(
-                        Main.class.getResourceAsStream("/textures/block/grass.png")), 32, 32);
+                        Main.class.getResourceAsStream(iconPath)), 32, 32);
                 icons[0] = BufferUtil.asByteBuffer(icon);
             }
             Display.setIcon(icons);

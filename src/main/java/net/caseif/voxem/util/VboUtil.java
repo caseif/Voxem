@@ -111,7 +111,7 @@ public class VboUtil {
                     for (int y = 0; y < Main.world.getChunkHeight(); y++) {
                         Block b = c.getBlock(x, y);
                         if (b.getType() != Material.AIR) {
-                            Texture t = Texture.getTexture(b);
+                            Texture t = Texture.getTexture(b.getType());
                             float tX = t.getAtlasX();
                             float tY = t.getAtlasY();
 
